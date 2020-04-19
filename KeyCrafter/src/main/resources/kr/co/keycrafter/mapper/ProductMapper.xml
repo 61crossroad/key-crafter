@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.keycrafter.mapper.ProductMapper">
+	<insert id="insertProduct">
+		INSERT INTO product
+		(pid, pname, price, quantity, productdesc, company, madein)
+		VALUES
+		(seq_product.nextval, #{pName}, #{price}, #{quantity}, #{productDesc}, #{company}, #{madeIn})
+	</insert>
+	
+	<insert id="insertSelectKeyProduct">
+		<selectKey keyProperty="pid" order="BEFORE" resultType="int">
+			SELECT seq_product.nextval from dual
+		</selectKey>
+		INSERT INTO product
+		(pid, pname, price, quantity, productdesc, company, madein)
+		VALUES
+		(#{pid}, #{pName}, #{price}, #{quantity}, #{productDesc}, #{company}, #{madeIn})
+	</insert>
+	
+	<select id="getProduct" resultType="kr.co.keycrafter.domain.ProductVO">
+		SELECT * FROM product WHERE pid = #{pid}
+	</select>
+	
+	<update id="updateProduct">
+		UPDATE product
+		SET pname = #{pName}, price = #{price}, productdesc = #{productDesc}, company = #{company}, madein = #{madeIn}, updatedate = sysdate
+		WHERE pid = #{pid} 
+	</update>
+	
+	<delete id="deleteProduct">
+		DELETE FROM product
+		WHERE pid = #{pid}
+	</delete>
+	
+	<select id="getProductList" resultType="kr.co.keycrafter.domain.ProductVO">
+		SELECT pid, pname, price FROM product
+		<!-- SELECT p.pid, pname, price, uuid, uploadpath, filename
+		FROM product p
+		LEFT OUTER JOIN product_attach a
+		ON p.pid = a.pid AND a.main = 'T' -->
+	</select>
+</mapper>
