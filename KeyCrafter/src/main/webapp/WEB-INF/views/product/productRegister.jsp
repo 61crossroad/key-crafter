@@ -4,92 +4,87 @@
 <%@ include file="../include/header.jsp" %>
 <%@ include file="../include/modal.jsp" %>
 
-<div class="whole-wrap mb-60">
-	<div class="container">
-		<div class="section-top-border">
-			<div class="row mt-lg">
-				<div class="col-lg-8 col-md-8">
-					<h3 class="mb-30 title_color">상품 등록</h3>
-					<form action="/product/insert" method="post" role="form">
-						<div class="form-group row">
-							<label for="pName" class="col-sm-2 col-form-label single-label"><h5>상품명</h5></label>
-							<div class="col-sm-10">
-								<input type="text" class="form-control" name="pName" id="pName" maxlength="50" required>
+<section class="cat_product_area mt-xl mb-60">
+	<div class="container-fluid">
+		<div class="row flex-row-reverse">
+			<div class="col-lg-9">
+				<h3 class="mb-30 title_color">상품 등록</h3>
+				<form action="/product/insert" method="post" role="form">
+					<div class="form-group row">
+						<label for="pName" class="col-sm-2 col-form-label single-label"><h5>상품명</h5></label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="pName" id="pName" maxlength="50" required>
+						</div>
+					</div>
+					<div class="form-group row justify-content-start">
+						<label for="price" class="col-sm-2 single-label"><h5>가격</h5></label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control" name="price" id="price" maxlength="10" required>
+						</div>
+						<label for="quantity" class="col-sm-2 single-label"><h5>수량</h5></label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control" name="quantity" id="quantity" maxlength="10" required>
+						</div>
+					</div>
+					<div class="form-group row justify-content-start">
+						<label for="company" class="col-sm-2 single-label"><h5>제조사</h5></label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control" name="company" id="company" maxlength="50">
+						</div>
+						<label for="madeIn" class="col-sm-2 single-label"><h5>제조국</h5></label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control" name="madeIn" id="madeIn" maxlength="20">
+						</div>
+					</div>
+					<div class="form-group row justify-content-start">
+						<label id="addCategory" class="col-sm-2 single-label">
+							<a href="#"><h5>카테고리&nbsp;<i class="fa fa-plus"></i></h5></a>
+						</label>
+						<div class="col-sm-10">
+							<div id="categoryList" class="row justify-content-start">
 							</div>
 						</div>
-						<div class="form-group row justify-content-start">
-							<label for="price" class="col-sm-2 single-label"><h5>가격</h5></label>
-							<div class="col-sm-4">
-								<input type="text" class="form-control" name="price" id="price" maxlength="10" required>
-							</div>
-							<label for="quantity" class="col-sm-2 single-label"><h5>수량</h5></label>
-							<div class="col-sm-4">
-								<input type="text" class="form-control" name="quantity" id="quantity" maxlength="10" required>
-							</div>
+					</div>						
+					<div class="form-group row">
+						<label for="productDesc" class="single-label"><h5>상품 설명</h5></label>
+						<textarea class="form-control" name="productDesc" id="productDesc" rows="5"></textarea>
+					</div>
+					<div class="form-group form-button">
+						<div class="row">
+							<input type="submit" value="등록" class="btn btn-primary">&nbsp;&nbsp;
+							<input type="reset" value="삭제" class="btn btn-warning">&nbsp;&nbsp;
+							<input type="button" value="뒤로" class="btn btn-secondary" onclick="history.back()">
+						<!--
+							<input type="submit" class="genric-btn info small" value="등록">&nbsp;&nbsp;
+							<input type="reset" class="genric-btn primary" value="삭제">&nbsp;&nbsp;
+							<input type="button" onclick="history.back()" class="genric-btn success" value="뒤로">
+						-->
 						</div>
-						<div class="form-group row justify-content-start">
-							<label for="company" class="col-sm-2 single-label"><h5>제조사</h5></label>
-							<div class="col-sm-4">
-								<input type="text" class="form-control" name="company" id="company" maxlength="50">
-							</div>
-							<label for="madeIn" class="col-sm-2 single-label"><h5>제조국</h5></label>
-							<div class="col-sm-4">
-								<input type="text" class="form-control" name="madeIn" id="madeIn" maxlength="20">
-							</div>
-						</div>
-						<div class="form-group row">
-							<label for="productDesc" class="single-label"><h5>상품 설명</h5></label>
-							<textarea class="form-control" name="productDesc" id="productDesc" rows="5"></textarea>
-						</div>
-						<div class="form-group form-button">
-							<div class="row">
-								<input type="submit" class="genric-btn info" value="등록">&nbsp;&nbsp;
-								<input type="reset" class="genric-btn primary" value="삭제">&nbsp;&nbsp;
-								<input type="button" onclick="history.back()" class="genric-btn success" value="뒤로">
-							</div>
-							
-						</div>
-						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-					</form>
-					
-					<div class="form-group row mt-25 justify-content-start">
-						<div class="col-sm-2 single-label">
-						<!-- <h3 class="title_color">이미지 파일</h3> -->
-							<h5>이미지 파일</h5>
-						</div>
-						<!-- <div class="uploadDiv row"> -->
-						<div class="uploadDiv col-sm-10">
-							<input type="file" class="form-control-file" name="productAttach" id="productAttach" style="padding: 5px 0px 0px 0px;" multiple required>
-						</div>
-						<div class="uploadResult row justify-content-around mt-25">
-						</div>
+						
+					</div>
+					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+				</form>
+				
+				<div class="form-group row mt-25 justify-content-start">
+					<div class="col-sm-2 single-label">
+					<!-- <h3 class="title_color">이미지 파일</h3> -->
+						<h5>이미지 파일</h5>
+					</div>
+					<!-- <div class="uploadDiv row"> -->
+					<div class="uploadDiv col-sm-10">
+						<input type="file" class="form-control-file" name="productAttach" id="productAttach" style="padding: 5px 0px 0px 0px;" multiple required>
+					</div>
+					<div class="uploadResult row justify-content-around mt-25">
 					</div>
 				</div>
 			</div>
+			<div class="col-lg-3">
+				<%@ include file="../category/categoryList.jsp" %>
+			</div>
 		</div>
 	</div>
-</div>
-
-<!-- Modal -->
-<!--
-<div class="modal fade" id="resultCenter" tabindex="-1" role="dialog" aria-labelledby="resultCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="resultCenterTitle"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">확인</button>
-      </div>
-    </div>
-  </div>
-</div>
--->
+</section>
+<!--================End Category Product Area =================-->
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -113,6 +108,21 @@ $(document).ready(function() {
 			return;
 		}
 	}
+	
+	$("#addCategory").on("click", function() {
+		$.getJSON("/category/list", function(data) {
+			var str = "<div class='col-sm-3 default-select'><select>";
+			
+			$.each(data, function(key, val) {
+				str += "<option value='" + val.catNum + "'>" + val.catName + "</option>";
+			});
+			
+			str += "</select></div>";
+			$("#categoryList").append(str);
+		});
+		
+		console.log($("#categoryList select"));
+	});
 		
 	$("input[type = 'submit']").on("click", function(e) {
 		e.preventDefault();
@@ -120,13 +130,20 @@ $(document).ready(function() {
 		var str="";
 		$(".uploadResult div").each(function(i, obj) {
 			var jobj = $(obj);
-			console.dir(jobj);
 			
 			str += "<input type='hidden' name='attachList[" + i + "].uuid' value='" + jobj.data("uuid") + "'>";
 			str += "<input type='hidden' name='attachList[" + i + "].uploadPath' value='" + jobj.data("uploadpath") + "'>";
 			str += "<input type='hidden' name='attachList[" + i + "].fileName' value='" + jobj.data("filename") + "'>";
 			str += "<input type='hidden' name='attachList[" + i + "].mainImage' value='" + (i ? 'F' : 'T') + "'>";
 		});
+		
+		$("#categoryList select").each(function(i, obj) {
+			var jobj = $(obj);
+			
+			str += "<input type='hidden' name='categoryList[" + i + "].catNum' value='" + jobj.children("option:selected").val() + "'>";
+			str += "<input type='hidden' name='categoryList[" + i + "].catName' value='" + jobj.children("option:selected").text() + "'>";
+		});
+		
 		formObj.append(str).submit();
 	});
 	

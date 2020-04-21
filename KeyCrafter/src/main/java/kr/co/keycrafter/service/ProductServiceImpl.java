@@ -4,6 +4,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import kr.co.keycrafter.domain.ProductCategoryDTO;
 import kr.co.keycrafter.domain.ProductVO;
 import kr.co.keycrafter.mapper.ProductMapper;
 import kr.co.keycrafter.mapper.ProductAttachMapper;
@@ -25,17 +26,28 @@ public class ProductServiceImpl implements ProductService {
 	public int insertProduct(ProductVO product) {
 		log.info("Insert product");
 		productMapper.insertSelectKeyProduct(product);
+		int resultPid = product.getPid();
 		
-		if (product.getAttachList() == null || product.getAttachList().size() <= 0) {
-			return product.getPid();
+		if (product.getAttachList() != null && product.getAttachList().size() > 0) {
+			product.getAttachList().forEach(attach -> {
+				attach.setPid(resultPid);
+				log.info(attach);
+				productAttachMapper.insertAttach(attach);
+			});
 		}
 		
-		product.getAttachList().forEach(attach -> {
-			attach.setPid(product.getPid());
-			log.info(attach);
-			productAttachMapper.insertAttach(attach);
-		});
+		if (product.getCategoryList() != null && product.getCategoryList().size() > 0 ) {
+			product.getCategoryList().forEach(category -> {
+				log.info(category);
+				ProductCategoryDTO productCategoryDTO = new ProductCategoryDTO();
+				productCategoryDTO.setPid(resultPid);
+				productCategoryDTO.setCatNum(category.getCatNum());
+				
+				log.info("Product Category DTO: " + productCategoryDTO);
+				productMapper.insertCategoryToProduct(productCategoryDTO);
+			});
+		}
 		
-		return product.getPid();
+		return resultPid;
 	}
 }

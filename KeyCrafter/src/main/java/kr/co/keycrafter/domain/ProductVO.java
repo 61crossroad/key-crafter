@@ -17,4 +17,5 @@ public class ProductVO {
 	private Date regDate;
 	private Date updateDate;
 	private List<ProductAttachVO> attachList;
+	private List<CategoryVO> categoryList;
 }

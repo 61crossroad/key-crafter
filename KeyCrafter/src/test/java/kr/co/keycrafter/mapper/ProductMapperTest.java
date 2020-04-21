@@ -23,7 +23,8 @@ public class ProductMapperTest {
 	
 	// @Test
 	public void getProductList() {
-		log.info(productMapper.getProductList());
+		// log.info(productMapper.getProductList());
+		productMapper.getProductList().forEach(product -> log.info(product));
 	}
 	
 	// @Test

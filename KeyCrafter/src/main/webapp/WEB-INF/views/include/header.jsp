@@ -88,8 +88,9 @@
 									</li>
 									
 									<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')">
-										<li class="nav-item submenu dropdown">
-											<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">상품관리</a>
+										<li class="nav-item">
+											<a href="/product/list" class="nav-link">상품관리</a>
+											<!--
 											<ul class="dropdown-menu">
 												<li class="nav-item">
 													<a class="nav-link" href="/product/list">목록</a>
@@ -101,6 +102,7 @@
 													<a class="nav-link" href="single-product.html">수정/삭제</a>
 												</li>
 											</ul>
+											-->
 										</li>
 									</sec:authorize>
 									

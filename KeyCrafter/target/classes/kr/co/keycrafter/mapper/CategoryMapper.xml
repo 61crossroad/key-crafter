@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.keycrafter.mapper.CategoryMapper">
+	<insert id="insertCategory">
+		INSERT INTO category
+		(catnum, catname)
+		VALUES
+		(seq_category.nextval, #{catName})
+	</insert>
+	
+	<select id="selectCategoryByNum" resultType="kr.co.keycrafter.domain.CategoryVO">
+		SELECT catnum, catname FROM category WHERE catnum = #{catNum}
+	</select>
+	
+	<select id="selectCategoryByName" resultType="kr.co.keycrafter.domain.CategoryVO">
+		SELECT catnum, catname FROM category WHERE catname = #{catName}
+	</select>
+	
+	<select id="selectCategoryList" resultType="kr.co.keycrafter.domain.CategoryVO">
+		SELECT catnum, catname FROM category ORDER BY catnum ASC
+	</select>
+	
+	<update id="updateCategory">
+		UPDATE category
+		SET catname = #{catName}
+		WHERE catnum = #{catNum} 
+	</update>
+	
+	<delete id="deleteCategoryByNum">
+		DELETE FROM category
+		WHERE catnum = #{catNum}
+	</delete>
+	
+	<delete id="deleteCategoryByName">
+		DELETE FROM category
+		WHERE catname = #{catName}
+	</delete>
+</mapper>
