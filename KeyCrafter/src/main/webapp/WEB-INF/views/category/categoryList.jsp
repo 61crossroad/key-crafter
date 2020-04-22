@@ -60,27 +60,25 @@ $(document).ready(function (){
 	// List category when a page is loaded
 	getCatList();
 	
-	// select categories except default(1st) category which is 'empty' via REST 
+	// Get category list via REST GET method
 	function getCatList() {
 		$.getJSON("/category/list", function(data) {
 			var str = "";
 			$(".widgets_inner .list").html("");
 			
 			$.each(data, function(i, obj) {
-				if (i) {
-					str += "<li data-catnum='" + obj.catNum + "'>" + obj.catName;
-					str += "<span style='margin-left: 1em;'><i class='fa fa-pencil' data-action='modify' data-catnum='" + obj.catNum +
-						"' data-catname='" + obj.catName + "'></i></span>";
-					str += "<span style='margin-left: 1em;'><i class='fa fa-remove' data-action='delete' data-catnum='" + obj.catNum +
-						"' data-catname='" + obj.catName + "'></i></span></li>";
-				}
+				str += "<li data-catnum='" + obj.catNum + "'>" + obj.catName;
+				str += "<span style='margin-left: 1em;'><i class='fa fa-pencil' data-action='modify' data-catnum='" + obj.catNum +
+					"' data-catname='" + obj.catName + "'></i></span>";
+				str += "<span style='margin-left: 1em;'><i class='fa fa-remove' data-action='delete' data-catnum='" + obj.catNum +
+					"' data-catname='" + obj.catName + "'></i></span></li>";
 			});
 			
 			$(".widgets_inner .list").append(str);
 		});
 	}
 	
-	$(".widgets_inner .list").on("click", "i", function() {
+	$(".widgets_inner .list").on("click", "i", function(event) {
 		var obj = $(event.target);
 		var action = obj.data("action");
 		var catNum = obj.data("catnum");

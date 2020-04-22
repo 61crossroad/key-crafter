@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ include file="../include/header.jsp" %>
 <%@ include file="../include/modal.jsp" %>
 
@@ -60,10 +61,12 @@
 					</div>
 				</div>
 				<div class="latest_product_inner row">
-					<div class="col-lg-3 col-md-3 col-sm-6">
+					<c:forEach items="${ list }" var="product">
+						<div class="col-lg-3 col-md-3 col-sm-6">
 						<div class="f_p_item">
 							<div class="f_p_img">
-								<img class="img-fluid" src="/resources/img/product/feature-product/f-p-1.jpg" alt="">
+								<img class="img-fluid"
+									src="/show?fileName=${ product.attachList[0].uploadPath }/m_${ product.attachList[0].uuid }_${ product.attachList[0].fileName }" alt="">
 								<div class="p_icon">
 									<a href="#">
 										<i class="lnr lnr-heart"></i>
@@ -74,290 +77,20 @@
 								</div>
 							</div>
 							<a href="#">
-								<h4>Long Sleeve TShirt</h4>
+								<h4>${ product.PName }</h4>
 							</a>
-							<h5>$150.00</h5>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-3 col-sm-6">
-						<div class="f_p_item">
-							<div class="f_p_img">
-								<img class="img-fluid" src="/resources/img/product/feature-product/f-p-2.jpg" alt="">
-								<div class="p_icon">
-									<a href="#">
-										<i class="lnr lnr-heart"></i>
-									</a>
-									<a href="#">
-										<i class="lnr lnr-cart"></i>
-									</a>
-								</div>
+							<h5><fmt:formatNumber value="${ product.price }" pattern="#,###" /></h5>
 							</div>
-							<a href="#">
-								<h4>Long Sleeve TShirt</h4>
-							</a>
-							<h5>$150.00</h5>
 						</div>
-					</div>
-					<div class="col-lg-3 col-md-3 col-sm-6">
-						<div class="f_p_item">
-							<div class="f_p_img">
-								<img class="img-fluid" src="/resources/img/product/feature-product/f-p-3.jpg" alt="">
-								<div class="p_icon">
-									<a href="#">
-										<i class="lnr lnr-heart"></i>
-									</a>
-									<a href="#">
-										<i class="lnr lnr-cart"></i>
-									</a>
-								</div>
-							</div>
-							<a href="#">
-								<h4>Long Sleeve TShirt</h4>
-							</a>
-							<h5>$150.00</h5>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-3 col-sm-6">
-						<div class="f_p_item">
-							<div class="f_p_img">
-								<img class="img-fluid" src="/resources/img/product/feature-product/f-p-4.jpg" alt="">
-								<div class="p_icon">
-									<a href="#">
-										<i class="lnr lnr-heart"></i>
-									</a>
-									<a href="#">
-										<i class="lnr lnr-cart"></i>
-									</a>
-								</div>
-							</div>
-							<a href="#">
-								<h4>Long Sleeve TShirt</h4>
-							</a>
-							<h5>$150.00</h5>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-3 col-sm-6">
-						<div class="f_p_item">
-							<div class="f_p_img">
-								<img class="img-fluid" src="/resources/img/product/feature-product/f-p-5.jpg" alt="">
-								<div class="p_icon">
-									<a href="#">
-										<i class="lnr lnr-heart"></i>
-									</a>
-									<a href="#">
-										<i class="lnr lnr-cart"></i>
-									</a>
-								</div>
-							</div>
-							<a href="#">
-								<h4>Long Sleeve TShirt</h4>
-							</a>
-							<h5>$150.00</h5>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-3 col-sm-6">
-						<div class="f_p_item">
-							<div class="f_p_img">
-								<img class="img-fluid" src="/resources/img/product/feature-product/f-p-4.jpg" alt="">
-								<div class="p_icon">
-									<a href="#">
-										<i class="lnr lnr-heart"></i>
-									</a>
-									<a href="#">
-										<i class="lnr lnr-cart"></i>
-									</a>
-								</div>
-							</div>
-							<a href="#">
-								<h4>Long Sleeve TShirt</h4>
-							</a>
-							<h5>$150.00</h5>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-3 col-sm-6">
-						<div class="f_p_item">
-							<div class="f_p_img">
-								<img class="img-fluid" src="/resources/img/product/feature-product/f-p-3.jpg" alt="">
-								<div class="p_icon">
-									<a href="#">
-										<i class="lnr lnr-heart"></i>
-									</a>
-									<a href="#">
-										<i class="lnr lnr-cart"></i>
-									</a>
-								</div>
-							</div>
-							<a href="#">
-								<h4>Long Sleeve TShirt</h4>
-							</a>
-							<h5>$150.00</h5>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-3 col-sm-6">
-						<div class="f_p_item">
-							<div class="f_p_img">
-								<img class="img-fluid" src="/resources/img/product/feature-product/f-p-4.jpg" alt="">
-								<div class="p_icon">
-									<a href="#">
-										<i class="lnr lnr-heart"></i>
-									</a>
-									<a href="#">
-										<i class="lnr lnr-cart"></i>
-									</a>
-								</div>
-							</div>
-							<a href="#">
-								<h4>Long Sleeve TShirt</h4>
-							</a>
-							<h5>$150.00</h5>
-						</div>
-					</div>
+					</c:forEach>
 				</div>
 			</div>
 			<div class="col-lg-3">
 			<%@ include file="../category/categoryList.jsp" %>
-				<!--
-				<div class="left_sidebar_area">
-					<aside class="left_widgets cat_widgets">
-						<div class="l_w_title col">
-							<h3>카테고리
-								<a href="#" style="float: right;">
-									<button class="btn btn-primary">추가</button>
-								</a>
-							</h3>
-						</div>
-						<div class="widgets_inner">
-							<ul class="list">
-								<li>
-									<a href="#">Fruits and Vegetables</a>
-								</li>
-								<li>
-									<a href="#">Meat and Fish</a>
-									<ul class="list">
-										<li>
-											<a href="#">Frozen Fish</a>
-										</li>
-										<li>
-											<a href="#">Dried Fish</a>
-										</li>
-										<li>
-											<a href="#">Fresh Fish</a>
-										</li>
-										<li>
-											<a href="#">Meat Alternatives</a>
-										</li>
-										<li>
-											<a href="#">Meat</a>
-										</li>
-									</ul>
-								</li>
-								<li>
-									<a href="#">Cooking</a>
-									<ul class="list">
-										<li>
-											<a href="#">Frozen Fish</a>
-										</li>
-										<li>
-											<a href="#">Dried Fish</a>
-										</li>
-										<li>
-											<a href="#">Fresh Fish</a>
-										</li>
-										<li>
-											<a href="#">Meat Alternatives</a>
-										</li>
-										<li>
-											<a href="#">Meat</a>
-										</li>
-									</ul>
-								</li>
-								<li>
-									<a href="#">Beverages</a>
-									<ul class="list">
-										<li>
-											<a href="#">Frozen Fish</a>
-										</li>
-										<li>
-											<a href="#">Dried Fish</a>
-										</li>
-										<li>
-											<a href="#">Fresh Fish</a>
-										</li>
-										<li>
-											<a href="#">Meat Alternatives</a>
-										</li>
-										<li>
-											<a href="#">Meat</a>
-										</li>
-									</ul>
-								</li>
-								<li>
-									<a href="#">Home and Cleaning</a>
-								</li>
-							</ul>
-						</div>
-					</aside>
-					<aside class="left_widgets p_filter_widgets">
-						<div class="l_w_title">
-							<h3>필터링</h3>
-						</div>
-						<div class="widgets_inner">
-							<h4>Brand</h4>
-							<ul class="list">
-								<li>
-									<a href="#">Apple</a>
-								</li>
-								<li>
-									<a href="#">Asus</a>
-								</li>
-								<li class="active">
-									<a href="#">Gionee</a>
-								</li>
-								<li>
-									<a href="#">Micromax</a>
-								</li>
-								<li>
-									<a href="#">Samsung</a>
-								</li>
-							</ul>
-						</div>
-						<div class="widgets_inner">
-							<h4>Color</h4>
-							<ul class="list">
-								<li>
-									<a href="#">Black</a>
-								</li>
-								<li>
-									<a href="#">Black Leather</a>
-								</li>
-								<li class="active">
-									<a href="#">Black with red</a>
-								</li>
-								<li>
-									<a href="#">Gold</a>
-								</li>
-								<li>
-									<a href="#">Spacegrey</a>
-								</li>
-							</ul>
-						</div>
-						<div class="widgets_inner">
-							<h4>Price</h4>
-							<div class="range_item">
-								<div id="slider-range"></div>
-								<div class="row m0">
-									<label for="amount">Price : </label>
-									<input type="text" id="amount" readonly>
-								</div>
-							</div>
-						</div>
-					</aside>
-				</div>
-				-->
 			</div>
 		</div>
 
-		<div class="row mb-60">
+		<div class="row mt-lg mb-60">
 			<nav class="cat_page mx-auto" aria-label="Page navigation example">
 				<ul class="pagination">
 					<li class="page-item">

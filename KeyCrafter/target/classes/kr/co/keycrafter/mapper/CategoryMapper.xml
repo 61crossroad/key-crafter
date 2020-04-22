@@ -11,15 +11,17 @@
 	</insert>
 	
 	<select id="selectCategoryByNum" resultType="kr.co.keycrafter.domain.CategoryVO">
-		SELECT catnum, catname FROM category WHERE catnum = #{catNum}
+		SELECT * FROM category WHERE catnum = #{catNum}
 	</select>
 	
 	<select id="selectCategoryByName" resultType="kr.co.keycrafter.domain.CategoryVO">
-		SELECT catnum, catname FROM category WHERE catname = #{catName}
+		<!-- SELECT catnum, catname FROM category WHERE catname = #{catName} -->
+		SELECT * FROM category WHERE catname = #{catName}
 	</select>
 	
 	<select id="selectCategoryList" resultType="kr.co.keycrafter.domain.CategoryVO">
-		SELECT catnum, catname FROM category ORDER BY catnum ASC
+		<!-- SELECT catnum, catname FROM category ORDER BY catnum ASC -->
+		SELECT * FROM category ORDER BY catnum ASC
 	</select>
 	
 	<update id="updateCategory">

@@ -30,7 +30,7 @@ public class CategoryController {
 	@GetMapping(value = "/list",
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<List<CategoryVO>> list() {
-		log.info("Get category list......");
+		log.info("Get category list...... ");
 		
 		return new ResponseEntity<List<CategoryVO>>(categoryService.selectCategoryList(), HttpStatus.OK);
 	}

@@ -98,6 +98,7 @@ $(document).ready(function() {
 	
 	toggleModal(resultPid);
 	
+	// 상품 등록 후 모달 창 생성 
 	function toggleModal(result) {
 		console.log("resultPid: " + result);
 		if (result > 0) {
@@ -109,6 +110,7 @@ $(document).ready(function() {
 		}
 	}
 	
+	// 카테고리 목록 추가
 	$("#addCategory").on("click", function() {
 		$.getJSON("/category/list", function(data) {
 			var str = "<div class='col-sm-3 default-select'><select>";
@@ -123,7 +125,8 @@ $(document).ready(function() {
 		
 		console.log($("#categoryList select"));
 	});
-		
+	
+	// 등록 form에 첨부파일과 카테고리 추가 후 submit
 	$("input[type = 'submit']").on("click", function(e) {
 		e.preventDefault();
 		
@@ -147,8 +150,9 @@ $(document).ready(function() {
 		formObj.append(str).submit();
 	});
 	
+	// 첨부파일 확장자 확인, 이미지 파일만 가능
 	function checkExtension(fileName, fileSize) {
-		var regExp = new RegExp("(.*?)\.(jpg|png|gif|bmp)$");
+		var regExp = new RegExp("(.*?)\.(jpg|jpeg|png|gif|bmp)$");
 		var maxSize = 5242880; // 5MB
 		
 		if (maxSize < fileSize) {
@@ -166,6 +170,7 @@ $(document).ready(function() {
 		return true;
 	}
 	
+	// file 필드에 파일이 선택되면 임시로 파일 업로드
 	$("input[type = 'file']").on("change", function(e) {
 		var formData = new FormData();
 		var inputFile = $("input[name = 'productAttach']");
@@ -199,6 +204,7 @@ $(document).ready(function() {
 		});
 	});
 	
+	// 임시로 파일 업로드 후 확인과 삭제를 위한 div 생성
 	function showUploadResult(result) {
 		if (!result || result.length == 0) {
 			return;
@@ -217,6 +223,7 @@ $(document).ready(function() {
 		uploadResult.append(str);
 	}
 	
+	// 임시 업로드 파일 삭제
 	$(".uploadResult").on("click", "span", function() {
 		console.log("Delete file: " + fileName);
 		

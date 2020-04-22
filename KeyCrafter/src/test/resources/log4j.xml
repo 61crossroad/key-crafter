@@ -32,6 +32,7 @@
 		<level value="info" />
 	</logger>
 	
+	<!-- Custom Setup
 	<logger name="jdbc.audit">
 		<level value="warn" />
 	</logger>
@@ -41,7 +42,7 @@
 	<logger name="jdbc.resultset">
 		<level value="warn" />
 	</logger>
-	
+	-->
 
 	<!-- Root Logger -->
 	<root>

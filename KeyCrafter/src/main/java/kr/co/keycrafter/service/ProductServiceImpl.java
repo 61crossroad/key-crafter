@@ -1,5 +1,7 @@
 package kr.co.keycrafter.service;
 
+import java.util.List;
+
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,5 +51,10 @@ public class ProductServiceImpl implements ProductService {
 		}
 		
 		return resultPid;
+	}
+
+	@Override
+	public List<ProductVO> getProductList() {
+		return productMapper.getProductList();
 	}
 }

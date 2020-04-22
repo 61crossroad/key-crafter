@@ -30,7 +30,7 @@ import net.coobird.thumbnailator.Thumbnailator;
 @Log4j
 @Controller
 public class UploadController {
-	private final String uploadRoot = "/Users/shawnimac/upload";
+	private final String uploadRoot = "/Users/shawnimac/upload"; // 파일이 저장되는 루트 경로
 	
 	@PostMapping(value = "/uploadAjaxAction", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
@@ -39,8 +39,8 @@ public class UploadController {
 		
 		List<ProductAttachVO> attachList = new ArrayList<>();
 		
-		String uploadSubPath = getPath();
-		File uploadFullPath = new File(uploadRoot, uploadSubPath);
+		String uploadSubPath = getPath(); // 연/월/일 형식으로 된 폴더 경로
+		File uploadFullPath = new File(uploadRoot, uploadSubPath); // 루트/ + 연/월/일
 		log.info("Upload path: " + uploadFullPath);
 		
 		if (uploadFullPath.exists() == false) {

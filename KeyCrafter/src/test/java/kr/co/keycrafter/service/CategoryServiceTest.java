@@ -22,6 +22,6 @@ public class CategoryServiceTest {
 	
 	@Test
 	public void getCategoryList() {
-		categoryService.selectCategoryList().forEach(category -> log.info(category));
+		// categoryService.selectCategoryList().forEach(category -> log.info(category));
 	}
 }

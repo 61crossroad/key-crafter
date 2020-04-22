@@ -21,16 +21,23 @@ public class CategoryMapperTest {
 	@Setter(onMethod_ = @Autowired)
 	private CategoryMapper categoryMapper;
 	
-	@Test
+	
+	// @Test
 	public void selectAll() {
-		categoryMapper.selectCategoryList().forEach(category -> log.info(category));
+		// categoryMapper.selectCategoryList().forEach(category -> log.info(category));
+		CategoryVO category = new CategoryVO();
+		log.info("select category list: " + category);
+		// categoryMapper.selectCategoryList(category).forEach(result -> log.info(result));
 	}
 	
 	// @Test
 	public void insertThenSelect() {
-		String catName = "청축";
+		CategoryVO category = new CategoryVO();
+		category.setCatName("키캡");
 		
-		categoryMapper.insertCategory(catName);
-		log.info(categoryMapper.selectCategoryByName(catName));
+		// categoryMapper.insertCategory(category);
+		// log.info(categoryMapper.selectCategoryByName(catName));
+		category = categoryMapper.selectCategoryByName(category.getCatName());
+		log.info(category);
 	}
 }
