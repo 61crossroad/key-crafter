@@ -12,10 +12,11 @@ public interface ProductMapper {
 
 	public ProductVO getProduct(int pid);
 	
-	// Not Done
 	public List<ProductVO> getProductList();
 	
 	public void insertCategoryToProduct(ProductCategoryDTO productCategoryDTO);
+	
+	public int deleteCategoryFromProduct(int pid);
 	
 	public int updateProduct(ProductVO product);
 	

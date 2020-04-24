@@ -35,6 +35,12 @@ public class CategoryController {
 		return new ResponseEntity<List<CategoryVO>>(categoryService.selectCategoryList(), HttpStatus.OK);
 	}
 	
+	@GetMapping(value="/product/{pid}",
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<List<CategoryVO>> listForProduct(@PathVariable("pid") int pid) {
+		return new ResponseEntity<List<CategoryVO>>(categoryService.selectCategoryForProduct(pid), HttpStatus.OK);
+	}
+	
 	@PostMapping(value = "/insert",
 			consumes = "text/plain")
 	public void insert(@RequestBody String catName) {

@@ -55,9 +55,8 @@
 	</insert>
 	
 	<select id="getProduct" resultMap="productMap">
-	<!-- <select id="getProduct" resultType="map"> -->
-		<!-- SELECT * FROM product WHERE pid = #{pid} -->
-		SELECT p.pid, p.pname, p.price, a.uuid, a.uploadpath, a.filename, c.catnum, c.catname
+		SELECT p.pid, p.pname, p.price, p.quantity, p.productDesc, p.company, p.madein,
+			a.uuid, a.uploadpath, a.filename, c.catnum, c.catname
 		FROM product p
 		LEFT OUTER JOIN product_attach a
 		ON p.pid = a.pid
@@ -87,9 +86,14 @@
 	
 	<update id="updateProduct">
 		UPDATE product
-		SET pname = #{pName}, price = #{price}, productdesc = #{productDesc}, company = #{company}, madein = #{madeIn}, updatedate = sysdate
-		WHERE pid = #{pid} 
+		SET pname = #{pName}, price = #{price}, quantity = #{quantity}, productdesc = #{productDesc}, company = #{company}, madein = #{madeIn}, updatedate = sysdate
+		WHERE pid = #{pid}
 	</update>
+	
+	<delete id="deleteCategoryFromProduct">
+		DELETE FROM product_category
+		WHERE pid = #{pid}
+	</delete>
 	
 	<delete id="deleteProduct">
 		DELETE FROM product

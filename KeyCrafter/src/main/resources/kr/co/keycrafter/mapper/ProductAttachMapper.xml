@@ -10,20 +10,28 @@
 		(#{uuid}, #{uploadPath}, #{fileName}, #{pid}, #{mainImage})
 	</insert>
 	
+	<!--
 	<delete id="deleteAttach">
 		DELETE FROM product_attach
 		WHERE uuid = #{uuid}
 	</delete>
+	-->
+	<delete id="deleteAllAttach">
+		DELETE FROM product_attach
+		WHERE pid = #{pid}
+	</delete>
 	
-	<select id="getAttachByPid" resultType="kr.co.keycrafter.domain.ProductAttachVO">
+	<select id="getAttachForProduct" resultType="kr.co.keycrafter.domain.ProductAttachVO">
 		SELECT *
 		FROM product_attach
 		WHERE pid = #{pid}
 	</select>
 	
+	<!--
 	<select id="getMainAttachByPid" resultType="kr.co.keycrafter.domain.ProductAttachVO">
 		SELECT *
 		FROM product_attach
 		WHERE pid = #{pid} AND mainimage = 'T';
 	</select>
+	-->
 </mapper>

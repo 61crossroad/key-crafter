@@ -9,6 +9,8 @@ public interface CategoryService {
 	
 	public List<CategoryVO> selectCategoryList();
 	
+	public List<CategoryVO> selectCategoryForProduct(int pid);
+	
 	public int updateCategory(CategoryVO category);
 	
 	public int deleteCategory(int catNum);

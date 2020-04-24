@@ -68,12 +68,17 @@
 								<img class="img-fluid"
 									src="/show?fileName=${ product.attachList[0].uploadPath }/m_${ product.attachList[0].uuid }_${ product.attachList[0].fileName }" alt="">
 								<div class="p_icon">
-									<a href="#">
-										<i class="lnr lnr-heart"></i>
+									<a href="/product/modify/${ product.pid }">
+										<i id="modify" class="fa fa-pencil"></i>
 									</a>
-									<a href="#">
-										<i class="lnr lnr-cart"></i>
+									<a href="#" class="delete">
+										<i id="delete" class="fa fa-trash-o"></i>
+										
 									</a>
+									<form action="/product/delete" method="post">
+										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+										<input type="hidden" name="pid" value="${ product.pid }">
+									</form>
 								</div>
 							</div>
 							<a href="#">
@@ -130,20 +135,42 @@ $(document).ready(function() {
 	var csrfHeaderName = "${_csrf.headerName}";
 	var csrfTokenValue = "${_csrf.token}";
 	
-	var resultPid = '<c:out value="${result}"/>';
+	var insertResult = '<c:out value="${ insertResult }"/>';
+	var updateResult = '<c:out value="${ updateResult }"/>';
+	var deleteResult = '<c:out value="${ deleteResult }"/>';
 	
-	toggleModal(resultPid);
+	toggleModal(insertResult, updateResult, deleteResult);
 	
-	function toggleModal(result) {
-		console.log("resultPid: " + result);
-		if (result > 0) {
-			$("#resultCenter .modal-body").html(parseInt(result) + "번 상품이 등록되었습니다.");
+	function toggleModal(insertParam, updateParam, deleteParam) {
+		console.log("insertResult: " + insertParam);
+		console.log("updateResult: " + updateParam);
+		
+		if (insertParam > 0) {
+			$("#resultCenter .modal-body").html(parseInt(insertParam) + "번 상품을 등록했습니다.");
+			$("#resultCenter").modal("show");
+		}
+		else if (updateParam > 0){
+			$("#resultCenter .modal-body").html(parseInt(updateParam) + "번 상품을 수정했습니다.");
+			$("#resultCenter").modal("show");
+		}
+		else if (deleteParam > 0){
+			$("#resultCenter .modal-body").html(parseInt(deleteParam) + "번 상품을 삭제했습니다.");
 			$("#resultCenter").modal("show");
 		}
 		else {
 			return;
 		}
 	}
+	
+	$(".latest_product_inner").on("click", "a", function() {
+		console.log($(this));
+		
+		if ($(this).attr("class") == "delete" && confirm("상품을 삭제하시겠습니까?")) {
+			console.log($(this).siblings("form"));
+			
+			$(this).siblings("form").submit();
+		}
+	});
 });
 </script>
 	

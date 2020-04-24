@@ -13,9 +13,11 @@ public interface CategoryMapper {
 	
 	public List<CategoryVO> selectCategoryList();
 	
+	public List<CategoryVO> selectCategoryForProduct(int pid);
+	
 	public int updateCategory(CategoryVO category);
 	
 	public int deleteCategoryByNum(int catNum);
 	
-	public int deleteCategoryByName(String catName);
+	// public int deleteCategoryByName(String catName);
 }

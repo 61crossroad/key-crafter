@@ -7,9 +7,11 @@ import kr.co.keycrafter.domain.ProductAttachVO;
 public interface ProductAttachMapper {
 	public void insertAttach(ProductAttachVO productAttach);
 	
-	public void delete(String uuid);
+	// public void delete(String uuid);
 	
-	public List<ProductAttachVO> getAttachByPid(int pid);
+	public int deleteAllAttach(int pid);
 	
-	public ProductAttachVO getMainAttachByPid(int pid);
+	public List<ProductAttachVO> getAttachForProduct(int pid);
+	
+	// public ProductAttachVO getMainAttachByPid(int pid);
 }

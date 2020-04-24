@@ -18,19 +18,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import static kr.co.keycrafter.domain.Const.*;
 import kr.co.keycrafter.domain.ProductAttachVO;
+import kr.co.keycrafter.service.ProductService;
+
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import net.coobird.thumbnailator.Thumbnailator;
 
 @Log4j
 @Controller
 public class UploadController {
-	private final String uploadRoot = "/Users/shawnimac/upload"; // 파일이 저장되는 루트 경로
+	@Setter(onMethod_ = @Autowired)
+	ProductService productService;
 	
 	@PostMapping(value = "/uploadAjaxAction", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
@@ -96,6 +103,9 @@ public class UploadController {
 	public ResponseEntity<byte[]> getThumbnail(String fileName) {
 		log.info("FileName: " + fileName);
 		
+		if (fileName.contains("no_image.jpg")) {
+			fileName = defaultPathImage;
+		}
 		
 		File file = new File(uploadRoot, fileName);
 		log.info("file: " + file);
@@ -114,6 +124,15 @@ public class UploadController {
 		}
 		
 		return result;
+	}
+	
+	@GetMapping(value = "/getImage/{pid}",
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	public ResponseEntity<List<ProductAttachVO>> getAttachForProduct(@PathVariable("pid") int pid) {
+		log.info("Get images for :" + pid);
+		
+		return new ResponseEntity<>(productService.getAttachForProduct(pid), HttpStatus.OK);
 	}
 	
 	@PostMapping("/deleteFile")

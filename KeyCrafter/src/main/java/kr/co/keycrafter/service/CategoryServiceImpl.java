@@ -36,4 +36,9 @@ public class CategoryServiceImpl implements CategoryService {
 	public int deleteCategory(int catNum) {
 		return categoryMapper.deleteCategoryByNum(catNum);
 	}
+
+	@Override
+	public List<CategoryVO> selectCategoryForProduct(int pid) {
+		return categoryMapper.selectCategoryForProduct(pid);
+	}
 }

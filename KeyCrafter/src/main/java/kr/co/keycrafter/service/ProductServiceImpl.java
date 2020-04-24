@@ -1,11 +1,18 @@
 package kr.co.keycrafter.service;
 
 import java.util.List;
+import java.util.UUID;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static kr.co.keycrafter.domain.Const.*;
+import kr.co.keycrafter.domain.ProductAttachVO;
 import kr.co.keycrafter.domain.ProductCategoryDTO;
 import kr.co.keycrafter.domain.ProductVO;
 import kr.co.keycrafter.mapper.ProductMapper;
@@ -27,17 +34,34 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public int insertProduct(ProductVO product) {
 		log.info("Insert product");
+		
+		// 상품 이미지가 없을 경우 기본 이미지 설정
+		if (product.getAttachList() == null || product.getAttachList().size() <= 0) {
+			List<ProductAttachVO> attachList = new ArrayList<>();
+			ProductAttachVO attachDefault = new ProductAttachVO();
+			
+			UUID uuid = UUID.randomUUID();
+			attachDefault.setUuid(uuid.toString());
+			attachDefault.setUploadPath("default");
+			attachDefault.setFileName("no_image.jpg");
+			attachDefault.setPid(product.getPid());
+			attachDefault.setMainImage('T');
+			
+			attachList.add(attachDefault);
+			product.setAttachList(attachList);
+		}
+		
 		productMapper.insertSelectKeyProduct(product);
 		int resultPid = product.getPid();
 		
-		if (product.getAttachList() != null && product.getAttachList().size() > 0) {
-			product.getAttachList().forEach(attach -> {
-				attach.setPid(resultPid);
-				log.info(attach);
-				productAttachMapper.insertAttach(attach);
-			});
-		}
+		// product_attach 테이블에 첨부파일 insert
+		product.getAttachList().forEach(attach -> {
+			attach.setPid(resultPid);
+			log.info(attach);
+			productAttachMapper.insertAttach(attach);
+		});
 		
+		// 상품 정보에 카테고리가 있으면 product_category 테이블에 정보 insert 
 		if (product.getCategoryList() != null && product.getCategoryList().size() > 0 ) {
 			product.getCategoryList().forEach(category -> {
 				log.info(category);
@@ -56,5 +80,133 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public List<ProductVO> getProductList() {
 		return productMapper.getProductList();
+	}
+	
+	@Override
+	public ProductVO getProduct(int pid) {
+		log.info("Get single product Service");
+		return productMapper.getProduct(pid);
+	}
+	
+	@Override
+	public List<ProductAttachVO> getAttachForProduct(int pid) {
+		log.info("Get attaches for product: " + pid );
+		return productAttachMapper.getAttachForProduct(pid);
+	}
+
+	@Transactional
+	@Override
+	public int updateProduct(ProductVO product) {
+		log.info("Update product");
+		
+		int result;
+		int pid = product.getPid();
+		
+		// 모든 첨부파일을 DB에서  삭제
+		result = productAttachMapper.deleteAllAttach(pid);
+		log.info("Delete all attaches: " + result);
+		
+		// 모든 카테고리를 DB에서  삭제
+		result = productMapper.deleteCategoryFromProduct(pid);
+		log.info("Delete all categories: " + result);
+		
+		result = productMapper.updateProduct(product);
+		log.info("Product updated");
+		
+		if (product.getAttachList() == null || product.getAttachList().size() <= 0) {
+			log.info("Default image added");
+			
+			List<ProductAttachVO> attachList = new ArrayList<>();
+			ProductAttachVO attachDefault = new ProductAttachVO();
+			
+			UUID uuid = UUID.randomUUID();
+			attachDefault.setUuid(uuid.toString());
+			attachDefault.setUploadPath("default");
+			attachDefault.setFileName("no_image.jpg");
+			attachDefault.setPid(product.getPid());
+			attachDefault.setMainImage('T');
+			
+			attachList.add(attachDefault);
+			product.setAttachList(attachList);
+		}
+		
+		// 상품 정보에 첨부파일이 있으면 DB의 product_attach 테이블에 파일 정보 insert
+		// if (product.getAttachList() != null && product.getAttachList().size() > 0) {
+			product.getAttachList().forEach(attach -> {
+				attach.setPid(pid);
+				log.info("Attach list");
+				log.info(attach);
+				productAttachMapper.insertAttach(attach);
+			});
+		// }
+		
+		
+		// 상품 정보에 카테고리가 있으면 DB의 product_category 테이블에 정보 insert 
+		if (product.getCategoryList() != null && product.getCategoryList().size() > 0 ) {
+			product.getCategoryList().forEach(category -> {
+				log.info("Category list");
+				log.info(category);
+				ProductCategoryDTO productCategoryDTO = new ProductCategoryDTO();
+				productCategoryDTO.setPid(pid);
+				productCategoryDTO.setCatNum(category.getCatNum());
+				
+				log.info("Product Category DTO: " + productCategoryDTO);
+				productMapper.insertCategoryToProduct(productCategoryDTO);
+			});
+		}
+		
+		return productMapper.updateProduct(product);
+	}
+	
+	@Transactional
+	@Override
+	public int deleteProduct(int pid) {
+		int result;
+		
+		// 모든 카테고리를 DB에서 삭제
+		result = productMapper.deleteCategoryFromProduct(pid);
+		log.info("Delete all categories: " + result);
+		
+		List<ProductAttachVO> attachList = productAttachMapper.getAttachForProduct(pid);
+		
+		// 모든 첨부파일을 DB에서 삭제
+		result = productAttachMapper.deleteAllAttach(pid);
+		log.info("Delete all attaches: " + result);
+		
+		// 상품 삭제
+		result = productMapper.deleteProduct(pid);
+		
+		// 모든 첨부파일을 폴더에서 삭제
+		if (result > 0) {
+			deleteAttachByPath(attachList);
+		}
+		
+		return result;
+	}
+	
+	private void deleteAttachByPath(List<ProductAttachVO> attachList) {
+		log.info("Delete all attaches...");
+		log.info(attachList);
+		
+		attachList.forEach(attach -> {
+			try {
+				if (!attach.getUploadPath().equals(defaultPath)) {
+					Path originalFile, mediumFile, smallFile; 
+					
+					originalFile = Paths.get(uploadRoot, attach.getUploadPath(), attach.getUuid() + "_" + attach.getFileName());
+					mediumFile = Paths.get(uploadRoot, attach.getUploadPath(), "m_" + attach.getUuid() + "_" + attach.getFileName());
+					smallFile = Paths.get(uploadRoot, attach.getUploadPath(), "s_" + attach.getUuid() + "_" + attach.getFileName());
+					
+					log.info(originalFile);
+					log.info(smallFile);
+					
+					Files.delete(originalFile);
+					Files.delete(mediumFile);
+					Files.delete(smallFile);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 	}
 }

@@ -26,17 +26,22 @@ public class ProductMapperTest {
 	@Setter(onMethod_ = @Autowired)
 	private ProductMapper productMapper;
 	
-	// @Test
+	@Test
 	public void getSingleProduct() {
 		ProductVO product;
 		
 		product = productMapper.getProduct(3);
 		
+		log.info(product.getPid() + " " + product.getPName() + " " + product.getAttachList().size()
+				+ " " + product.getCategoryList().size());
+		
+		/*
 		List<ProductAttachVO> attachList = product.getAttachList();
 		attachList.forEach(attach -> log.info(attach.getFileName()));
+		*/
 	}
 	
-	@Test
+	// @Test
 	public void getProductList() {
 		// productMapper.getProductList().forEach(product -> log.info(product));
 		List<ProductVO> list = productMapper.getProductList();

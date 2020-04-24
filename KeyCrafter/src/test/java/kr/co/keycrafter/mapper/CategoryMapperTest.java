@@ -1,5 +1,7 @@
 package kr.co.keycrafter.mapper;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,12 @@ public class CategoryMapperTest {
 	@Setter(onMethod_ = @Autowired)
 	private CategoryMapper categoryMapper;
 	
+	@Test
+	public void selectCategoryForProduct() {
+		List<CategoryVO> list = categoryMapper.selectCategoryForProduct(3);
+		
+		list.forEach(category -> log.info(category));
+	}
 	
 	// @Test
 	public void selectAll() {

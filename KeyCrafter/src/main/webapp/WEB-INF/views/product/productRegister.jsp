@@ -119,35 +119,19 @@ $(document).ready(function() {
 				str += "<option value='" + val.catNum + "'>" + val.catName + "</option>";
 			});
 			
-			str += "</select></div>";
+			str += "</select>&nbsp;<i class='fa fa-close'></i></div>";
 			$("#categoryList").append(str);
 		});
 		
 		console.log($("#categoryList select"));
 	});
 	
-	// 등록 form에 첨부파일과 카테고리 추가 후 submit
-	$("input[type = 'submit']").on("click", function(e) {
-		e.preventDefault();
-		
-		var str="";
-		$(".uploadResult div").each(function(i, obj) {
-			var jobj = $(obj);
-			
-			str += "<input type='hidden' name='attachList[" + i + "].uuid' value='" + jobj.data("uuid") + "'>";
-			str += "<input type='hidden' name='attachList[" + i + "].uploadPath' value='" + jobj.data("uploadpath") + "'>";
-			str += "<input type='hidden' name='attachList[" + i + "].fileName' value='" + jobj.data("filename") + "'>";
-			str += "<input type='hidden' name='attachList[" + i + "].mainImage' value='" + (i ? 'F' : 'T') + "'>";
-		});
-		
-		$("#categoryList select").each(function(i, obj) {
-			var jobj = $(obj);
-			
-			str += "<input type='hidden' name='categoryList[" + i + "].catNum' value='" + jobj.children("option:selected").val() + "'>";
-			str += "<input type='hidden' name='categoryList[" + i + "].catName' value='" + jobj.children("option:selected").text() + "'>";
-		});
-		
-		formObj.append(str).submit();
+	// 카테고리 삭제
+	$("#categoryList").on("click", "i", function() {
+		console.log("category delete clicked");
+		var targetDiv = $(this).closest("div");
+		console.log(targetDiv);
+		targetDiv.remove();
 	});
 	
 	// 첨부파일 확장자 확인, 이미지 파일만 가능
@@ -225,10 +209,10 @@ $(document).ready(function() {
 	
 	// 임시 업로드 파일 삭제
 	$(".uploadResult").on("click", "span", function() {
-		console.log("Delete file: " + fileName);
-		
 		var fileName = $(this).data("file");
 		var targetDiv = $(this).closest("div");
+		
+		console.log("Delete file: " + fileName);
 		
 		$.ajax({
 			url: '/deleteFile',
@@ -244,6 +228,31 @@ $(document).ready(function() {
 				targetDiv.remove();
 			}
 		});
+	});
+	
+	// 등록 form에 첨부파일과 카테고리 추가 후 submit
+	$("input[type = 'submit']").on("click", function(e) {
+		e.preventDefault();
+		
+		var str="";
+		$(".uploadResult div").each(function(i, obj) {
+			var jobj = $(obj);
+			
+			str += "<input type='hidden' name='attachList[" + i + "].uuid' value='" + jobj.data("uuid") + "'>";
+			str += "<input type='hidden' name='attachList[" + i + "].uploadPath' value='" + jobj.data("uploadpath") + "'>";
+			str += "<input type='hidden' name='attachList[" + i + "].fileName' value='" + jobj.data("filename") + "'>";
+			str += "<input type='hidden' name='attachList[" + i + "].mainImage' value='" + (i ? 'F' : 'T') + "'>";
+		});
+		
+		$("#categoryList select").each(function(i, obj) {
+			var jobj = $(obj);
+			var target = jobj.children("option:selected");
+			
+			str += "<input type='hidden' name='categoryList[" + i + "].catNum' value='" + jobj.children("option:selected").val() + "'>";
+			str += "<input type='hidden' name='categoryList[" + i + "].catName' value='" + jobj.children("option:selected").text() + "'>";
+		});
+		
+		formObj.append(str).submit();
 	});
 });
 </script>

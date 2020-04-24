@@ -24,10 +24,17 @@
 		SELECT * FROM category ORDER BY catnum ASC
 	</select>
 	
+	<select id="selectCategoryForProduct" resultType="kr.co.keycrafter.domain.CategoryVO">
+		SELECT c.catnum, c.catname FROM product_category pc
+		LEFT OUTER JOIN category c
+			ON pc.catnum = c.catnum
+		WHERE pc.pid = #{pid}
+	</select>
+	
 	<update id="updateCategory">
 		UPDATE category
 		SET catname = #{catName}
-		WHERE catnum = #{catNum} 
+		WHERE catnum = #{catNum}
 	</update>
 	
 	<delete id="deleteCategoryByNum">
@@ -35,8 +42,10 @@
 		WHERE catnum = #{catNum}
 	</delete>
 	
+	<!--
 	<delete id="deleteCategoryByName">
 		DELETE FROM category
 		WHERE catname = #{catName}
 	</delete>
+	-->
 </mapper>
