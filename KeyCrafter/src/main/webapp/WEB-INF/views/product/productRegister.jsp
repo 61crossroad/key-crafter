@@ -62,6 +62,11 @@
 						</div>
 						
 					</div>
+					<input type="hidden" name="page" value="${ cri.page }">
+					<input type="hidden" name="show" value="${ cri.show }">
+					<input type="hidden" name="type" value="${ cri.type }">
+					<input type="hidden" name="keyword" value="${ cri.keyword }">
+					
 					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 				</form>
 				
@@ -115,9 +120,9 @@ $(document).ready(function() {
 		$.getJSON("/category/list", function(data) {
 			var str = "<div class='col-sm-3 default-select'><select>";
 			
-			$.each(data, function(key, val) {
-				str += "<option value='" + val.catNum + "'>" + val.catName + "</option>";
-			});
+			for (var i = 1; i < data.length; i++) {
+				str += "<option value='" + data[i].catNum + "'>" + data[i].catName + "</option>";
+			}
 			
 			str += "</select>&nbsp;<i class='fa fa-close'></i></div>";
 			$("#categoryList").append(str);
@@ -137,7 +142,7 @@ $(document).ready(function() {
 	// 첨부파일 확장자 확인, 이미지 파일만 가능
 	function checkExtension(fileName, fileSize) {
 		var regExp = new RegExp("(.*?)\.(jpg|jpeg|png|gif|bmp)$");
-		var maxSize = 5242880; // 5MB
+		var maxSize = 20971520; // 5MB
 		
 		if (maxSize < fileSize) {
 			alert("파일 용량 초과");

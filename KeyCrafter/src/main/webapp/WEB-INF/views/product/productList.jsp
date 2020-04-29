@@ -1,10 +1,21 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ include file="../include/header.jsp" %>
 <%@ include file="../include/modal.jsp" %>
 
+<!--================Pagination & Search parameters =================-->
+<form id="pageForm" action="/product/list" method="GET">
+	<input type="hidden" name="page" value="${ pageMaker.cri.page }">
+	<input type="hidden" name="show" value="${ pageMaker.cri.show }">
+	<input type="hidden" name="type" value="${ pageMaker.cri.type }">
+	<input type="hidden" name="keyword" value="${ pageMaker.cri.keyword }">
+	
+	<!-- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"> -->
+</form>
+		
 <!--================Category Product Area =================-->
 <section class="cat_product_area mt-xl">
 	<div class="container-fluid">
@@ -23,39 +34,38 @@
 							<option value="4">Show 16</option>
 						</select>
 					</div>
-					<div class="right_page ml-auto">
-						<a href="/product/register">
-							<button type="button" class="btn btn-primary">상품 등록</button>
-						</a>
-					</div>
+					
+					<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')">
+						<div class="right_page ml-auto">
+							<a class="registProduct" href="/product/register">
+								<button type="button" class="btn btn-primary">상품 등록</button>
+							</a>
+						</div>
+					</sec:authorize>
+					
 					<div class="right_page ml-auto">
 						<nav class="cat_page" aria-label="Page navigation example">
 							<ul class="pagination">
-								<li class="page-item">
-									<a class="page-link" href="#">
-										<i class="fa fa-long-arrow-left" aria-hidden="true"></i>
-									</a>
-								</li>
-								<li class="page-item active">
-									<a class="page-link" href="#">1</a>
-								</li>
-								<li class="page-item">
-									<a class="page-link" href="#">2</a>
-								</li>
-								<li class="page-item">
-									<a class="page-link" href="#">3</a>
-								</li>
-								<li class="page-item blank">
-									<a class="page-link" href="#">...</a>
-								</li>
-								<li class="page-item">
-									<a class="page-link" href="#">6</a>
-								</li>
-								<li class="page-item">
-									<a class="page-link" href="#">
-										<i class="fa fa-long-arrow-right" aria-hidden="true"></i>
-									</a>
-								</li>
+								<c:if test="${ pageMaker.prev }">
+									<li class="page-item">
+										<a class="page-link" href="#">
+											<i class="fa fa-chevron-left" aria-hidden="true"></i>
+										</a>
+									</li>
+								</c:if>
+								
+								<c:forEach var="index" begin="${ pageMaker.startPage }" end="${ pageMaker.endPage }">
+									<li class='page-item ${ pageMaker.cri.page == index ? "active" : "" }'>
+										<a class="page-link" href="${ index }">${ index }</a>
+									</li>
+								</c:forEach>
+								<c:if test="${ pageMaker.next }">
+									<li class="page-item">
+										<a class="page-link" href="#">
+											<i class="fa fa-chevron-right" aria-hidden="true"></i>
+										</a>
+									</li>
+								</c:if>
 							</ul>
 						</nav>
 					</div>
@@ -65,23 +75,28 @@
 						<div class="col-lg-3 col-md-3 col-sm-6">
 						<div class="f_p_item">
 							<div class="f_p_img">
-								<img class="img-fluid"
-									src="/show?fileName=${ product.attachList[0].uploadPath }/m_${ product.attachList[0].uuid }_${ product.attachList[0].fileName }" alt="">
+								<a class="getProduct" href="${ product.pid }">
+									<img class="img-fluid"
+										src="/show?fileName=${ product.attachList[0].uploadPath }/m_${ product.attachList[0].uuid }_${ product.attachList[0].fileName }"
+										alt="${ product.PName }">
+								</a>
 								<div class="p_icon">
-									<a href="/product/modify/${ product.pid }">
+									<a class="modifyProduct" href="${ product.pid }">
 										<i id="modify" class="fa fa-pencil"></i>
 									</a>
-									<a href="#" class="delete">
+									<a class="deleteProduct" href="${ product.pid }">
 										<i id="delete" class="fa fa-trash-o"></i>
 										
 									</a>
+									<!--
 									<form action="/product/delete" method="post">
 										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 										<input type="hidden" name="pid" value="${ product.pid }">
 									</form>
+									-->
 								</div>
 							</div>
-							<a href="#">
+							<a class="getProduct" href="${ product.pid }">
 								<h4>${ product.PName }</h4>
 							</a>
 							<h5><fmt:formatNumber value="${ product.price }" pattern="#,###" /></h5>
@@ -132,8 +147,9 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-	var csrfHeaderName = "${_csrf.headerName}";
-	var csrfTokenValue = "${_csrf.token}";
+	var csrfParameterName = "${ _csrf.parameterName }";
+	var csrfHeaderName = "${ _csrf.headerName }";
+	var csrfTokenValue = "${ _csrf.token }";
 	
 	var insertResult = '<c:out value="${ insertResult }"/>';
 	var updateResult = '<c:out value="${ updateResult }"/>';
@@ -161,7 +177,7 @@ $(document).ready(function() {
 			return;
 		}
 	}
-	
+	/*
 	$(".latest_product_inner").on("click", "a", function() {
 		console.log($(this));
 		
@@ -170,6 +186,52 @@ $(document).ready(function() {
 			
 			$(this).siblings("form").submit();
 		}
+	});
+	*/
+	
+	var pageForm = $("#pageForm");
+	
+	$(".page-item a").on("click", function(event) {
+		event.preventDefault();
+		
+		pageForm.find("input[name = 'page']").val($(this).attr("href"));
+		pageForm.submit();
+	});
+	
+	$(".registProduct").on("click", function(event) {
+		event.preventDefault();
+		
+		pageForm.attr("action", "/product/register");
+		pageForm.submit();
+	});
+	
+	$(".modifyProduct").on("click", function(event) {
+		event.preventDefault();
+		
+		pageForm.append("<input type='hidden' name='pid' value='" + $(this).attr("href") + "'>");
+		pageForm.attr("action", "/product/modify");
+		pageForm.submit();
+	});
+	
+	$(".deleteProduct").on("click", function(event) {
+		event.preventDefault();
+		
+		if (confirm("상품을 삭제하시겠습니까?")) {
+			var str = "<input type='hidden' name='pid' value='" + $(this).attr("href") + "'>" +
+				"<input type='hidden' name='" + csrfParameterName + "' value='" + csrfTokenValue + "'>";
+			pageForm.append(str);
+			pageForm.attr("action", "/product/delete");
+			pageForm.attr("method", "POST");
+			pageForm.submit();
+		}
+	});
+	
+	$(".getProduct").on("click", function(event) {
+		event.preventDefault();
+		
+		pageForm.append("<input type='hidden' name='pid' value='" + $(this).attr("href") + "'>");
+		pageForm.attr("action", "/product/get");
+		pageForm.submit();
 	});
 });
 </script>

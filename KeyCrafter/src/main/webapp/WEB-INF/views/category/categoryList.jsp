@@ -1,14 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 <!--========================= Category List Side Bar ============================== -->
 <div class="left_sidebar_area">
 	<aside class="left_widgets cat_widgets">
 		<div class="l_w_title col">
 			<h3>카테고리
-				<a href="#" style="float: right;">
-					<button id="insertFormBtn" class="btn btn-primary">추가</button>
-				</a>
+				<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')">
+					<a href="#" style="float: right;">
+						<button id="insertFormBtn" class="btn btn-primary">추가</button>
+					</a>
+				</sec:authorize>
 			</h3>
 		</div>
 		<div class="widgets_inner">
@@ -66,13 +69,20 @@ $(document).ready(function (){
 			var str = "";
 			$(".widgets_inner .list").html("");
 			
-			$.each(data, function(i, obj) {
-				str += "<li data-catnum='" + obj.catNum + "'>" + obj.catName;
-				str += "<span style='margin-left: 1em;'><i class='fa fa-pencil' data-action='modify' data-catnum='" + obj.catNum +
-					"' data-catname='" + obj.catName + "'></i></span>";
-				str += "<span style='margin-left: 1em;'><i class='fa fa-remove' data-action='delete' data-catnum='" + obj.catNum +
-					"' data-catname='" + obj.catName + "'></i></span></li>";
-			});
+			if (data[0].catName == "hasRole") {
+				for (var i = 1; i < data.length; i++) {
+					str += "<li data-catnum='" + data[i].catNum + "'>" + data[i].catName;
+					str += "<span style='margin-left: 1em;'><a href='#'><i class='fa fa-pencil' data-action='modify' data-catnum='" + data[i].catNum +
+						"' data-catname='" + data[i].catName + "'></i></a></span>";
+					str += "<span style='margin-left: 1em;'><a href='#'><i class='fa fa-remove' data-action='delete' data-catnum='" + data[i].catNum +
+						"' data-catname='" + data[i].catName + "'></i></a></span></li>";
+				}
+			}
+			else {
+				$.each(data, function(i, obj) {
+					str += "<li data-catnum='" + obj.catNum + "'>" + obj.catName + "</li>";
+				});
+			}
 			
 			$(".widgets_inner .list").append(str);
 		});
@@ -89,6 +99,7 @@ $(document).ready(function (){
 		var updateBtn = $(".modal-footer #updateBtn");
 		var deleteBtn = $(".modal-footer #deleteBtn");
 		
+		event.preventDefault();
 		catModal.find(".modal-body #curCatName").val(curCatName).attr("type", "text").attr("readonly", true);
 		catModal.find(".modal-body #catNum").val(catNum);
 		insertBtn.attr("type", "hidden");

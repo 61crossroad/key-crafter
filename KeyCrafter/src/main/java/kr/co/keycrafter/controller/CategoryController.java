@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +35,20 @@ public class CategoryController {
 	public ResponseEntity<List<CategoryVO>> list() {
 		log.info("Get category list...... ");
 		
-		return new ResponseEntity<List<CategoryVO>>(categoryService.selectCategoryList(), HttpStatus.OK);
+		List<CategoryVO> list = categoryService.selectCategoryList();
+
+		String[] roles = {"ROLE_ADMIN", "ROLE_MEMBER"};
+		
+		if (hasRole(roles)) {
+			CategoryVO authStatus = new CategoryVO();
+			authStatus.setCatNum(0);
+			authStatus.setCatName("hasRole");
+			list.add(0, authStatus);
+		}
+		
+		// log.info(list);
+		
+		return new ResponseEntity<List<CategoryVO>>(list, HttpStatus.OK);
 	}
 	
 	@GetMapping(value="/product/{pid}",
@@ -71,5 +87,26 @@ public class CategoryController {
 		return categoryService.deleteCategory(catNum) == 1
 				? new ResponseEntity<>("success", HttpStatus.OK)
 						: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	protected boolean hasRole(String[] roles) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		/*
+		if (authentication == null) {
+			return false;
+		}
+		*/
+		
+		for (GrantedAuthority authority : authentication.getAuthorities()) {
+			String userRole = authority.getAuthority();
+			for (String role : roles) {
+				if (userRole.equals(role)) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 }

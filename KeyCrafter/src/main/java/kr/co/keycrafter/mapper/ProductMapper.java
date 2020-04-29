@@ -2,6 +2,8 @@ package kr.co.keycrafter.mapper;
 
 import java.util.List;
 
+import kr.co.keycrafter.domain.Criteria;
+
 import kr.co.keycrafter.domain.ProductVO;
 import kr.co.keycrafter.domain.ProductCategoryDTO;
 
@@ -13,6 +15,10 @@ public interface ProductMapper {
 	public ProductVO getProduct(int pid);
 	
 	public List<ProductVO> getProductList();
+	
+	public List<ProductVO> getProductListWithPaging(Criteria cri);
+	
+	public int getTotalCount(Criteria cri);
 	
 	public void insertCategoryToProduct(ProductCategoryDTO productCategoryDTO);
 	

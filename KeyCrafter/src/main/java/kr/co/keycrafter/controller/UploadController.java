@@ -101,23 +101,22 @@ public class UploadController {
 	@GetMapping("/show")
 	@ResponseBody
 	public ResponseEntity<byte[]> getThumbnail(String fileName) {
-		log.info("FileName: " + fileName);
+		// log.info("FileName: " + fileName);
 		
-		if (fileName.contains("no_image.jpg")) {
-			fileName = defaultPathImage;
+		if (fileName.contains("no_image.jpg") && fileName.contains("m_")) {
+			fileName = mDefaultPathImage;
+		}
+		
+		else if(fileName.contains("no_image.jpg") && fileName.contains("s_")) {
+			fileName = sDefaultPathImage;
 		}
 		
 		File file = new File(uploadRoot, fileName);
-		log.info("file: " + file);
+		// log.info("file: " + file);
 		
 		ResponseEntity<byte[]> result = null;
 		
 		try {
-			/* HttpHeaders header = new HttpHeaders();
-			MimetypesFileTypeMap mftm = new MimetypesFileTypeMap();
-			
-			header.add("Content-Type", mftm.getContentType(file.getPath()));
-			result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK); */
 			result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();

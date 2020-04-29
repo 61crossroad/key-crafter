@@ -3351,6 +3351,15 @@ h6 {
       font-family: "Roboto", sans-serif;
       font-weight: normal;
       color: #555555; }
+      /* Custom */
+      .s_product_text .list li span {
+      	font-size: 14px;
+      	font-family: "Roboto", sans-serif;
+      	font-weight: normal;
+      	color: #555555;
+      	width: 60px;
+      	display: inline-block;
+      }
       .s_product_text .list li a span {
         width: 60px;
         display: inline-block; }
@@ -3366,7 +3375,7 @@ h6 {
     padding-top: 20px;
     border-top: 1px dotted #d5d5d5;
     margin-top: 20px;
-    margin-bottom: 70px; }
+    /* margin-bottom: 70px; */ }
   .s_product_text .card_area .main_btn {
     line-height: 38px;
     padding: 0px 38px;

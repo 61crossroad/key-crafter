@@ -15,6 +15,7 @@ import static kr.co.keycrafter.domain.Const.*;
 import kr.co.keycrafter.domain.ProductAttachVO;
 import kr.co.keycrafter.domain.ProductCategoryDTO;
 import kr.co.keycrafter.domain.ProductVO;
+import kr.co.keycrafter.domain.Criteria;
 import kr.co.keycrafter.mapper.ProductMapper;
 import kr.co.keycrafter.mapper.ProductAttachMapper;
 
@@ -78,8 +79,14 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<ProductVO> getProductList() {
-		return productMapper.getProductList();
+	public List<ProductVO> getProductList(Criteria cri) {
+		// return productMapper.getProductList();
+		return productMapper.getProductListWithPaging(cri);
+	}
+	
+	@Override
+	public int getTotalCount(Criteria cri) {
+		return productMapper.getTotalCount(cri);
 	}
 	
 	@Override

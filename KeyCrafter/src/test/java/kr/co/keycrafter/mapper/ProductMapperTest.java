@@ -1,10 +1,8 @@
 package kr.co.keycrafter.mapper;
 
-import org.junit.Test;
-
 import java.util.List;
 
-import org.junit.After;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -17,6 +15,7 @@ import kr.co.keycrafter.mapper.ProductMapper;
 import kr.co.keycrafter.domain.ProductVO;
 import kr.co.keycrafter.domain.ProductAttachVO;
 import kr.co.keycrafter.domain.CategoryVO;
+import kr.co.keycrafter.domain.Criteria;
 
 @Log4j
 @ContextConfiguration({"file:src/main/webapp/WEB-INF/spring/root-context.xml",
@@ -27,6 +26,30 @@ public class ProductMapperTest {
 	private ProductMapper productMapper;
 	
 	@Test
+	public void testSearch() {
+		Criteria cri = new Criteria();
+		/*
+		cri.setKeyword("텐키리스");
+		cri.setType("CDNP");
+*/
+		List<ProductVO> list = productMapper.getProductListWithPaging(cri);
+		int total = productMapper.getTotalCount(cri);
+		
+		log.info("TOTAL: " + total);
+		list.forEach(product -> log.info(product));
+	}
+	
+	// @Test
+	public void getProductListWithPaging() {
+		Criteria cri = new Criteria();
+		cri.setShow(8);
+		cri.setPage(3);
+		
+		List<ProductVO> list = productMapper.getProductListWithPaging(cri);
+		
+		list.forEach(product -> log.info(product));
+	}
+	// @Test
 	public void getSingleProduct() {
 		ProductVO product;
 		

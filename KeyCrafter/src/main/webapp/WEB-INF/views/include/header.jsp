@@ -89,20 +89,7 @@
 									
 									<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')">
 										<li class="nav-item">
-											<a href="/product/list" class="nav-link">상품관리</a>
-											<!--
-											<ul class="dropdown-menu">
-												<li class="nav-item">
-													<a class="nav-link" href="/product/list">목록</a>
-												</li>
-												<li class="nav-item">
-													<a class="nav-link" href="/product/register">등록</a>
-												</li>
-												<li class="nav-item">
-													<a class="nav-link" href="single-product.html">수정/삭제</a>
-												</li>
-											</ul>
-											-->
+											<a href="/product/list?page=1&show=12" class="nav-link">상품관리</a>
 										</li>
 									</sec:authorize>
 									
