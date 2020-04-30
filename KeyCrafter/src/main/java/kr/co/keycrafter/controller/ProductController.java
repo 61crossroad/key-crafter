@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import kr.co.keycrafter.domain.ProductVO;
 import kr.co.keycrafter.domain.Criteria;
@@ -53,17 +55,33 @@ public class ProductController {
 		return "redirect:/product/list" + cri.getListLink();
 	}
 	
-	@GetMapping("/list")
+	@GetMapping({"/list", "/index"})
 	public String listProduct(Criteria cri, Model model) {
 		log.info("list: " + cri);
 		
-		List<ProductVO> list = productService.getProductList(cri);
+		UriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequest();
+		String requestedValue = builder.buildAndExpand().getPath();
+		log.info("Request: " + requestedValue);
+		
+		if (requestedValue.contains("index")) {
+			cri.setShow(10);
+		}
+		
 		int total = productService.getTotalCount(cri);
+		PageDTO pageDTO = new PageDTO(cri, total);
+		Criteria realCri = pageDTO.getCri();
+		
+		List<ProductVO> list = productService.getProductList(realCri);
 		
 		model.addAttribute("list", list);
-		model.addAttribute("pageMaker", new PageDTO(cri, total));
+		model.addAttribute("pageMaker", pageDTO);
 		
-		return "/product/productList";
+		if (requestedValue.contains("index")) {
+			return "/index";
+		}
+		else {
+			return "/product/productList";
+		}
 	}
 	
 	@GetMapping("/get")

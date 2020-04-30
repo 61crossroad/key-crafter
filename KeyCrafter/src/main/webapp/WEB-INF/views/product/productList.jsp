@@ -12,8 +12,6 @@
 	<input type="hidden" name="show" value="${ pageMaker.cri.show }">
 	<input type="hidden" name="type" value="${ pageMaker.cri.type }">
 	<input type="hidden" name="keyword" value="${ pageMaker.cri.keyword }">
-	
-	<!-- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"> -->
 </form>
 		
 <!--================Category Product Area =================-->
@@ -29,9 +27,17 @@
 							<option value="4">Default sorting 02</option>
 						</select>
 						<select class="show">
-							<option value="1">Show 12</option>
-							<option value="2">Show 14</option>
-							<option value="4">Show 16</option>
+							<c:forEach var="i" begin="0" end="2">
+								<c:set var="show" value="${ i * 4 + 8 }" />
+								<c:choose>
+									<c:when test="${ show eq pageMaker.cri.show }">
+										<option value="${ show }" selected>Show ${ show }</option>
+									</c:when>
+									<c:otherwise>
+										<option value="${ show }">Show ${ show }</option>
+									</c:otherwise>
+								</c:choose>
+							</c:forEach>
 						</select>
 					</div>
 					
@@ -80,21 +86,16 @@
 										src="/show?fileName=${ product.attachList[0].uploadPath }/m_${ product.attachList[0].uuid }_${ product.attachList[0].fileName }"
 										alt="${ product.PName }">
 								</a>
-								<div class="p_icon">
-									<a class="modifyProduct" href="${ product.pid }">
-										<i id="modify" class="fa fa-pencil"></i>
-									</a>
-									<a class="deleteProduct" href="${ product.pid }">
-										<i id="delete" class="fa fa-trash-o"></i>
-										
-									</a>
-									<!--
-									<form action="/product/delete" method="post">
-										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-										<input type="hidden" name="pid" value="${ product.pid }">
-									</form>
-									-->
-								</div>
+								<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')">
+									<div class="p_icon">
+										<a class="modifyProduct" href="${ product.pid }">
+											<i id="modify" class="fa fa-pencil"></i>
+										</a>
+										<a class="deleteProduct" href="${ product.pid }">
+											<i id="delete" class="fa fa-trash-o"></i>
+										</a>
+									</div>
+								</sec:authorize>
 							</div>
 							<a class="getProduct" href="${ product.pid }">
 								<h4>${ product.PName }</h4>
@@ -113,31 +114,26 @@
 		<div class="row mt-lg mb-60">
 			<nav class="cat_page mx-auto" aria-label="Page navigation example">
 				<ul class="pagination">
-					<li class="page-item">
-						<a class="page-link" href="#">
-							<i class="fa fa-chevron-left" aria-hidden="true"></i>
-						</a>
-					</li>
-					<li class="page-item active">
-						<a class="page-link" href="#">01</a>
-					</li>
-					<li class="page-item">
-						<a class="page-link" href="#">02</a>
-					</li>
-					<li class="page-item">
-						<a class="page-link" href="#">03</a>
-					</li>
-					<li class="page-item blank">
-						<a class="page-link" href="#">...</a>
-					</li>
-					<li class="page-item">
-						<a class="page-link" href="#">09</a>
-					</li>
-					<li class="page-item">
-						<a class="page-link" href="#">
-							<i class="fa fa-chevron-right" aria-hidden="true"></i>
-						</a>
-					</li>
+					<c:if test="${ pageMaker.prev }">
+						<li class="page-item">
+							<a class="page-link" href="#">
+								<i class="fa fa-chevron-left" aria-hidden="true"></i>
+							</a>
+						</li>
+					</c:if>
+					
+					<c:forEach var="index" begin="${ pageMaker.startPage }" end="${ pageMaker.endPage }">
+						<li class='page-item ${ pageMaker.cri.page == index ? "active" : "" }'>
+							<a class="page-link" href="${ index }">${ index }</a>
+						</li>
+					</c:forEach>
+					<c:if test="${ pageMaker.next }">
+						<li class="page-item">
+							<a class="page-link" href="#">
+								<i class="fa fa-chevron-right" aria-hidden="true"></i>
+							</a>
+						</li>
+					</c:if>
 				</ul>
 			</nav>
 		</div>
@@ -148,12 +144,13 @@
 <script type="text/javascript">
 $(document).ready(function() {
 	var csrfParameterName = "${ _csrf.parameterName }";
-	var csrfHeaderName = "${ _csrf.headerName }";
 	var csrfTokenValue = "${ _csrf.token }";
 	
 	var insertResult = '<c:out value="${ insertResult }"/>';
 	var updateResult = '<c:out value="${ updateResult }"/>';
 	var deleteResult = '<c:out value="${ deleteResult }"/>';
+	
+	var pageForm = $("#pageForm");
 	
 	toggleModal(insertResult, updateResult, deleteResult);
 	
@@ -177,19 +174,11 @@ $(document).ready(function() {
 			return;
 		}
 	}
-	/*
-	$(".latest_product_inner").on("click", "a", function() {
-		console.log($(this));
-		
-		if ($(this).attr("class") == "delete" && confirm("상품을 삭제하시겠습니까?")) {
-			console.log($(this).siblings("form"));
-			
-			$(this).siblings("form").submit();
-		}
-	});
-	*/
 	
-	var pageForm = $("#pageForm");
+	$(".show").on("change", function() {
+		pageForm.find("input[name='show']").val($(this).val());
+		pageForm.submit();
+	});
 	
 	$(".page-item a").on("click", function(event) {
 		event.preventDefault();

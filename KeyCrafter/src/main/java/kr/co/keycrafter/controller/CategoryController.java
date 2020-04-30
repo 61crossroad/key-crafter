@@ -92,12 +92,6 @@ public class CategoryController {
 	protected boolean hasRole(String[] roles) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		
-		/*
-		if (authentication == null) {
-			return false;
-		}
-		*/
-		
 		for (GrantedAuthority authority : authentication.getAuthorities()) {
 			String userRole = authority.getAuthority();
 			for (String role : roles) {

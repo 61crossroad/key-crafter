@@ -51,13 +51,19 @@
 										<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">키보드</a>
 										<ul class="dropdown-menu">
 											<li class="nav-item">
-												<a class="nav-link" href="category.html">HHKB</a>
+												<a class="nav-link" href="/product/list?type=C&keyword=키보드">키보드 전체</a>
 											</li>
 											<li class="nav-item">
-												<a class="nav-link" href="single-product.html">바밀로</a>
+												<a class="nav-link" href="/product/list?type=P&keyword=HHKB">HHKB</a>
 											</li>
 											<li class="nav-item">
-												<a class="nav-link" href="checkout.html">키크론</a>
+												<a class="nav-link" href="/product/list?type=P&keyword=레오폴드">레오폴드</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" href="/product/list?type=P&keyword=바밀로">바밀로</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" href="/product/list?type=P&keyword=키크론">키크론</a>
 											</li>
 										</ul>
 									</li>

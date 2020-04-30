@@ -1,6 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<!--========================== Category Search Form =============================== -->
+<form id="categoryForm" action="/product/list" method="GET">
+	<input type="hidden" name="page" value="${ pageMaker.cri.page }">
+	<input type="hidden" name="show" value="${ pageMaker.cri.show }">
+	<input type="hidden" name="type" value="${ pageMaker.cri.type }">
+	<input type="hidden" name="keyword" value="${ pageMaker.cri.keyword }">
+</form>
 
 <!--========================= Category List Side Bar ============================== -->
 <div class="left_sidebar_area">
@@ -16,6 +25,7 @@
 		</div>
 		<div class="widgets_inner">
 			<ul class="list">
+				<!-- Categories will be listed here -->
 			</ul>
 		</div>
 	</aside>
@@ -71,7 +81,7 @@ $(document).ready(function (){
 			
 			if (data[0].catName == "hasRole") {
 				for (var i = 1; i < data.length; i++) {
-					str += "<li data-catnum='" + data[i].catNum + "'>" + data[i].catName;
+					str += "<li><a href='" + data[i].catName + "'>" + data[i].catName + "</a>";
 					str += "<span style='margin-left: 1em;'><a href='#'><i class='fa fa-pencil' data-action='modify' data-catnum='" + data[i].catNum +
 						"' data-catname='" + data[i].catName + "'></i></a></span>";
 					str += "<span style='margin-left: 1em;'><a href='#'><i class='fa fa-remove' data-action='delete' data-catnum='" + data[i].catNum +
@@ -80,13 +90,24 @@ $(document).ready(function (){
 			}
 			else {
 				$.each(data, function(i, obj) {
-					str += "<li data-catnum='" + obj.catNum + "'>" + obj.catName + "</li>";
+					str += "<li><a href='" + obj.catName + "'>" + obj.catName + "</a></li>";
 				});
 			}
 			
 			$(".widgets_inner .list").append(str);
 		});
 	}
+	
+	$(".widgets_inner .list").on("click", "a", function(event) {
+		console.log("category clicked");
+		event.preventDefault();
+		
+		var categoryForm = $("#categoryForm");
+		categoryForm.find("input[name = 'type']").val("C");
+		categoryForm.find("input[name = 'keyword']").val($(this).attr("href"));
+		
+		categoryForm.submit();
+	});
 	
 	$(".widgets_inner .list").on("click", "i", function(event) {
 		var obj = $(event.target);
