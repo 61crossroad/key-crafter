@@ -68,6 +68,7 @@ public class ProductController {
 		}
 		
 		int total = productService.getTotalCount(cri);
+		
 		PageDTO pageDTO = new PageDTO(cri, total);
 		Criteria realCri = pageDTO.getCri();
 		

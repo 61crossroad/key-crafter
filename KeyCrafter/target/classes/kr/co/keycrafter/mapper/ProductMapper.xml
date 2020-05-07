@@ -11,10 +11,13 @@
 		<result property="productDesc" column="productdesc"/>
 		<result property="company" column="company"/>
 		<result property="madeIn" column="madein"/>
+		<result property="catNum" column="catnum"/>
 		<result property="regDate" column="regdate"/>
 		<result property="updateDate" column="updatedate"/>
 		<collection property="attachList" resultMap="attachMap"/>
+		<!-- 
 		<collection property="categoryList" resultMap="categoryMap"/>
+		-->
 	</resultMap>
 	
 	<resultMap type="kr.co.keycrafter.domain.ProductAttachVO" id="attachMap">
@@ -25,95 +28,61 @@
 		<result property="mainImage" column="mainimage"/>
 	</resultMap>
 	
+	<!--
 	<resultMap type="kr.co.keycrafter.domain.CategoryVO" id="categoryMap">
 		<result property="catNum" column="catnum"/>
 		<result property="catName" column="catname"/>
 	</resultMap>
-	
-	<insert id="insertProduct">
-		INSERT INTO product
-		(pid, pname, price, quantity, productdesc, company, madein)
-		VALUES
-		(seq_product.nextval, #{pName}, #{price}, #{quantity}, #{productDesc}, #{company}, #{madeIn})
-	</insert>
+	-->
 	
 	<insert id="insertSelectKeyProduct">
 		<selectKey keyProperty="pid" order="BEFORE" resultType="int">
 			SELECT seq_product.nextval from dual
 		</selectKey>
 		INSERT INTO product
-		(pid, pname, price, quantity, productdesc, company, madein)
+		(pid, pname, price, quantity, productdesc, company, madein, catnum)
 		VALUES
-		(#{pid}, #{pName}, #{price}, #{quantity}, #{productDesc}, #{company}, #{madeIn})
-	</insert>
-	
-	<insert id="insertCategoryToProduct">
-		INSERT INTO product_category
-		(pid, catnum)
-		VALUES
-		(#{pid}, #{catNum})
+		(#{pid}, #{pName}, #{price}, #{quantity}, #{productDesc}, #{company}, #{madeIn}, #{catNum})
 	</insert>
 	
 	<select id="getProduct" resultMap="productMap">
-		SELECT p.pid, p.pname, p.price, p.quantity, p.productDesc, p.company, p.madein, p.regdate, p.updatedate,
-			a.uuid, a.uploadpath, a.filename, c.catnum, c.catname
+		SELECT p.pid, p.pname, p.price, p.quantity, p.productDesc, p.company, p.madein, p.catnum, p.regdate, p.updatedate,
+			a.uuid, a.uploadpath, a.filename
 		FROM product p
 		LEFT OUTER JOIN product_attach a
 		ON p.pid = a.pid
-		LEFT OUTER JOIN product_category pc
-		ON p.pid = pc.pid
-			LEFT OUTER JOIN category c
-			ON pc.catnum = c.catnum
 		WHERE p.pid = #{pid}
 	</select>
 	
-	<select id="getProductList" resultMap="productMap">
-		SELECT p.pid, p.pname, p.price, a.uuid, a.uploadpath, a.filename
-		FROM product p
-		LEFT OUTER JOIN product_attach a
-		ON p.pid = a.pid AND a.mainimage = 'T'
-		ORDER BY p.pid DESC
-	</select>
-	
 	<select id="getProductListWithPaging" resultMap="productMap">
-		<![CDATA[
-			SELECT p.pid, p.pname, p.price, a.uuid, a.uploadpath, a.filename
+			SELECT p.pid, p.pname, p.price, p.company, a.uuid, a.uploadpath, a.filename
 			FROM (
-				SELECT rownum rn, pi.pid, pi.pname, pi.price
+				SELECT rownum rn, pi.pid, pi.pname, pi.price, pi.company
 				FROM (
-					SELECT pu.pid, pu.pname, pu.price, pu.productdesc, pu.company
+					SELECT pu.pid, pu.pname, pu.price, pu.productdesc, pu.company, pu.catnum
 					FROM product pu
-					ORDER BY pu.pid DESC) pi
-		]]>
-		<foreach item="type" collection="typeArr">
-			<if test="type == 'C'.toString()">
-				LEFT OUTER JOIN product_category pc
-				ON pi.pid = pc.pid
+					ORDER BY pu.pid DESC
+				) pi
 				LEFT OUTER JOIN category c
-				ON pc.catnum = c.catnum
-			</if>
+				ON pi.catnum = c.catnum
+				LEFT OUTER JOIN category cri
+				ON cri.catnum = #{cat}
+				WHERE
+				(c.lft BETWEEN cri.lft AND cri.rgt)
+				AND (c.rgt BETWEEN cri.lft AND cri.rgt) AND		
+		<foreach item="keywordValue" index="i" collection="keywordArr">
+			<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+				<if test='type[i].contains("N")'>
+					OR pi.pname like '%'||#{keywordValue}||'%'
+				</if>
+				<if test='type[i].contains("D")'>
+					OR pi.productdesc like '%'||#{keywordValue}||'%'
+				</if>
+				<if test='type[i].contains("P")'>
+					OR pi.company like '%'||#{keywordValue}||'%'
+				</if>
+			</trim>
 		</foreach>
-			WHERE
-		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
-			<foreach item="type" collection="typeArr">
-				<trim prefix="OR">
-					<choose>
-						<when test="type == 'C'.toString()">
-							c.catname like '%'||#{keyword}||'%'
-						</when>
-						<when test="type == 'N'.toString()">
-							pi.pname like '%'||#{keyword}||'%'
-						</when>
-						<when test="type == 'D'.toString()">
-							pi.productdesc like '%'||#{keyword}||'%'
-						</when>
-						<when test="type == 'P'.toString()">
-							pi.company like '%'||#{keyword}||'%'
-						</when>
-					</choose>
-				</trim>
-			</foreach>
-		</trim>
 		<![CDATA[
 			rownum <= #{page} * #{show}
 		]]>
@@ -126,54 +95,39 @@
 	
 	<select id="getTotalCount" resultType="int">
 		SELECT COUNT(DISTINCT p.pid) FROM product p
-		<foreach item="type" collection="typeArr">
-			<if test="type == 'C'.toString()">
-				LEFT OUTER JOIN product_category pc
-				ON p.pid = pc.pid
-				LEFT OUTER JOIN category c
-				ON pc.catnum = c.catnum
-			</if>
-		</foreach>
+		LEFT OUTER JOIN category c
+		ON p.catnum = c.catnum
+		LEFT OUTER JOIN category cri
+		ON cri.catnum = #{cat}
 		WHERE
-		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
-			<foreach item="type" collection="typeArr">
-				<trim prefix="OR">
-					<choose>
-						<when test="type == 'C'.toString()">
-							c.catname like '%'||#{keyword}||'%'
-						</when>
-						<when test="type == 'N'.toString()">
-							p.pname like '%'||#{keyword}||'%'
-						</when>
-						<when test="type == 'D'.toString()">
-							p.productdesc like '%'||#{keyword}||'%'
-						</when>
-						<when test="type == 'P'.toString()">
-							p.company like '%'||#{keyword}||'%'
-						</when>
-					</choose>
-				</trim>
-			</foreach>
-		</trim>
+		(c.lft BETWEEN cri.lft AND cri.rgt)
+		AND (c.rgt BETWEEN cri.lft AND cri.rgt) AND		
+		<foreach item="keywordValue" index="i" collection="keywordArr">
+			<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+				<if test='type[i].contains("N")'>
+					OR p.pname like '%'||#{keywordValue}||'%'
+				</if>
+				<if test='type[i].contains("D")'>
+					OR p.productdesc like '%'||#{keywordValue}||'%'
+				</if>
+				<if test='type[i].contains("P")'>
+					OR p.company like '%'||#{keywordValue}||'%'
+				</if>
+			</trim>
+		</foreach>
 		p.pid > 0
 		
 	</select>
 	
 	<update id="updateProduct">
 		UPDATE product
-		SET pname = #{pName}, price = #{price}, quantity = #{quantity}, productdesc = #{productDesc}, company = #{company}, madein = #{madeIn}, updatedate = sysdate
+		SET pname = #{pName}, price = #{price}, quantity = #{quantity}, productdesc = #{productDesc}, 
+			company = #{company}, madein = #{madeIn}, catnum = ${catNum}, updatedate = sysdate
 		WHERE pid = #{pid}
 	</update>
-	
-	<delete id="deleteCategoryFromProduct">
-		DELETE FROM product_category
-		WHERE pid = #{pid}
-	</delete>
 	
 	<delete id="deleteProduct">
 		DELETE FROM product
 		WHERE pid = #{pid}
 	</delete>
-	
-	
 </mapper>

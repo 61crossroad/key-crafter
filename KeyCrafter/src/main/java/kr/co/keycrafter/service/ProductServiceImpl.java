@@ -13,11 +13,12 @@ import org.springframework.stereotype.Service;
 
 import static kr.co.keycrafter.domain.Const.*;
 import kr.co.keycrafter.domain.ProductAttachVO;
-import kr.co.keycrafter.domain.ProductCategoryDTO;
 import kr.co.keycrafter.domain.ProductVO;
+import kr.co.keycrafter.domain.CategoryVO;
 import kr.co.keycrafter.domain.Criteria;
 import kr.co.keycrafter.mapper.ProductMapper;
 import kr.co.keycrafter.mapper.ProductAttachMapper;
+import kr.co.keycrafter.mapper.CategoryMapper;
 
 import lombok.extern.log4j.Log4j;
 import lombok.Setter;
@@ -30,6 +31,9 @@ public class ProductServiceImpl implements ProductService {
 	
 	@Setter(onMethod_ = @Autowired)
 	private ProductAttachMapper productAttachMapper;
+	
+	@Setter(onMethod_ = @Autowired)
+	private CategoryMapper categoryMapper;
 
 	@Transactional
 	@Override
@@ -62,19 +66,6 @@ public class ProductServiceImpl implements ProductService {
 			productAttachMapper.insertAttach(attach);
 		});
 		
-		// 상품 정보에 카테고리가 있으면 product_category 테이블에 정보 insert 
-		if (product.getCategoryList() != null && product.getCategoryList().size() > 0 ) {
-			product.getCategoryList().forEach(category -> {
-				log.info(category);
-				ProductCategoryDTO productCategoryDTO = new ProductCategoryDTO();
-				productCategoryDTO.setPid(resultPid);
-				productCategoryDTO.setCatNum(category.getCatNum());
-				
-				log.info("Product Category DTO: " + productCategoryDTO);
-				productMapper.insertCategoryToProduct(productCategoryDTO);
-			});
-		}
-		
 		return resultPid;
 	}
 
@@ -91,8 +82,15 @@ public class ProductServiceImpl implements ProductService {
 	
 	@Override
 	public ProductVO getProduct(int pid) {
-		log.info("Get single product Service");
-		return productMapper.getProduct(pid);
+		log.info("Get single product");
+		
+		ProductVO product = productMapper.getProduct(pid);
+		List<CategoryVO> category = categoryMapper.selectCategoryPath(product.getCatNum());
+		
+		category.remove(0);
+		product.setCategoryList(category);
+		
+		return product;
 	}
 	
 	@Override
@@ -112,10 +110,6 @@ public class ProductServiceImpl implements ProductService {
 		// 모든 첨부파일을 DB에서  삭제
 		result = productAttachMapper.deleteAllAttach(pid);
 		log.info("Delete all attaches: " + result);
-		
-		// 모든 카테고리를 DB에서  삭제
-		result = productMapper.deleteCategoryFromProduct(pid);
-		log.info("Delete all categories: " + result);
 		
 		result = productMapper.updateProduct(product);
 		log.info("Product updated");
@@ -138,29 +132,12 @@ public class ProductServiceImpl implements ProductService {
 		}
 		
 		// 상품 정보에 첨부파일이 있으면 DB의 product_attach 테이블에 파일 정보 insert
-		// if (product.getAttachList() != null && product.getAttachList().size() > 0) {
-			product.getAttachList().forEach(attach -> {
-				attach.setPid(pid);
-				log.info("Attach list");
-				log.info(attach);
-				productAttachMapper.insertAttach(attach);
-			});
-		// }
-		
-		
-		// 상품 정보에 카테고리가 있으면 DB의 product_category 테이블에 정보 insert 
-		if (product.getCategoryList() != null && product.getCategoryList().size() > 0 ) {
-			product.getCategoryList().forEach(category -> {
-				log.info("Category list");
-				log.info(category);
-				ProductCategoryDTO productCategoryDTO = new ProductCategoryDTO();
-				productCategoryDTO.setPid(pid);
-				productCategoryDTO.setCatNum(category.getCatNum());
-				
-				log.info("Product Category DTO: " + productCategoryDTO);
-				productMapper.insertCategoryToProduct(productCategoryDTO);
-			});
-		}
+		product.getAttachList().forEach(attach -> {
+			attach.setPid(pid);
+			log.info("Attach list");
+			log.info(attach);
+			productAttachMapper.insertAttach(attach);
+		});
 		
 		return productMapper.updateProduct(product);
 	}
@@ -169,10 +146,6 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public int deleteProduct(int pid) {
 		int result;
-		
-		// 모든 카테고리를 DB에서 삭제
-		result = productMapper.deleteCategoryFromProduct(pid);
-		log.info("Delete all categories: " + result);
 		
 		List<ProductAttachVO> attachList = productAttachMapper.getAttachForProduct(pid);
 		

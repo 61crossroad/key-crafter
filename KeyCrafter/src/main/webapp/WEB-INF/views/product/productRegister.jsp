@@ -2,7 +2,6 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ include file="../include/header.jsp" %>
-<%@ include file="../include/modal.jsp" %>
 
 <section class="cat_product_area mt-xl mb-60">
 	<div class="container-fluid">
@@ -37,8 +36,8 @@
 						</div>
 					</div>
 					<div class="form-group row justify-content-start">
-						<label id="addCategory" class="col-sm-2 single-label">
-							<a href="#"><h5>카테고리&nbsp;<i class="fa fa-plus"></i></h5></a>
+						<label id="category" class="col-sm-2 single-label">
+							<h5>카테고리</h5>
 						</label>
 						<div class="col-sm-10">
 							<div id="categoryList" class="row justify-content-start">
@@ -54,28 +53,25 @@
 							<input type="submit" value="등록" class="btn btn-primary">&nbsp;&nbsp;
 							<input type="reset" value="삭제" class="btn btn-warning">&nbsp;&nbsp;
 							<input type="button" value="뒤로" class="btn btn-secondary" onclick="history.back()">
-						<!--
-							<input type="submit" class="genric-btn info small" value="등록">&nbsp;&nbsp;
-							<input type="reset" class="genric-btn primary" value="삭제">&nbsp;&nbsp;
-							<input type="button" onclick="history.back()" class="genric-btn success" value="뒤로">
-						-->
 						</div>
-						
 					</div>
+					
 					<input type="hidden" name="page" value="${ cri.page }">
 					<input type="hidden" name="show" value="${ cri.show }">
-					<input type="hidden" name="type" value="${ cri.type }">
-					<input type="hidden" name="keyword" value="${ cri.keyword }">
+					<input type="hidden" name="cat" value="${ cri.cat }">
+					
+					<c:forEach items="${ cri.keyword }" varStatus="status">
+						<input type="hidden" name="type" value="${ cri.type[status.index] }">
+						<input type="hidden" name="keyword" value="${ cri.keyword[status.index] }">
+					</c:forEach>
 					
 					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 				</form>
 				
 				<div class="form-group row mt-25 justify-content-start">
 					<div class="col-sm-2 single-label">
-					<!-- <h3 class="title_color">이미지 파일</h3> -->
 						<h5>이미지 파일</h5>
 					</div>
-					<!-- <div class="uploadDiv row"> -->
 					<div class="uploadDiv col-sm-10">
 						<input type="file" class="form-control-file" name="productAttach" id="productAttach" style="padding: 5px 0px 0px 0px;" multiple required>
 					</div>
@@ -84,7 +80,7 @@
 				</div>
 			</div>
 			<div class="col-lg-3">
-				<%@ include file="../category/categoryList.jsp" %>
+				<!--%@ include file="../category/categoryList.jsp" %-->
 			</div>
 		</div>
 	</div>
@@ -101,42 +97,42 @@ $(document).ready(function() {
 	
 	var resultPid = '<c:out value="${result}"/>';
 	
-	toggleModal(resultPid);
+	addCategory(1, 0);
 	
-	// 상품 등록 후 모달 창 생성 
-	function toggleModal(result) {
-		console.log("resultPid: " + result);
-		if (result > 0) {
-			$("#resultCenter .modal-body").html(parseInt(result) + "번 상품이 등록되었습니다.");
-			$("#resultCenter").modal("show");
-		}
-		else {
-			return;
-		}
+	// 카테고리 서브리스트 호출, html 추가
+	function addCategory(root, all) {
+		$.getJSON("/category/list?cat=" + root + "&all=" + all, function(data) {
+			if (data.length > 1) {
+				var str = "<div class='col-sm-3'><select class='form-control'>";
+				str += "<option value='0'>[선택]</option>";
+				
+				for (var i = 1; i < data.length; i++) {
+					str += "<option value='" + data[i].catNum + "'>" + data[i].catName + "</option>";
+				}
+				
+				if(data[0].lft > 1) {
+					str += "<option value='-1'>[삭제]</option>";
+				}
+				
+				str += "</select></div>";
+				$("#categoryList").append(str);
+			}
+		});
 	}
 	
-	// 카테고리 목록 추가
-	$("#addCategory").on("click", function() {
-		$.getJSON("/category/list", function(data) {
-			var str = "<div class='col-sm-3 default-select'><select>";
-			
-			for (var i = 1; i < data.length; i++) {
-				str += "<option value='" + data[i].catNum + "'>" + data[i].catName + "</option>";
-			}
-			
-			str += "</select>&nbsp;<i class='fa fa-close'></i></div>";
-			$("#categoryList").append(str);
-		});
+	// 카테고리 목록 추가 및 삭제
+	$("#categoryList").on("change", "div select", function() {
+		console.log($(this).val());
+		var action = $(this).val();
 		
-		console.log($("#categoryList select"));
-	});
-	
-	// 카테고리 삭제
-	$("#categoryList").on("click", "i", function() {
-		console.log("category delete clicked");
-		var targetDiv = $(this).closest("div");
-		console.log(targetDiv);
-		targetDiv.remove();
+		if (action > 0) {
+			$(this).closest("div").nextAll("div").remove();
+			addCategory(action, 0);
+		}
+		
+		else if (action == -1) {
+			$(this).closest("div").remove();
+		}
 	});
 	
 	// 첨부파일 확장자 확인, 이미지 파일만 가능
@@ -248,14 +244,20 @@ $(document).ready(function() {
 			str += "<input type='hidden' name='attachList[" + i + "].fileName' value='" + jobj.data("filename") + "'>";
 			str += "<input type='hidden' name='attachList[" + i + "].mainImage' value='" + (i ? 'F' : 'T') + "'>";
 		});
+
+		var catNum = 1;
 		
-		$("#categoryList select").each(function(i, obj) {
-			var jobj = $(obj);
-			var target = jobj.children("option:selected");
+		$("#categoryList div select").each(function(i, obj) {
+			var catObj = $(obj);
 			
-			str += "<input type='hidden' name='categoryList[" + i + "].catNum' value='" + jobj.children("option:selected").val() + "'>";
-			str += "<input type='hidden' name='categoryList[" + i + "].catName' value='" + jobj.children("option:selected").text() + "'>";
+			if (catObj.val() > 0) {
+				catNum = catObj.val();
+			}
 		});
+		
+		// console.log("Category No: " + catNum);
+		str += "<input type='hidden' name='catNum' value='" + catNum + "'>";
+		
 		
 		formObj.append(str).submit();
 	});

@@ -5,9 +5,9 @@ import java.util.List;
 import kr.co.keycrafter.domain.CategoryVO;
 
 public interface CategoryService {
-	public void insertCategory(String catName);
+	public void insertCategory(CategoryVO category);
 	
-	public List<CategoryVO> selectCategoryList();
+	public List<CategoryVO> selectCategoryList(int RootcatNum, int all);
 	
 	public List<CategoryVO> selectCategoryForProduct(int pid);
 	

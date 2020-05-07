@@ -14,6 +14,7 @@ public class ProductVO {
 	private String productDesc;
 	private String company;
 	private String madeIn;
+	private int catNum;
 	private Date regDate;
 	private Date updateDate;
 	private List<ProductAttachVO> attachList;

@@ -23,29 +23,20 @@ public class CategoryMapperTest {
 	@Setter(onMethod_ = @Autowired)
 	private CategoryMapper categoryMapper;
 	
+	// @Test
+	public void selectPath() {
+		int catNum = 5;
+		log.info(categoryMapper.selectCategoryPath(catNum));
+	}
+	
+	// @Test
+	public void updateCategory() {
+		categoryMapper.updateRight(2, 1);
+		log.info(categoryMapper.selectCategoryList());
+	}
+	
 	@Test
-	public void selectCategoryForProduct() {
-		List<CategoryVO> list = categoryMapper.selectCategoryForProduct(3);
-		
-		list.forEach(category -> log.info(category));
-	}
-	
-	// @Test
-	public void selectAll() {
-		// categoryMapper.selectCategoryList().forEach(category -> log.info(category));
-		CategoryVO category = new CategoryVO();
-		log.info("select category list: " + category);
-		// categoryMapper.selectCategoryList(category).forEach(result -> log.info(result));
-	}
-	
-	// @Test
-	public void insertThenSelect() {
-		CategoryVO category = new CategoryVO();
-		category.setCatName("키캡");
-		
-		// categoryMapper.insertCategory(category);
-		// log.info(categoryMapper.selectCategoryByName(catName));
-		category = categoryMapper.selectCategoryByName(category.getCatName());
-		log.info(category);
+	public void selectCategorySubList() {
+		log.info(categoryMapper.selectCategorySubList(1, 1));
 	}
 }

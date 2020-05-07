@@ -10,10 +10,13 @@
 <form id="pageForm" action="/product/list" method="GET">
 	<input type="hidden" name="page" value="${ pageMaker.cri.page }">
 	<input type="hidden" name="show" value="${ pageMaker.cri.show }">
-	<input type="hidden" name="type" value="${ pageMaker.cri.type }">
-	<input type="hidden" name="keyword" value="${ pageMaker.cri.keyword }">
+	<input type="hidden" name="cat" value="${ pageMaker.cri.cat }">
+	<c:forEach items="${ pageMaker.cri.keyword }" varStatus="status">
+		<input type="hidden" name="type" value="${ pageMaker.cri.type[status.index] }">
+		<input type="hidden" name="keyword" value="${ pageMaker.cri.keyword[status.index] }">
+	</c:forEach>
 </form>
-		
+
 <!--================Category Product Area =================-->
 <section class="cat_product_area mt-xl">
 	<div class="container-fluid">
@@ -98,16 +101,18 @@
 								</sec:authorize>
 							</div>
 							<a class="getProduct" href="${ product.pid }">
-								<h4>${ product.PName }</h4>
+								<h4>[${ product.company }]&nbsp;${ product.PName }</h4>
 							</a>
-							<h5><fmt:formatNumber value="${ product.price }" pattern="#,###" /></h5>
+							<h5><fmt:formatNumber value="${ product.price }" pattern="#,###" />원</h5>
 							</div>
 						</div>
 					</c:forEach>
 				</div>
 			</div>
 			<div class="col-lg-3">
+			
 			<%@ include file="../category/categoryList.jsp" %>
+			
 			</div>
 		</div>
 

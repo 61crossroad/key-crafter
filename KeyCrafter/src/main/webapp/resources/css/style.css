@@ -86,6 +86,9 @@ button:focus {
 .mt-25 {
   margin-top: 25px; }
 
+.mt-10 {
+	margin-top: 10px;
+}
 .mt-sm {
 	margin-top: 20px; }
 	
@@ -3108,7 +3111,8 @@ h6 {
     padding-left: 35px;
     border-top: 1px solid #eeeeee;
     padding-top: 10px;
-    display: none; }
+    /* display: none; */
+    display: block; }
 
 .p_filter_widgets .widgets_inner {
   border-bottom: 1px solid #eeeeee; }

@@ -1,5 +1,6 @@
 package kr.co.keycrafter.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -16,6 +17,7 @@ import kr.co.keycrafter.domain.ProductVO;
 import kr.co.keycrafter.domain.ProductAttachVO;
 import kr.co.keycrafter.domain.CategoryVO;
 import kr.co.keycrafter.domain.Criteria;
+import kr.co.keycrafter.domain.Search;
 
 @Log4j
 @ContextConfiguration({"file:src/main/webapp/WEB-INF/spring/root-context.xml",
@@ -28,10 +30,21 @@ public class ProductMapperTest {
 	@Test
 	public void testSearch() {
 		Criteria cri = new Criteria();
+
 		/*
-		cri.setKeyword("텐키리스");
-		cri.setType("CDNP");
-*/
+		String[] keyword = new String[1];
+		String[] type = new String[1];
+		
+		keyword[0] = "";
+		type[0] = "";
+		
+		keyword[1] = "바밀로";
+		type[1] = "P";
+		
+		cri.setKeyword(keyword);
+		cri.setType(type);
+		*/
+		
 		List<ProductVO> list = productMapper.getProductListWithPaging(cri);
 		int total = productMapper.getTotalCount(cri);
 		
@@ -55,8 +68,10 @@ public class ProductMapperTest {
 		
 		product = productMapper.getProduct(3);
 		
+		/*
 		log.info(product.getPid() + " " + product.getPName() + " " + product.getAttachList().size()
 				+ " " + product.getCategoryList().size());
+		*/
 		
 		/*
 		List<ProductAttachVO> attachList = product.getAttachList();
@@ -67,6 +82,7 @@ public class ProductMapperTest {
 	// @Test
 	public void getProductList() {
 		// productMapper.getProductList().forEach(product -> log.info(product));
+		/*
 		List<ProductVO> list = productMapper.getProductList();
 		
 		list.forEach(product -> {
@@ -78,7 +94,9 @@ public class ProductMapperTest {
 			List<CategoryVO> catList = product.getCategoryList();
 			
 			catList.forEach(category -> log.info(category.getCatNum()));
+			
 		});
+		*/
 	}
 	
 	// @Test
@@ -93,6 +111,6 @@ public class ProductMapperTest {
 		
 		log.info(product);
 		
-		productMapper.insertProduct(product);
+		// productMapper.insertProduct(product);
 	}
 }

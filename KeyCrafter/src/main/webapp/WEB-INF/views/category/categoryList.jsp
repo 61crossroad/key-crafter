@@ -7,8 +7,11 @@
 <form id="categoryForm" action="/product/list" method="GET">
 	<input type="hidden" name="page" value="${ pageMaker.cri.page }">
 	<input type="hidden" name="show" value="${ pageMaker.cri.show }">
-	<input type="hidden" name="type" value="${ pageMaker.cri.type }">
-	<input type="hidden" name="keyword" value="${ pageMaker.cri.keyword }">
+	<input type="hidden" name="cat" value="${ pageMaker.cri.cat }">
+	<c:forEach items="${ pageMaker.cri.keyword }" varStatus="status">
+		<input type="hidden" name="type" value="${ pageMaker.cri.type[status.index] }">
+		<input type="hidden" name="keyword" value="${ pageMaker.cri.keyword[status.index] }">
+	</c:forEach>
 </form>
 
 <!--========================= Category List Side Bar ============================== -->
@@ -16,17 +19,19 @@
 	<aside class="left_widgets cat_widgets">
 		<div class="l_w_title col">
 			<h3>카테고리
+			<!-- 
 				<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')">
 					<a href="#" style="float: right;">
 						<button id="insertFormBtn" class="btn btn-primary">추가</button>
 					</a>
 				</sec:authorize>
+			-->
 			</h3>
 		</div>
 		<div class="widgets_inner">
-			<ul class="list">
+			<!-- <ul class="list"> -->
 				<!-- Categories will be listed here -->
-			</ul>
+			<!-- </ul> -->
 		</div>
 	</aside>
 </div>
@@ -70,152 +75,73 @@ $(document).ready(function (){
 	var csrfHeaderName = "${_csrf.headerName}";
 	var csrfTokenValue = "${_csrf.token}";
 	
+	var cat = "${ pageMaker.cri.cat }";
+	console.log("Selected Cat: " + cat);
+	
 	// List category when a page is loaded
 	getCatList();
 	
 	// Get category list via REST GET method
 	function getCatList() {
-		$.getJSON("/category/list", function(data) {
+		$.getJSON("/category/list?cat=1&all=1", function(data) {
+			var depth = 0;
 			var str = "";
-			$(".widgets_inner .list").html("");
+			// $(".widgets_inner").html("");
 			
-			if (data[0].catName == "hasRole") {
-				for (var i = 1; i < data.length; i++) {
-					str += "<li><a href='" + data[i].catName + "'>" + data[i].catName + "</a>";
-					str += "<span style='margin-left: 1em;'><a href='#'><i class='fa fa-pencil' data-action='modify' data-catnum='" + data[i].catNum +
-						"' data-catname='" + data[i].catName + "'></i></a></span>";
-					str += "<span style='margin-left: 1em;'><a href='#'><i class='fa fa-remove' data-action='delete' data-catnum='" + data[i].catNum +
-						"' data-catname='" + data[i].catName + "'></i></a></span></li>";
+			for (var i = 1; i < data.length; i++) {
+				if (depth < data[i].depth) {
+					depth = data[i].depth;
+					str += "<ul class='list'>";
+				}
+				else if (depth > data[i].depth) {
+					for (var j = data[i].depth; j < depth; j++) {
+						str += "</li></ul>";
+					}
+					str += "</li>";
+					depth = data[i].depth;
+				}
+				else {
+					str += "</li>";
+				}
+				
+				
+				if (data[i].catNum == cat) {
+					str += "<li><a class='categoryMove' href='" + data[i].catNum + "'><b>" + data[i].catName + "</b></a>";
+				}
+				else {
+					str += "<li><a class='categoryMove' href='" + data[i].catNum + "'>" + data[i].catName + "</a>";
+				}
+				
+				if (i + 1 < data.length && depth < data[i + 1].depth) {
+					str += "&nbsp;&nbsp;<a class='subList' href='#'><i class='fa fa-chevron-down'></i></a>";
 				}
 			}
-			else {
-				$.each(data, function(i, obj) {
-					str += "<li><a href='" + obj.catName + "'>" + obj.catName + "</a></li>";
-				});
+			
+			for (var i = 0; i < depth; i++) {
+				str += "</li></ul>";
 			}
 			
-			$(".widgets_inner .list").append(str);
+			$(".widgets_inner").append(str);
 		});
 	}
 	
-	$(".widgets_inner .list").on("click", "a", function(event) {
+	$(".widgets_inner").on("click", ".subList", function(event) {
+		event.preventDefault();
+		console.log("icon clicked");
+		$(this).closest("li").children("ul").toggle();
+	});
+	
+	$(".widgets_inner").on("click", ".categoryMove", function(event) {
 		console.log("category clicked");
 		event.preventDefault();
 		
 		var categoryForm = $("#categoryForm");
-		categoryForm.find("input[name = 'type']").val("C");
-		categoryForm.find("input[name = 'keyword']").val($(this).attr("href"));
+		// console.log($(this));
+		categoryForm.find("input[name = 'cat']").val($(this).attr("href"));
+		
+		console.log(categoryForm.find("input[name = 'cat']").val());
 		
 		categoryForm.submit();
-	});
-	
-	$(".widgets_inner .list").on("click", "i", function(event) {
-		var obj = $(event.target);
-		var action = obj.data("action");
-		var catNum = obj.data("catnum");
-		var curCatName = obj.data("catname");
-		var catModal = $("#categoryModal");
-		var title = $(".modal-title");
-		var insertBtn = $(".modal-footer #insertBtn");
-		var updateBtn = $(".modal-footer #updateBtn");
-		var deleteBtn = $(".modal-footer #deleteBtn");
-		
-		event.preventDefault();
-		catModal.find(".modal-body #curCatName").val(curCatName).attr("type", "text").attr("readonly", true);
-		catModal.find(".modal-body #catNum").val(catNum);
-		insertBtn.attr("type", "hidden");
-		
-		
-		if (action == "delete") {
-			title.text("카테고리 삭제");
-			catModal.find(".modal-body #catName").attr("type", "hidden");
-			deleteBtn.attr("type", "button");
-			updateBtn.attr("type", "hidden");
-			console.log(updateBtn);
-		}
-		
-		else if (action == "modify") {
-			title.text("카테고리 수정");
-			catModal.find(".modal-body #catName").attr("type", "text").val("");
-			updateBtn.attr("type", "button");
-			deleteBtn.attr("type", "hidden");
-		}
-
-		catModal.modal("show");
-		
-	});
-	$("#insertFormBtn").on("click", function() {
-		var catModal = $("#categoryModal");
-		var title = $(".modal-title");
-		var insertBtn = $(".modal-footer #insertBtn");
-		var updateBtn = $(".modal-footer #updateBtn");
-		var deleteBtn = $(".modal-footer #deleteBtn");
-		
-		title.text("카테고리 추가");
-		catModal.find(".modal-body #curCatName").attr("type", "hidden");
-		catModal.find(".modal-body #catName").attr("type", "text").val("");
-		insertBtn.attr("type", "button");
-		updateBtn.attr("type", "hidden");
-		deleteBtn.attr("type", "hidden");
-		
-		catModal.modal("show");
-	});
-	
-	$("#insertBtn").on("click", function() {
-		console.log("Insert clicked");
-		
-		var catName = $("#catName").val();
-		
-		$.ajax({
-			url: "/category/insert",
-			method: "POST",
-			data: catName,
-			contentType: "text/plain; charset=utf-8",
-			beforeSend: function(xhr) {
-				xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
-			},
-			success: function() {
-				getCatList();
-				$("#categoryModal").modal("hide");
-			}
-		});
-	});
-	
-	$("#updateBtn").on("click", function() {
-		console.log("Update clicked");
-		
-		var catNum = $("#catNum").val();
-		var catName = $("#catName").val();
-		
-		$.ajax({
-			url: "/category/update",
-			method: "PUT",
-			data: JSON.stringify({catNum: catNum, catName: catName}),
-			contentType: "application/json; charset=utf-8",
-			beforeSend: function(xhr) {
-				xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
-			},
-			success: function() {
-				getCatList();
-				$("#categoryModal").modal("hide");
-			}
-		});
-	});
-	
-	$("#deleteBtn").on("click", function() {
-		var catNum = $("#catNum").val();
-		
-		$.ajax({
-			url: "/category/delete/" + catNum,
-			method: "DELETE",
-			beforeSend: function(xhr) {
-				xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
-			},
-			success: function() {
-				getCatList();
-				$("#categoryModal").modal("hide");
-			}
-		});
 	});
 });
 </script>

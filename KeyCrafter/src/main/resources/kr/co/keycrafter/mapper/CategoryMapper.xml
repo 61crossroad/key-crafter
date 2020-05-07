@@ -5,30 +5,71 @@
 <mapper namespace="kr.co.keycrafter.mapper.CategoryMapper">
 	<insert id="insertCategory">
 		INSERT INTO category
-		(catnum, catname)
+		(catnum, catname, lft, rgt)
 		VALUES
-		(seq_category.nextval, #{catName})
+		(seq_category.nextval, #{catName}, #{lft}, #{rgt})
 	</insert>
 	
-	<select id="selectCategoryByNum" resultType="kr.co.keycrafter.domain.CategoryVO">
-		SELECT * FROM category WHERE catnum = #{catNum}
+	<select id="selectCategory" resultType="kr.co.keycrafter.domain.CategoryVO">
+		SELECT * FROM category
+		WHERE catnum = #{catNum}
 	</select>
 	
-	<select id="selectCategoryByName" resultType="kr.co.keycrafter.domain.CategoryVO">
-		<!-- SELECT catnum, catname FROM category WHERE catname = #{catName} -->
-		SELECT * FROM category WHERE catname = #{catName}
-	</select>
+	<update id="updateRight">
+		UPDATE category
+		SET rgt = rgt + #{amount}
+		WHERE rgt > #{leftOrRight}
+	</update>
+	
+	<update id="updateLeft">
+		UPDATE category
+		SET lft = lft + #{amount}
+		WHERE lft > #{leftOrRight}
+	</update>
 	
 	<select id="selectCategoryList" resultType="kr.co.keycrafter.domain.CategoryVO">
-		<!-- SELECT catnum, catname FROM category ORDER BY catnum ASC -->
-		SELECT * FROM category ORDER BY catnum ASC
+		SELECT node.catnum, node.catname, node.lft, node.rgt, (COUNT(parent.catnum) - 1) depth
+		FROM category node, category parent
+		WHERE node.lft BETWEEN parent.lft AND parent.rgt
+		GROUP BY node.catnum, node.catname, node.lft, node.rgt
+		ORDER BY node.lft
 	</select>
 	
-	<select id="selectCategoryForProduct" resultType="kr.co.keycrafter.domain.CategoryVO">
-		SELECT c.catnum, c.catname FROM product_category pc
-		LEFT OUTER JOIN category c
-			ON pc.catnum = c.catnum
-		WHERE pc.pid = #{pid}
+	<select id="selectCategoryPath" resultType="kr.co.keycrafter.domain.CategoryVO">
+		SELECT parent.catnum, parent.catname, parent.lft
+		FROM category node, category parent
+		WHERE node.lft BETWEEN parent.lft AND parent.rgt
+			AND node.catnum = #{catNum}
+		ORDER BY parent.lft
+	</select>
+	
+	<select id="selectCategorySubList" resultType="kr.co.keycrafter.domain.CategoryVO">
+		SELECT node.catnum, node.catname, node.lft, node.rgt, (COUNT(parent.catnum) - (sub_tree.depth + 1)) depth
+		FROM category node, category parent, category sub_parent,
+			(
+			SELECT node.catnum, (COUNT(parent.catnum) - 1) depth
+			FROM category node, category parent
+			WHERE node.lft BETWEEN parent.lft AND parent.rgt
+				AND node.catnum = #{catNum}
+			GROUP BY node.catnum, node.lft
+			ORDER BY node.lft
+			) sub_tree
+		WHERE node.lft BETWEEN parent.lft AND parent.rgt
+			AND node.lft BETWEEN sub_parent.lft AND sub_parent.rgt
+			AND sub_parent.catnum = sub_tree.catnum
+		GROUP BY node.catnum, node.catname, node.lft, node.rgt, sub_tree.depth
+		<if test="all == 0">
+			<![CDATA[
+				HAVING (COUNT(parent.catnum) - (sub_tree.depth + 1)) <= 1
+			]]>
+		</if>
+		ORDER BY node.lft
+	</select>
+	
+	<select id="selectCatNum" resultType="int">
+		SELECT catnum
+		FROM product
+		WHERE pid = #{pid}
 	</select>
 	
 	<update id="updateCategory">
@@ -37,15 +78,8 @@
 		WHERE catnum = #{catNum}
 	</update>
 	
-	<delete id="deleteCategoryByNum">
+	<delete id="deleteCategory">
 		DELETE FROM category
-		WHERE catnum = #{catNum}
+		WHERE lft BETWEEN #{lft} AND #{rgt}
 	</delete>
-	
-	<!--
-	<delete id="deleteCategoryByName">
-		DELETE FROM category
-		WHERE catname = #{catName}
-	</delete>
-	-->
 </mapper>

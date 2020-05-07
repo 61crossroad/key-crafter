@@ -51,7 +51,7 @@
 										<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">키보드</a>
 										<ul class="dropdown-menu">
 											<li class="nav-item">
-												<a class="nav-link" href="/product/list?type=C&keyword=키보드">키보드 전체</a>
+												<a class="nav-link" href="/product/list?cat=2">모든 키보드</a>
 											</li>
 											<li class="nav-item">
 												<a class="nav-link" href="/product/list?type=P&keyword=HHKB">HHKB</a>
@@ -94,8 +94,19 @@
 									</li>
 									
 									<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')">
-										<li class="nav-item">
-											<a href="/product/list?page=1&show=12" class="nav-link">상품관리</a>
+										<li class="nav-item submenu dropdown">
+											<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">관리/설정</a>
+											<ul class="dropdown-menu">
+												<li class="nav-item">
+													<a class="nav-link" href="/category/modify">카테고리</a>
+												</li>
+												<li class="nav-item">
+													<a class="nav-link" href="/product/list?page=1&show=12">전체상품</a>
+												</li>
+												<li class="nav-item">
+													<a class="nav-link" href="/product/register">상품등록</a>
+												</li>
+											</ul>
 										</li>
 									</sec:authorize>
 									

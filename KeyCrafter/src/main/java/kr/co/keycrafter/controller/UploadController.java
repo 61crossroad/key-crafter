@@ -15,13 +15,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -34,13 +33,12 @@ import lombok.extern.log4j.Log4j;
 import net.coobird.thumbnailator.Thumbnailator;
 
 @Log4j
-@Controller
+@RestController
 public class UploadController {
 	@Setter(onMethod_ = @Autowired)
 	ProductService productService;
 	
 	@PostMapping(value = "/uploadAjaxAction", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@ResponseBody
 	public ResponseEntity<List<ProductAttachVO>> uploadAjaxPost(MultipartFile[] uploadFile) {
 		log.info("Upload files......");
 		
@@ -99,7 +97,6 @@ public class UploadController {
 	}
 	
 	@GetMapping("/show")
-	@ResponseBody
 	public ResponseEntity<byte[]> getThumbnail(String fileName) {
 		// log.info("FileName: " + fileName);
 		
@@ -127,7 +124,6 @@ public class UploadController {
 	
 	@GetMapping(value = "/getImage/{pid}",
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@ResponseBody
 	public ResponseEntity<List<ProductAttachVO>> getAttachForProduct(@PathVariable("pid") int pid) {
 		log.info("Get images for :" + pid);
 		
@@ -135,7 +131,6 @@ public class UploadController {
 	}
 	
 	@PostMapping("/deleteFile")
-	@ResponseBody
 	public ResponseEntity<String> deleteFile(@RequestParam("fileName") String fileName) {
 		log.info("Delete file: " + fileName);
 		

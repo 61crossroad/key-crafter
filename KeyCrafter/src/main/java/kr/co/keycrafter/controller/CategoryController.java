@@ -2,20 +2,18 @@ package kr.co.keycrafter.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import lombok.extern.log4j.Log4j;
 import lombok.AllArgsConstructor;
@@ -25,82 +23,75 @@ import kr.co.keycrafter.service.CategoryService;
 
 @Log4j
 @AllArgsConstructor
-@RestController
+@Controller
 @RequestMapping("/category")
 public class CategoryController {
 	private CategoryService categoryService;
 	
+	@ResponseBody
 	@GetMapping(value = "/list",
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<List<CategoryVO>> list() {
-		log.info("Get category list...... ");
+	public ResponseEntity<List<CategoryVO>> list(@RequestParam("cat") int catNum, @RequestParam("all") int all) {
+		log.info("* Get category list...... " + catNum);
 		
-		List<CategoryVO> list = categoryService.selectCategoryList();
-
-		String[] roles = {"ROLE_ADMIN", "ROLE_MEMBER"};
-		
-		if (hasRole(roles)) {
-			CategoryVO authStatus = new CategoryVO();
-			authStatus.setCatNum(0);
-			authStatus.setCatName("hasRole");
-			list.add(0, authStatus);
-		}
+		List<CategoryVO> list = categoryService.selectCategoryList(catNum, all);
+		list.forEach(category -> log.info(category));
 		
 		// log.info(list);
 		
 		return new ResponseEntity<List<CategoryVO>>(list, HttpStatus.OK);
 	}
 	
+	@ResponseBody
 	@GetMapping(value="/product/{pid}",
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<List<CategoryVO>> listForProduct(@PathVariable("pid") int pid) {
-		return new ResponseEntity<List<CategoryVO>>(categoryService.selectCategoryForProduct(pid), HttpStatus.OK);
-	}
-	
-	@PostMapping(value = "/insert",
-			consumes = "text/plain")
-	public void insert(@RequestBody String catName) {
-		log.info("Insert category: " + catName);
+		List<CategoryVO> list = categoryService.selectCategoryForProduct(pid);
 		
-		categoryService.insertCategory(catName);
+		log.info("* Categories for: " + pid);
+		list.forEach(category -> log.info(category));
+		return new ResponseEntity<List<CategoryVO>>(list, HttpStatus.OK);
 	}
 	
-	@PutMapping(value = "/update",
-			consumes = "application/json",
-			produces = MediaType.TEXT_PLAIN_VALUE)
-	public ResponseEntity<String> update(@RequestBody CategoryVO category) {
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')")
+	@GetMapping("/modify")
+	public String modify(Model model) {
+		log.info("Category modify page......");
+		
+		List<CategoryVO> list = categoryService.selectCategoryList(1, 1);
+		model.addAttribute("list", list);
+		
+		return "/category/categoryModify";
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')")
+	@PostMapping("/insert")
+	public String insert(CategoryVO category) {
+		log.info("Parent: " + category.getCatNum() + " Name: " + category.getCatName());
+		
+		categoryService.insertCategory(category);
+		
+		return "redirect:/category/modify";
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')")
+	@PostMapping("/update")
+	public String update(CategoryVO category) {
 		log.info("Update Category");
 		log.info(category);
 		
-		int result = categoryService.updateCategory(category);
+		categoryService.updateCategory(category);
 		
-		return result == 1
-				? new ResponseEntity<>("success", HttpStatus.OK)
-						: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		return "redirect:/category/modify";
 	}
 	
-	@DeleteMapping(value = "/delete/{catnum}",
-			produces = MediaType.TEXT_PLAIN_VALUE)
-	public ResponseEntity<String> delete(@PathVariable("catnum") int catNum) {
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')")
+	@PostMapping("/delete")
+	public String delete(@RequestParam("catNum") int catNum) {
 		log.info("Delete category: " + catNum);
 		
-		return categoryService.deleteCategory(catNum) == 1
-				? new ResponseEntity<>("success", HttpStatus.OK)
-						: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-	
-	protected boolean hasRole(String[] roles) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		categoryService.deleteCategory(catNum);
 		
-		for (GrantedAuthority authority : authentication.getAuthorities()) {
-			String userRole = authority.getAuthority();
-			for (String role : roles) {
-				if (userRole.equals(role)) {
-					return true;
-				}
-			}
-		}
-		
-		return false;
+		return "redirect:/category/modify";
 	}
 }
