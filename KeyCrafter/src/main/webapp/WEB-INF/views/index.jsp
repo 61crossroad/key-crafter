@@ -3,7 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ include file="include/header.jsp"%>
-<%@ include file="include/modal.jsp" %>
 
 <!--================Home Banner Slider =================-->
 <section class="home_banner_area">
@@ -60,11 +59,11 @@
 								<a class="getProduct" href="/product/get?pid=${ product.pid }">
 									<img class="img-fluid"
 										src="/show?fileName=${ product.attachList[0].uploadPath }/m_${ product.attachList[0].uuid }_${ product.attachList[0].fileName }"
-										alt="${ product.PName }">
+										alt="${ product.pname }">
 								</a>
 							</div>
 							<a class="getProduct" href="/product/get?pid=${ product.pid }">
-								<h4>${ product.PName }</h4>
+								<h4>${ product.pname }</h4>
 							</a>
 							<h5><fmt:formatNumber value="${ product.price }" pattern="#,###" />원</h5>
 						</div>
@@ -74,46 +73,5 @@
 		</div>
 	</div>
 </section>
-
-<!-- Modal -->
-<!--
-<div class="modal fade" id="resultCenter" tabindex="-1" role="dialog" aria-labelledby="resultCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="resultCenterTitle"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">확인</button>
-      </div>
-    </div>
-  </div>
-</div>
--->
-<!--================End Feature Product Area =================-->
-
-<script type="text/javascript">
-$(document).ready(function() {
-	var resultReg = '<c:out value="${result}"/>';
-
-	toggleModal(resultReg);
-
-	function toggleModal(result) {
-		console.log("resultPid: " + result);
-		if (result > 0) {
-			$("#resultCenter .modal-body").html("환영합니다!");
-			$("#resultCenter").modal("show");
-		}
-		else {
-			return;
-		}
-	}
-});
-</script>
 
 <%@ include file="include/footer.jsp"%>

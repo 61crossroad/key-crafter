@@ -54,16 +54,16 @@
 												<a class="nav-link" href="/product/list?cat=2">모든 키보드</a>
 											</li>
 											<li class="nav-item">
-												<a class="nav-link" href="/product/list?type=P&keyword=HHKB">HHKB</a>
+												<a class="nav-link" href="/product/list?type=C&keyword=HHKB">HHKB</a>
 											</li>
 											<li class="nav-item">
-												<a class="nav-link" href="/product/list?type=P&keyword=레오폴드">레오폴드</a>
+												<a class="nav-link" href="/product/list?type=C&keyword=레오폴드">레오폴드</a>
 											</li>
 											<li class="nav-item">
-												<a class="nav-link" href="/product/list?type=P&keyword=바밀로">바밀로</a>
+												<a class="nav-link" href="/product/list?type=C&keyword=바밀로">바밀로</a>
 											</li>
 											<li class="nav-item">
-												<a class="nav-link" href="/product/list?type=P&keyword=키크론">키크론</a>
+												<a class="nav-link" href="/product/list?type=C&keyword=키크론">키크론</a>
 											</li>
 										</ul>
 									</li>
@@ -154,7 +154,7 @@
 													<a class="nav-link" href="/member/info">내 정보</a>
 												</li>
 												<li class="nav-item">
-													<a class="nav-link" href="/member/order">주문내역</a>
+													<a class="nav-link" href="/order/list?type=I&keyword=<sec:authentication property='principal.member.id'/>">주문내역</a>
 												</li>
 												<li class="nav-item">
 													<input type="button" value="로그아웃" id="logoutBtn" class="nav-link logout" style="border: none; width: 100%; text-align: left;">
@@ -172,7 +172,7 @@
 									<hr>
 
 									<li class="nav-item">
-										<a href="#" class="icons">
+										<a href="/cart/list" class="icons">
 											<i class="lnr lnr lnr-cart"></i>
 										</a>
 									</li>

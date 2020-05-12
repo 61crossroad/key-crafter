@@ -102,7 +102,7 @@ public class ProductMapperTest {
 	// @Test
 	public void insertProduct() {
 		ProductVO product = new ProductVO();
-		product.setPName("상품3");
+		product.setPname("상품3");
 		product.setPrice(10000);
 		product.setQuantity(100);
 		product.setProductDesc("test 테스트");

@@ -25,7 +25,7 @@
 								${ status.first ? ' class="active"' : '' }>
 								
 									<img src="/show?fileName=${ attach.uploadPath }/s_${ attach.uuid }_${ attach.fileName }"
-									alt="${ product.PName }">
+									alt="${ product.pname }">
 								</li>
 							</c:forEach>
 						</ol>
@@ -42,7 +42,7 @@
 			</div>
 			<div class="col-lg-5 offset-lg-1">
 				<div class="s_product_text">
-					<h3>${ product.PName }</h3>
+					<h3>${ product.pname }</h3>
 					<h2><fmt:formatNumber value="${ product.price }" pattern="#,###" />원</h2>
 					<ul class="list">
 						<li>
@@ -72,8 +72,19 @@
 						<button id="qty-dn" class="reduced items-count"><i class="lnr lnr-chevron-down"></i></button>
 					</div>
 					<div class="card_area">
+						<form id="cartAddList" action="/cart/addList" method="post">
+							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+							<input type="hidden" name="pid" value="${ product.pid }">
+							<input type="hidden" name="pname" value="${ product.pname }">
+							<input type="hidden" name="price" value="${ product.price }">
+							<input type="hidden" name="company" value="${ product.company }">
+							<input type="hidden" name="attachList[0].uuid" value="${ product.attachList[0].uuid }">
+							<input type="hidden" name="attachList[0].uploadPath" value="${ product.attachList[0].uploadPath }">
+							<input type="hidden" name="attachList[0].fileName" value="${ product.attachList[0].fileName }">
+						</form>
+						
 						<a class="main_btn" href="#">주문하기</a>
-						<a class="icon_btn" href="#">
+						<a class="icon_btn addToCart" href="#">
 							<i class="lnr lnr lnr-cart"></i>
 						</a>
 						<a class="icon_btn" href="javascript: window.history.back();">
@@ -185,7 +196,26 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
+	var csrfHeaderName = "${_csrf.headerName}";
+	var csrfTokenValue = "${_csrf.token}";
+	
+	var attach = new Object();
+	attach.uuid = "${ product.attachList[0].uuid }";
+	attach.uploadPath = "${ product.attachList[0].uploadPath }";
+	attach.fileName = "${ product.attachList[0].fileName }";
+	
+	var attachList = new Array();
+	attachList.push(attach);
+	
+	var cartProduct = new Object();
+	cartProduct.pid = "${ product.pid }";
+	cartProduct.pname = "${ product.pname }";
+	cartProduct.price = "${ product.price }";
+	cartProduct.company = "${ product.company }";
+	cartProduct.attachList = attachList;
+	
 	var qty = $("#qty");
+	
 	
 	$("#qty-up").on("click", function() {
 		var num = qty.val();
@@ -197,6 +227,35 @@ $(document).ready(function() {
 		if (num >= 2) {
 			qty.val(--num);
 		}
+	});
+	
+	$(".addToCart").on("click", function(event) {
+		event.preventDefault();
+		
+		cartProduct.quantity = qty.val();
+		console.log(cartProduct);
+		
+		$.ajax({
+			url: "/cart/add",
+			method: "POST",
+			data: JSON.stringify(cartProduct),
+			contentType: "application/json;charset=utf-8",
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+			}
+		}).done(function(result) {
+			if (result == "success") {
+				alert("장바구니에 추가되었습니다.");
+			}
+		});
+		
+	});
+	
+	$(".main_btn").on("click", function(event) {
+		event.preventDefault();
+		
+		var str = "<input type='hidden' name='quantity' value='" + qty.val() + "'>";
+		$("#cartAddList").append(str).submit();
 	});
 });
 </script>

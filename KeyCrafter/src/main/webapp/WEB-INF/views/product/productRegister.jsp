@@ -10,9 +10,9 @@
 				<h3 class="mb-30 title_color">상품 등록</h3>
 				<form action="/product/insert" method="post" role="form">
 					<div class="form-group row">
-						<label for="pName" class="col-sm-2 col-form-label single-label"><h5>상품명</h5></label>
+						<label for="pname" class="col-sm-2 col-form-label single-label"><h5>상품명</h5></label>
 						<div class="col-sm-10">
-							<input type="text" class="form-control" name="pName" id="pName" maxlength="50" required>
+							<input type="text" class="form-control" name="pname" id="pname" maxlength="50" required>
 						</div>
 					</div>
 					<div class="form-group row justify-content-start">

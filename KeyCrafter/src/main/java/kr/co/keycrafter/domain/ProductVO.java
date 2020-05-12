@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class ProductVO {
 	private int pid;
-	private String pName;
+	private String pname;
 	private int price;
 	private int quantity;
 	private String productDesc;

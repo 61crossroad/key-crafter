@@ -87,7 +87,7 @@
 								<a class="getProduct" href="${ product.pid }">
 									<img class="img-fluid"
 										src="/show?fileName=${ product.attachList[0].uploadPath }/m_${ product.attachList[0].uuid }_${ product.attachList[0].fileName }"
-										alt="${ product.PName }">
+										alt="${ product.pname }">
 								</a>
 								<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')">
 									<div class="p_icon">
@@ -101,7 +101,7 @@
 								</sec:authorize>
 							</div>
 							<a class="getProduct" href="${ product.pid }">
-								<h4>[${ product.company }]&nbsp;${ product.PName }</h4>
+								<h4>[${ product.company }]&nbsp;${ product.pname }</h4>
 							</a>
 							<h5><fmt:formatNumber value="${ product.price }" pattern="#,###" />원</h5>
 							</div>

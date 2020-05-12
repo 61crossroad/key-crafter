@@ -21,6 +21,7 @@ import kr.co.keycrafter.mapper.ProductAttachMapper;
 import kr.co.keycrafter.mapper.CategoryMapper;
 
 import lombok.extern.log4j.Log4j;
+import lombok.AllArgsConstructor;
 import lombok.Setter;
 
 @Log4j
@@ -114,6 +115,7 @@ public class ProductServiceImpl implements ProductService {
 		result = productMapper.updateProduct(product);
 		log.info("Product updated");
 		
+		// 첨부파일이 모두 삭제되었을때 기본 이미지 삽입
 		if (product.getAttachList() == null || product.getAttachList().size() <= 0) {
 			log.info("Default image added");
 			
