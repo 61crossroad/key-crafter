@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@ include file="../include/header.jsp"%>
 
 <div class="whole-wrap mb-30">
@@ -76,6 +75,9 @@
 							maxlength="10" required >
 						</div>
 						<div class="mt-10">
+							<a href="javascript: window.history.back();">
+								<input type="button" class="genric-btn success" value="돌아가기">
+							</a>
 							<input type="submit" class="genric-btn info" value="정보 수정">
 						</div>
 						<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }">

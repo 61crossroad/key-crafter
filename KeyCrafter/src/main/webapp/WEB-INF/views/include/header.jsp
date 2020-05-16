@@ -154,7 +154,12 @@
 													<a class="nav-link" href="/member/info">내 정보</a>
 												</li>
 												<li class="nav-item">
+												<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')">
+													<a class="nav-link" href="/order/list">주문내역</a>
+												</sec:authorize>
+												<sec:authorize access="hasRole('ROLE_USER') and !hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')">
 													<a class="nav-link" href="/order/list?type=I&keyword=<sec:authentication property='principal.member.id'/>">주문내역</a>
+												</sec:authorize>
 												</li>
 												<li class="nav-item">
 													<input type="button" value="로그아웃" id="logoutBtn" class="nav-link logout" style="border: none; width: 100%; text-align: left;">

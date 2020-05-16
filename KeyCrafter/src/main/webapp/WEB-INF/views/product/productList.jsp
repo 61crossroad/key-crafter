@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ include file="../include/header.jsp" %>
 <%@ include file="../include/modal.jsp" %>
@@ -57,7 +56,7 @@
 							<ul class="pagination">
 								<c:if test="${ pageMaker.prev }">
 									<li class="page-item">
-										<a class="page-link" href="#">
+										<a class="page-link" href="${ pageMaker.startPage - 1 }">
 											<i class="fa fa-chevron-left" aria-hidden="true"></i>
 										</a>
 									</li>
@@ -70,7 +69,7 @@
 								</c:forEach>
 								<c:if test="${ pageMaker.next }">
 									<li class="page-item">
-										<a class="page-link" href="#">
+										<a class="page-link" href="${ pageMaker.endPage + 1 }">
 											<i class="fa fa-chevron-right" aria-hidden="true"></i>
 										</a>
 									</li>
@@ -148,14 +147,15 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-	var csrfParameterName = "${ _csrf.parameterName }";
-	var csrfTokenValue = "${ _csrf.token }";
+	var csrfParameterName = '<c:out value="${ _csrf.parameterName }"/>';
+	var csrfTokenValue = '<c:out value="${ _csrf.token }"/>';
 	
 	var insertResult = '<c:out value="${ insertResult }"/>';
 	var updateResult = '<c:out value="${ updateResult }"/>';
 	var deleteResult = '<c:out value="${ deleteResult }"/>';
 	
 	var pageForm = $("#pageForm");
+	var page = '<c:out value="${ pageMaker.cri.page }"/>';
 	
 	toggleModal(insertResult, updateResult, deleteResult);
 	
@@ -188,8 +188,10 @@ $(document).ready(function() {
 	$(".page-item a").on("click", function(event) {
 		event.preventDefault();
 		
-		pageForm.find("input[name = 'page']").val($(this).attr("href"));
-		pageForm.submit();
+		if (page != $(this).attr("href")) {
+			pageForm.find("input[name = 'page']").val($(this).attr("href"));
+			pageForm.submit();
+		}
 	});
 	
 	$(".registProduct").on("click", function(event) {

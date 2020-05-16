@@ -59,16 +59,4 @@ public class MemberController {
 	public String info() {
 		return "/member/memberInfo";
 	}
-	/*
-	@ResponseBody
-	@GetMapping("/get")
-	public ResponseEntity<MemberVO> get() {
-		
-	}
-	*/
-	// To Be Moved
-	@GetMapping("/order")
-	public String order() {
-		return "order";
-	}
 }

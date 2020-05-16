@@ -2108,33 +2108,46 @@ h6 {
 /*======= Order List Custom CSS ========*/
   
 .progress-table .order-num {
-  width: 15%;
+  width: 10%;
   padding-left: 30px; }
 
-.progress-table .product-name {
-  width: 30%; }
+.progress-table .order-id {
+  width: 15%;
+  padding-left: 30px; }  
+
+.progress-table .product-name-admin {
+  width: 33%; }
+
+.progress-table .product-name-user {
+  width: 48%; }
 
 .progress-table .price {
-  width: 20%; }
+  width: 10%; }
   
 .progress-table .order-date {
-  width: 15%; }
+  width: 10%; }
 
 .progress-table .order-status {
-  width: 20%;
+  width: 12%;
   padding-right: 50px; }
 
-.progress-table .table-head .order-num, .progress-table .table-head .product-name, .progress-table .table-head .price, .progress-table .table-head .order-date, .table-head .order-status {
+.progress-table .order-action {
+  width: 10%;
+  padding-right: 50px;
+  display: flex;
+  flex-direction: column; }
+
+.progress-table .table-head .order-num, .progress-table .table-head .order-id, .progress-table .table-head .product-name-admin, .progress-table .table-head .product-name-user, .progress-table .table-head .price, .progress-table .table-head .order-date, .table-head .order-status, .table-head .order-action {
   color: #222222;
   line-height: 40px;
   /* text-transform: uppercase; */
   font-weight: 500; }
   
-.progress-table .table-row .order-num, .progress-table .table-row .product-name, .progress-table .table-row .price, .progress-table .table-row .order-date, .progress-table .table-row .order-status {
+.progress-table .table-row .order-num, .progress-table .table-row .order-id, .progress-table .table-row .product-name-admin, .progress-table .table-row .product-name-user, .progress-table .table-row .price, .progress-table .table-row .order-date, .progress-table .table-row .order-status, .progress-table .table-row .order-action {
   display: flex;
   align-items: center; }
 
-.progress-table .table-row .product-name img {
+.progress-table .table-row .product-name-admin img, .progress-table .table-row .product-name-user img {
   margin-right: 15px; }
   
 /*===== End Order List Custom CSS =======*/

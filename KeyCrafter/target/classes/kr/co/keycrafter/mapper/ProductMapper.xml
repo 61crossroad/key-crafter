@@ -91,7 +91,7 @@
 				WHERE
 				(c.lft BETWEEN cri.lft AND cri.rgt)
 				AND (c.rgt BETWEEN cri.lft AND cri.rgt) AND		
-		<foreach item="keywordValue" index="i" collection="keywordArr">
+		<foreach item="keywordValue" index="i" collection="keyword">
 			<trim prefix="(" suffix=") AND " prefixOverrides="OR">
 				<if test='type[i].contains("P")'>
 					OR pi.pname like '%'||#{keywordValue}||'%'
@@ -123,7 +123,7 @@
 		WHERE
 		(c.lft BETWEEN cri.lft AND cri.rgt)
 		AND (c.rgt BETWEEN cri.lft AND cri.rgt) AND		
-		<foreach item="keywordValue" index="i" collection="keywordArr">
+		<foreach item="keywordValue" index="i" collection="keyword">
 			<trim prefix="(" suffix=") AND " prefixOverrides="OR">
 				<if test='type[i].contains("P")'>
 					OR p.pname like '%'||#{keywordValue}||'%'
