@@ -41,7 +41,7 @@
 	<update id="updateProduct">
 		UPDATE product
 		SET pname = #{pname}, price = #{price}, quantity = #{quantity}, productdesc = #{productDesc}, 
-			company = #{company}, madein = #{madeIn}, catnum = ${catNum}, updatedate = sysdate
+			company = #{company}, madein = #{madeIn}, catnum = ${catNum}, updatedate = SYSDATE
 		WHERE pid = #{pid}
 	</update>
 	

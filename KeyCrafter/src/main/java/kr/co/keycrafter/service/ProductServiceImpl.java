@@ -19,9 +19,10 @@ import kr.co.keycrafter.domain.Criteria;
 import kr.co.keycrafter.mapper.ProductMapper;
 import kr.co.keycrafter.mapper.ProductAttachMapper;
 import kr.co.keycrafter.mapper.CategoryMapper;
+import kr.co.keycrafter.mapper.ProductReplyMapper;
+import kr.co.keycrafter.domain.ProductReplyVO;
 
 import lombok.extern.log4j.Log4j;
-import lombok.AllArgsConstructor;
 import lombok.Setter;
 
 @Log4j
@@ -35,6 +36,9 @@ public class ProductServiceImpl implements ProductService {
 	
 	@Setter(onMethod_ = @Autowired)
 	private CategoryMapper categoryMapper;
+	
+	@Setter(onMethod_ = @Autowired)
+	private ProductReplyMapper productReplyMapper;
 
 	@Transactional
 	@Override
@@ -66,6 +70,13 @@ public class ProductServiceImpl implements ProductService {
 			log.info(attach);
 			productAttachMapper.insertAttach(attach);
 		});
+		
+		ProductReplyVO reply = new ProductReplyVO();
+		reply.setPid(resultPid);
+		reply.setLft(1);
+		reply.setRgt(2);
+		
+		productReplyMapper.insertReply(reply);
 		
 		return resultPid;
 	}
@@ -162,6 +173,8 @@ public class ProductServiceImpl implements ProductService {
 		if (result > 0) {
 			deleteAttachByPath(attachList);
 		}
+		
+		productReplyMapper.deleteAllReply(pid);
 		
 		return result;
 	}

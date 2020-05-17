@@ -15,6 +15,6 @@ public class CategoryVO {
 	private int depth;
 	
 	public void setWidth() {
-		this.width = this.rgt - this.lft + 1;
+		width = rgt - lft + 1;
 	}
 }

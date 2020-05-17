@@ -5,9 +5,9 @@
 <mapper namespace="kr.co.keycrafter.mapper.CategoryMapper">
 	<insert id="insertCategory">
 		INSERT INTO category
-		(catnum, catname, lft, rgt)
+			(catnum, catname, lft, rgt)
 		VALUES
-		(seq_category.nextval, #{catName}, #{lft}, #{rgt})
+			(seq_category.nextval, #{catName}, #{lft}, #{rgt})
 	</insert>
 	
 	<select id="selectCategory" resultType="kr.co.keycrafter.domain.CategoryVO">
@@ -58,11 +58,11 @@
 			AND node.lft BETWEEN sub_parent.lft AND sub_parent.rgt
 			AND sub_parent.catnum = sub_tree.catnum
 		GROUP BY node.catnum, node.catname, node.lft, node.rgt, sub_tree.depth
-		<if test="all == 0">
-			<![CDATA[
-				HAVING (COUNT(parent.catnum) - (sub_tree.depth + 1)) <= 1
-			]]>
-		</if>
+<if test="all == 0">
+	<![CDATA[
+		HAVING (COUNT(parent.catnum) - (sub_tree.depth + 1)) <= 1
+	]]>
+</if>
 		ORDER BY node.lft
 	</select>
 	
