@@ -14,7 +14,7 @@
 								<i class="fa fa-user" aria-hidden="true"></i>
 							</div>
 							<input type="text" name="id" id="id" class="single-input"
-								value="<sec:authentication property="principal.member.id" />" readonly="readonly">
+								value='<sec:authentication property="principal.member.id" />' readonly="readonly">
 						</div>
 						<div class="mt-10 ml-20">
 						</div>
@@ -39,7 +39,7 @@
 								<i class="fa fa-user-md" aria-hidden="true"></i>
 							</div>
 							<input type="text" name="name" class="single-input"
-							value="<sec:authentication property="principal.member.name"/>"
+							value='<sec:authentication property="principal.member.name"/>'
 							maxlength="30" required>
 						</div>
 						<div class="input-group-icon mt-10">
@@ -47,7 +47,7 @@
 								<i class="fa fa-envelope-o" aria-hidden="true"></i>
 							</div>
 							<input type="email" name="email" placeholder="이메일" class="single-input"
-							value="<sec:authentication property="principal.member.email"/>"
+							value='<sec:authentication property="principal.member.email"/>'
 							maxlength="40" required>
 						</div>
 						<div class="input-group-icon mt-10">
@@ -55,7 +55,7 @@
 								<i class="fa fa-phone" aria-hidden="true"></i>
 							</div>
 							<input type="text" name="contact" placeholder="전화번호" class="single-input"
-							value="<sec:authentication property="principal.member.contact"/>"
+							value='<sec:authentication property="principal.member.contact"/>'
 							maxlength="20" required >
 						</div>
 						<div class="input-group-icon mt-10">
@@ -63,7 +63,7 @@
 								<i class="fa fa-map-marker" aria-hidden="true"></i>
 							</div>
 							<input type="text" name="address" class="single-input"
-							value="<sec:authentication property="principal.member.address"/>"
+							value='<sec:authentication property="principal.member.address"/>'
 							maxlength="100" required>
 						</div>
 						<div class="input-group-icon mt-10">
@@ -71,7 +71,7 @@
 								<i class="fa fa-plane" aria-hidden="true"></i>
 							</div>
 							<input type="text" name="zipCode" class="single-input"
-							value="<sec:authentication property="principal.member.zipCode"/>"
+							value='<sec:authentication property="principal.member.zipCode"/>'
 							maxlength="10" required >
 						</div>
 						<div class="mt-10">

@@ -52,7 +52,7 @@
 					</sec:authorize>
 					
 					<div class="right_page ml-auto">
-						<nav class="cat_page" aria-label="Page navigation example">
+						<nav class="cat_page" aria-label="Page navigation">
 							<ul class="pagination">
 								<c:if test="${ pageMaker.prev }">
 									<li class="page-item">
@@ -116,7 +116,7 @@
 		</div>
 
 		<div class="row mt-lg mb-60">
-			<nav class="cat_page mx-auto" aria-label="Page navigation example">
+			<nav class="cat_page mx-auto" aria-label="Page navigation">
 				<ul class="pagination">
 					<c:if test="${ pageMaker.prev }">
 						<li class="page-item">

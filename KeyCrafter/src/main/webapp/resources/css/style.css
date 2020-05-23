@@ -3584,15 +3584,17 @@ h6 {
         color: #222222;
         font-family: "Roboto", sans-serif;
         margin-bottom: 8px; }
+        /*
       .review_item .media .media-body i {
         color: #fbd600; }
+        */
       .review_item .media .media-body h5 {
         font-size: 13px;
         font-weight: normal;
         color: #777777; }
       .review_item .media .media-body .reply_btn {
         border: 1px solid #e0e0e0;
-        padding: 0px 28px;
+        padding: 0px 15px;
         display: inline-block;
         line-height: 32px;
         border-radius: 16px;
@@ -3602,7 +3604,19 @@ h6 {
         position: absolute;
         right: 0px;
         top: 14px; }
-        .review_item .media .media-body .reply_btn:hover {
+      .review_item .media .media-body .delete_btn {
+        border: 1px solid #e0e0e0;
+        padding: 0px 15px;
+        display: inline-block;
+        line-height: 32px;
+        border-radius: 16px;
+        font-size: 14px;
+        font-family: "Roboto", sans-serif;
+        color: #222222;
+        position: absolute;
+        right: 60px;
+        top: 14px; }
+        .review_item .media .media-body .reply_btn:hover, .review_item .media .media-body .delete_btn:hover {
           background: #1641ff;
           border-color: #1641ff;
           color: #fff; }
@@ -3611,6 +3625,9 @@ h6 {
     margin-bottom: 0px; }
   .review_item.reply {
     padding-left: 28px; }
+  .review_item .deleted_reply {
+  	color: #777777;
+  }
 
 .review_box h4 {
   font-size: 24px;

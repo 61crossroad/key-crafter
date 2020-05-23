@@ -9,8 +9,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-// import javax.activation.MimetypesFileTypeMap;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,7 +34,7 @@ import net.coobird.thumbnailator.Thumbnailator;
 @RestController
 public class UploadController {
 	@Setter(onMethod_ = @Autowired)
-	ProductService productService;
+	private ProductService productService;
 	
 	@PostMapping(value = "/uploadAjaxAction", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<List<ProductAttachVO>> uploadAjaxPost(MultipartFile[] uploadFile) {

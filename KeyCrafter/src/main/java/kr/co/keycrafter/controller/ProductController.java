@@ -28,7 +28,7 @@ import lombok.extern.log4j.Log4j;
 @RequestMapping("/product/*")
 @Controller
 public class ProductController {
-	ProductService productService;
+	private ProductService productService;
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')")
 	@GetMapping("/register")
@@ -91,7 +91,12 @@ public class ProductController {
 		
 		ProductVO product = productService.getProduct(pid);
 		
+		// List<ProductReplyVO> replyList = replyService.getReplyList(pid);
+		
+		// replyList.forEach(reply -> log.info(reply));
+		
 		model.addAttribute("product", product);
+		// model.addAttribute("replyList", replyList);
 		
 		return "/product/productSingle";
 	}

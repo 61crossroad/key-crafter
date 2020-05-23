@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ include file="../include/header.jsp" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <!--================Pagination & Search parameters =================-->
@@ -73,7 +74,6 @@
 					</div>
 					<div class="card_area">
 						<form id="cartAddList" action="/cart/addList" method="post">
-							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 							<input type="hidden" name="pid" value="${ product.pid }">
 							<input type="hidden" name="pname" value="${ product.pname }">
 							<input type="hidden" name="price" value="${ product.price }">
@@ -81,6 +81,7 @@
 							<input type="hidden" name="attachList[0].uuid" value="${ product.attachList[0].uuid }">
 							<input type="hidden" name="attachList[0].uploadPath" value="${ product.attachList[0].uploadPath }">
 							<input type="hidden" name="attachList[0].fileName" value="${ product.attachList[0].fileName }">
+							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 						</form>
 						
 						<a class="main_btn" href="#">주문하기</a>
@@ -118,71 +119,43 @@
 				<div class="row">
 					<div class="col-lg-6">
 						<div class="comment_list">
-							<div class="review_item">
-								<div class="media">
-									<div class="d-flex">
-										<img src="/resources/img/product/single-product/review-1.png" alt="">
-									</div>
-									<div class="media-body">
-										<h4>Blake Ruiz</h4>
-										<h5>12th Feb, 2017 at 05:56 pm</h5>
-										<a class="reply_btn" href="#">Reply</a>
-									</div>
-								</div>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-									aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo</p>
-							</div>
-							<div class="review_item reply">
-								<div class="media">
-									<div class="d-flex">
-										<img src="/resources/img/product/single-product/review-2.png" alt="">
-									</div>
-									<div class="media-body">
-										<h4>Blake Ruiz</h4>
-										<h5>12th Feb, 2017 at 05:56 pm</h5>
-										<a class="reply_btn" href="#">Reply</a>
-									</div>
-								</div>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-									aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo</p>
-							</div>
-							<div class="review_item">
-								<div class="media">
-									<div class="d-flex">
-										<img src="/resources/img/product/single-product/review-3.png" alt="">
-									</div>
-									<div class="media-body">
-										<h4>Blake Ruiz</h4>
-										<h5>12th Feb, 2017 at 05:56 pm</h5>
-										<a class="reply_btn" href="#">Reply</a>
-									</div>
-								</div>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-									aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo</p>
-							</div>
+							<!-- Replies are inserted here.
+								Pagination is followed.
+							-->
+							
 						</div>
 					</div>
 					<div class="col-lg-6">
 						<div class="review_box">
-							<h4>댓글 달기</h4>
-							<form class="row contact_form" action="contact_process.php" method="post" id="contactForm">
+							<h4>새 댓글 쓰기</h4>
+							<form class="row contact_form" id="newParentReply">
+							<sec:authorize access="isAnonymous()">
 								<div class="col-md-12">
 									<div class="form-group">
-										<input type="text" class="form-control" id="name" name="name" placeholder="이름" required>
+										<input type="text" class="form-control" name="name" placeholder="이름" maxlength="15" required>
 									</div>
 								</div>
 								<div class="col-md-12">
 									<div class="form-group">
-										<input type="password" class="form-control" id="password" name="password" placeholder="비밀번호" required>
+										<input type="password" class="form-control" name="password" placeholder="비밀번호" maxlength="20" required>
 									</div>
 								</div>
+							</sec:authorize>
+							<sec:authorize access="isAuthenticated()">
 								<div class="col-md-12">
 									<div class="form-group">
-										<textarea class="form-control" name="message" id="message" rows="1" placeholder="내용" required></textarea>
+										<input type="text" class="form-control" name="id"
+										value='<sec:authentication property="principal.member.id"/>' readonly="readonly">
+									</div>
+								</div>
+							</sec:authorize>
+								<div class="col-md-12">
+									<div class="form-group">
+										<textarea class="form-control" name="content" rows="1" placeholder="내용" maxlength="200" required></textarea>
 									</div>
 								</div>
 								<div class="col-md-12 text-right">
-									<button type="submit" value="submit" class="btn submit_btn">등록</button>
+									<input type="submit" value="등록" class="btn btn-primary" name="newReplyBtn">
 								</div>
 							</form>
 						</div>
@@ -194,10 +167,39 @@
 </section>
 <!--================End Product Description Area =================-->
 
+<!--============================= Reply delte modal =============================== -->
+<div class="modal fade" id="replyModal" tabindex="-1" role="dialog" aria-labelledby="replyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+    <!-- 
+      <div class="modal-header">
+        <h4 class="modal-title" id="replyModalLabel">댓글을 삭제할까요?</h4>
+      </div>
+      -->
+      <div class="modal-body">
+      	<h4>댓글을 삭제할까요?</h4><p></p>
+      	<div class="input-group mb-3">
+      		<div class="input-group-prepend">
+      			<span class="input-group-text" id="password-addon">비밀번호</span>
+      		</div>
+      		<input type="password" class="form-control" name="password" aria-describedby="password-addon">
+      	</div>
+      </div>
+      <div class="modal-footer">
+      	<input type="button" value="삭제" id="deleteAccepted" class="btn btn-warning">
+        <input type="button" value="취소" class="btn btn-secondary" data-dismiss="modal">
+      </div>
+    </div>
+  </div>
+</div>
+<!--========================= End reply delete modal ============================== -->
+
 <script type="text/javascript">
 $(document).ready(function() {
 	var csrfHeaderName = "${_csrf.headerName}";
 	var csrfTokenValue = "${_csrf.token}";
+	
+	var pid = '<c:out value="${ product.pid }"/>';
 	
 	var attach = new Object();
 	attach.uuid = "${ product.attachList[0].uuid }";
@@ -208,7 +210,7 @@ $(document).ready(function() {
 	attachList.push(attach);
 	
 	var cartProduct = new Object();
-	cartProduct.pid = "${ product.pid }";
+	cartProduct.pid = pid;
 	cartProduct.pname = "${ product.pname }";
 	cartProduct.price = "${ product.price }";
 	cartProduct.company = "${ product.company }";
@@ -216,6 +218,340 @@ $(document).ready(function() {
 	
 	var qty = $("#qty");
 	
+	getReplyList(0);
+	
+	function getReplyList(page) {
+		$.ajax({
+			url: "/preply/list/" + pid + "/" + page,
+			method: "GET",
+			dataType: "JSON"
+		}).done(function(result) {
+			// console.log(result.count + " " + result.rootRnum);
+			
+			// 댓글 삭제 아이콘을 넣기 위한 현재 로그인 정보
+			var name = $("#newParentReply .col-md-12 .form-group input[name='name']").val();
+			var id = $("#newParentReply .col-md-12 .form-group input[name='id']").val();
+			
+			var str = "";
+			$(".comment_list").html("");
+			
+			result.replyList.forEach(function(reply) {
+				var padding = 28 * (reply.depth - 1);
+				var date = new Date(reply.updateDate);
+				
+				str += "<div class=\"review_item\" style=\"padding-left: " + padding
+					+ "px;\" data-padding=\"" + padding + "\" data-rnum=\"" + reply.rnum + "\">";
+				str += "<div class=\"media\"><div class=\"media-body\"><h4>";
+				
+				if (reply.id == null) {
+					str += reply.name;
+				}
+				else {
+					str += reply.userName;
+				}
+				
+				str += "</h4><h5>" + date.getFullYear() + "." + date.getMonth() + 1 + "." + date.getDate() + ". "
+					+ date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + "</h5>";
+				
+				if (reply.deleted == 'N') {
+					// 비회원이 작성한 댓글
+					if (reply.id == null) {
+						str += "<a class=\"delete_btn\" href=\"" + reply.rnum + "\"><i class=\"fa fa-eraser\"></i></a>";
+					}
+					
+					// 회원 자신이 작성한 댓글
+					else if (reply.id != null && reply.id == id) {
+						str += "<a class=\"delete_btn\" href=\"" + reply.rnum + "\"><i class=\"fa fa-eraser\"></i></a>";
+					}
+				}
+				
+				str += "<a class=\"reply_btn\" href=\"" + reply.rnum + "\"><i class=\"fa fa-comments\"></i></a>";
+				
+				var deletedContent = reply.deleted == 'Y' ? " class=\"deleted_reply\"" : ''; 
+				str += "</div></div>" + "<p><span" + deletedContent + ">"
+					+ reply.content + "</span></p><hr></div>"; 
+			});
+			
+			var currPage, firstPage, lastPage, totalPage;
+			
+			totalPage = Math.ceil(result.count / 10);
+			currPage = page == 0 ? totalPage : page;
+			lastPage = Math.ceil(currPage / 5) * 5;
+			firstPage = lastPage - 4;
+			lastPage = totalPage < lastPage ? totalPage : lastPage;
+			
+			// console.log(firstPage + " < " + currPage + " < " + lastPage + " [" + totalPage + "]");
+			
+			str += "<div class=\"row review_item mt-sm\">"
+				+ "<nav class=\"cat_page mx-auto\" aria-label=\"Page navigation\">"
+				+ "<ul class=\"pagination\" data-page=\"" + currPage + "\">";
+			
+			if (firstPage > 1) {
+				str +=  "<li class=\"page-item\"><a class=\"page-link\" href=\"" + firstPage - 1 + "\">"
+					+ "<i class=\"fa fa-chevron-left\" aria-hidden=\"true\"></i></a></li>";
+			}
+			
+			for (var i = firstPage; i <= lastPage; i++) {
+				str += "<li class=\"page-item" + (i == currPage ? " active\" data-disabled=\"T\"" : "") + "\"><a class=\"page-link\" href=\"" + i + "\">" + i + "</a></li>";
+			}
+			
+			if (lastPage < totalPage) {
+				str +=  "<li class=\"page-item\"><a class=\"page-link\" href=\"" + lastPage + 1 + "\">"
+					+ "<i class=\"fa fa-chevron-right\" aria-hidden=\"true\"></i></a></li>";
+			}
+			
+			$(".comment_list").append(str);
+			$(".comment_list").data("rnum", result.rootRnum);
+		});
+	}
+	
+	function registerReply(reply, page, callback) {
+		$.ajax({
+			url: "/preply/insert",
+			method: "POST",
+			data: JSON.stringify(reply),
+			contentType: "application/json;charset=utf-8",
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+			},
+			success: function(result, status, xhr) {
+				if (callback) {
+					callback(page);
+				}
+			}
+		});
+	}
+	
+	function deleteReply(reply, page, callback) {
+		$.ajax({
+			url: "/preply/delete/",
+			method: "POST",
+			data: JSON.stringify(reply),
+			contentType: "application/json;charset=utf-8",
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+			},
+			success: function(result) {
+				if (callback) {
+					callback(page);
+				}
+			}
+		});
+	}
+	
+	$(".comment_list").on("click", ".pagination a", function(event) {
+		event.preventDefault();
+		
+		var disabled = $(this).closest("li").data("disabled");
+		
+		if (disabled != "T") {
+			getReplyList($(this).attr("href"));
+		}
+	});
+	
+	$(".comment_list").on("click", ".reply_btn", function(event) {
+		event.preventDefault();
+		
+		var subReplyForm = $("#subReplyForm");
+		var formStatus = subReplyForm.data("show");
+		console.log(formStatus);
+		
+		if (formStatus == undefined) {
+			// 현재 로그인 상태 확인을 위한 정보
+			var name = $("#newParentReply .col-md-12 .form-group input[name='name']").val();
+			var id = $("#newParentReply .col-md-12 .form-group input[name='id']").val();
+			
+			var parentReply = $(this).closest(".review_item");
+			var parentRnum = parentReply.data("rnum");
+			var padding = parentReply.data("padding");
+			padding += 28;
+			
+			var str = "<div id='subReplyForm' class='review_item' style='padding-left: " + padding + "px;'"
+				+ "data-rnum='" + parentRnum + "' data-show='true'>"
+				+ "<div class='media'><div class='media-body'>";
+			
+			if (name == undefined) {
+				str += "<form class=\"row contact_form\"><div class=\"col-sm-12\"><div class=\"form-group\">"
+					+ "<input type=\"text\" class=\"form-control\" name=\"id\""
+					+ "value=\"" + id + "\" readonly=\"readonly\"></div></div>"
+					+ "<div class=\"col-sm-12\"><div class=\"form-group\">"
+					+ "<textarea class=\"form-control\" name=\"content\" rows=\"1\" placeholder=\"내용\" maxlength=\"200\" required></textarea>"
+					+ "</div></div>";
+			}
+			
+			else if (id == undefined) {
+				str += "<form class=\"row contact_form\"><div class=\"col-sm-12\"><div class=\"form-group\">"
+					+ "<input type=\"text\" class=\"form-control\" name=\"name\" placeholder=\"이름\" maxlength=\"15\" required></div></div>"
+					+ "<div class=\"col-sm-12\"><div class=\"form-group\">"
+					+ "<input type=\"password\" class=\"form-control\" name=\"password\" placeholder=\"비밀번호\" maxlength=\"20\" required></div></div>"
+					+ "<div class=\"col-sm-12\"><div class=\"form-group\">"
+					+ "<textarea class=\"form-control\" name=\"content\" rows=\"1\" placeholder=\"내용\" maxlength=\"200\" required></textarea>"
+					+ "</div></div>";
+			}
+			
+			str += "<div class=\"col-md-12 text-right\">"
+				+ "<input type=\"submit\" value=\"등록\" class=\"btn btn-primary\" name=\"newSubReplyBtn\">&nbsp;"
+				+ "<input type=\"button\" value=\"취소\" class=\"btn btn-secondary\" name=\"subReplyCancel\">"
+				+ "</div></form></div></div><hr></div>";
+			
+			parentReply.after(str);
+		}
+		
+		else {
+			subReplyForm.remove();
+		}
+	});
+	
+	$(".comment_list").on("click", "input[name='subReplyCancel']", function() {
+		$("#subReplyForm").remove();
+	});
+	
+	$(".comment_list").on("click", "input[name='newSubReplyBtn']", function(event) {
+		event.preventDefault();
+		// console.log("New sub reply clicked");
+		
+		var replyForm = $("#subReplyForm").find("form");
+		var parentRnum = $("#subReplyForm").data("rnum");
+		var name = replyForm.find("input[name='name']").val();
+		var id = replyForm.find("input[name='id']").val();
+		var password = replyForm.find("input[name='password']").val();
+		var content = replyForm.find("textarea[name='content']").val();
+		
+		var reply = new Object();
+		
+		if (name == undefined) {
+			reply.id = id;
+		}
+		else if (id == undefined) {
+			reply.name = name;
+			reply.password = password;
+		}
+		reply.rnum = parentRnum;
+		reply.pid = pid;
+		reply.content = content;
+		
+		// console.log(reply);
+		
+		registerReply(reply, $(".pagination").data("page"), getReplyList);
+	});
+	
+	$(".comment_list").on("click", ".delete_btn", function(event) {
+		event.preventDefault();
+		
+		var deleteReplyForm = $("#deleteReplyForm");
+		var formStatus = deleteReplyForm.data("show");
+		console.log(formStatus);
+		
+		if (formStatus == undefined) {
+			// 현재 로그인 상태 확인을 위한 정보
+			var name = $("#newParentReply .col-md-12 .form-group input[name='name']").val();
+			var id = $("#newParentReply .col-md-12 .form-group input[name='id']").val();
+			
+			var parentReply = $(this).closest(".review_item");
+			var parentRnum = parentReply.data("rnum");
+			var padding = parentReply.data("padding");
+			
+			var str = "<div id='deleteReplyForm' class='review_item' style='padding-left: " + padding + "px;'"
+				+ "data-rnum='" + parentRnum + "' data-show='true'>"
+				+ "<div class='media'><div class='media-body'>";
+			
+			// 로그인한 회원의 댓글 삭제
+			if (name == undefined) {
+				str += "<div class=\"col-sm-12\"><h4>이 댓글을 삭제할까요?</h4></div>";
+			}
+			
+			// 비로그인 사용자의 댓글 삭제
+			else if (id == undefined) {
+				str += "<div class=\"col-sm-12\"><h4>댓글을 삭제하려면 비밀번호를 입력하세요.</h4><div class=\"form-group\">"
+					+ "<div class=\"input-group input-group-sm mb-3\"><div class=\"input-group-prepend\">"
+	      			+ "<span class=\"input-group-text\" id=\"password-span\">비밀번호</span></div>"
+	      			+ "<input type=\"password\" class=\"form-control\" id=\"deletePassword\" name=\"password\""
+	      			+ " aria-describedby=\"password-span\" maxlength=\"20\" required>"
+	      			+ "</div></div></div>";
+			}
+			
+			str += "<div class=\"col-md-12 text-right\">"
+				+ "<input type=\"button\" value=\"삭제\" class=\"btn btn-warning btn-sm\" name=\"deleteReplyBtn\">&nbsp;"
+				+ "<input type=\"button\" value=\"취소\" class=\"btn btn-secondary btn-sm\" name=\"deleteReplyCancel\">"
+				+ "</div></div></div><hr></div>";
+			
+			parentReply.after(str);
+		}
+		
+		else {
+			deleteReplyForm.remove();
+		}
+		
+		// $("#replyModal").modal('toggle');
+		/*
+		var rnum = $(this).attr("href");
+		
+		*/
+	});
+	
+	$(".comment_list").on("click", "input[name='deleteReplyBtn']", function() {
+		// 현재 로그인 상태 확인을 위한 정보
+		var name = $("#newParentReply .col-md-12 .form-group input[name='name']").val();
+		var id = $("#newParentReply .col-md-12 .form-group input[name='id']").val();
+		
+		var reply = new Object();
+		var password = $("#deletePassword").val();
+		
+		if (id == undefined && password == "") {
+			alert("비밀번호를 입력하세요.");
+			return;
+		}
+		
+		// 비회원
+		else if (id == undefined) {
+			reply.password = password;
+		}
+		
+		// 회원
+		else if (name == undefined) {
+			reply.id = id;
+		}
+		
+		reply.rnum = $("#deleteReplyForm").data("rnum");
+		
+		deleteReply(reply, $(".pagination").data("page"), getReplyList);
+	});
+	
+	$(".comment_list").on("click", "input[name='deleteReplyCancel']", function() {
+		$("#deleteReplyForm").remove();
+	});
+	
+	$("input[name='newReplyBtn']").on("click", function(event) {
+		event.preventDefault();
+		// console.log("New reply clicked");
+		
+		var replyForm = $("#newParentReply");
+		var name = replyForm.find("input[name='name']");
+		var id = replyForm.find("input[name='id']");
+		var password = replyForm.find("input[name='password']");
+		var content = replyForm.find("textarea[name='content']");
+		
+		var reply = new Object();
+		
+		if (name.val() == undefined) {
+			reply.id = id.val();
+		}
+		else if (id.val() == undefined) {
+			reply.name = name.val();
+			reply.password = password.val();
+		}
+		reply.rnum = $(".comment_list").data("rnum");
+		reply.pid = pid;
+		reply.content = content.val();
+		
+		name.val("");
+		password.val("");
+		content.val("");
+		
+		// console.log(reply);
+		
+		registerReply(reply, 0, getReplyList);
+	});
 	
 	$("#qty-up").on("click", function() {
 		var num = qty.val();

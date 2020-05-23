@@ -18,19 +18,10 @@
 	<aside class="left_widgets cat_widgets">
 		<div class="l_w_title col">
 			<h3>카테고리
-			<!-- 
-				<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')">
-					<a href="#" style="float: right;">
-						<button id="insertFormBtn" class="btn btn-primary">추가</button>
-					</a>
-				</sec:authorize>
-			-->
 			</h3>
 		</div>
 		<div class="widgets_inner">
-			<!-- <ul class="list"> -->
-				<!-- Categories will be listed here -->
-			<!-- </ul> -->
+			<!-- Categories will be listed here -->
 		</div>
 	</aside>
 </div>
