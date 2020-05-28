@@ -21,10 +21,6 @@
 		<result property="auth" column="auth"/>
 	</resultMap>
 	
-	<select id="getTime" resultType="string">
-		SELECT sysdate FROM dual
-	</select>
-	
 	<insert id="insertMember">
 		INSERT INTO member
 		(id, password, name, email, contact, address, zipcode)
@@ -45,6 +41,12 @@
 		WHERE id = #{id}
 	</select>
 	
+	<select id="getEmail" resultType="string">
+		SELECT email
+		FROM member
+		WHERE email = #{email}
+	</select>
+	
 	<select id="getMember" resultType="kr.co.keycrafter.domain.MemberVO">
 		SELECT id, password, name, email, contact, address, zipcode, regDate
 		FROM member
@@ -56,7 +58,7 @@
 		FROM member m
 		LEFT OUTER JOIN member_auth a
 		ON m.id = a.id
-		WHERE m.id = #{id} 
+		WHERE m.id = #{id}
 	</select>
 	
 	<update id="updateMemberPw">
@@ -71,8 +73,76 @@
 		WHERE id = #{id}
 	</update>
 	
+	<update id="updateAuth">
+		UPDATE member_auth
+		SET auth = #{auth}
+		WHERE id = #{id}
+	</update>
+	
 	<delete id="deleteMember">
 		DELETE FROM member
 		WHERE id = #{id}
 	</delete>
+	
+	<delete id="deleteAuth">
+		DELETE FROM member_auth
+		WHERE id = #{id}
+	</delete>
+	
+	<select id="getMemberList" resultMap="memberMap">
+		SELECT m.id, m.name, m.email, m.contact, a.auth
+		FROM (
+			SELECT rownum rn, id, name, email, contact
+			FROM (
+				SELECT * FROM member ORDER BY id ASC
+			)
+			WHERE
+	<foreach item="keywordValue" index="i" collection="keyword">
+		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+			<if test='type[i].contains("I")'>
+				OR id like '%'||#{keywordValue}||'%'
+			</if>
+			<if test='type[i].contains("N")'>
+				OR name like '%'||#{keywordValue}||'%'
+			</if>
+			<if test='type[i].contains("T")'>
+				OR contact like '%'||#{keywordValue}||'%'
+			</if>
+			<if test='type[i].contains("E")'>
+				OR email like '%'||#{keywordValue}||'%'
+			</if>
+		</trim>
+	</foreach>
+			<![CDATA[
+				rownum <= #{page} * #{show}
+			]]>
+		) m
+		LEFT OUTER JOIN member_auth a
+		ON m.id = a.id
+		WHERE rn > (#{page} - 1) * #{show}
+		ORDER BY m.id ASC
+	</select>
+	
+	<select id="getMemberCount" resultType="int">
+		SELECT COUNT(DISTINCT id)
+		FROM member
+		WHERE
+<foreach item="keywordValue" index="i" collection="keyword">
+	<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+		<if test='type[i].contains("I")'>
+			OR id like '%'||#{keywordValue}||'%'
+		</if>
+		<if test='type[i].contains("N")'>
+			OR name like '%'||#{keywordValue}||'%'
+		</if>
+		<if test='type[i].contains("T")'>
+			OR contact like '%'||#{keywordValue}||'%'
+		</if>
+		<if test='type[i].contains("E")'>
+			OR email like '%'||#{keywordValue}||'%'
+		</if>
+	</trim>
+</foreach>
+			id != '_'
+	</select>
 </mapper>

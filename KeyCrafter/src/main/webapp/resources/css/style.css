@@ -2140,7 +2140,6 @@ h6 {
 .progress-table .table-head .order-num, .progress-table .table-head .order-id, .progress-table .table-head .product-name-admin, .progress-table .table-head .product-name-user, .progress-table .table-head .price, .progress-table .table-head .order-date, .table-head .order-status, .table-head .order-action {
   color: #222222;
   line-height: 40px;
-  /* text-transform: uppercase; */
   font-weight: 500; }
   
 .progress-table .table-row .order-num, .progress-table .table-row .order-id, .progress-table .table-row .product-name-admin, .progress-table .table-row .product-name-user, .progress-table .table-row .price, .progress-table .table-row .order-date, .progress-table .table-row .order-status, .progress-table .table-row .order-action {
@@ -2151,6 +2150,42 @@ h6 {
   margin-right: 15px; }
   
 /*===== End Order List Custom CSS =======*/
+
+/*======= Member List Custom CSS ========*/
+  
+.progress-table .member-id {
+  width: 15%;
+  padding-left: 30px; }
+
+.progress-table .member-name {
+  width: 15%; }
+
+.progress-table .member-email {
+  width: 30%; }
+
+.progress-table .member-contact {
+  width: 25%; }
+  
+.progress-table .member-role {
+  width: 15%;
+  padding-right: 50px; }
+
+.progress-table .table-head .member-id, .progress-table .table-head .member-name, .progress-table .table-head .member-email, .progress-table .table-head .member-contact, .progress-table .table-head .member-role {
+  color: #222222;
+  line-height: 40px;
+  font-weight: 500; }
+  
+.progress-table .table-row .member-id, .progress-table .table-row .member-name, .progress-table .table-row .member-email, .progress-table .table-row .member-contact, .progress-table .table-row .member-role {
+  display: flex;
+  align-items: center; }
+  
+.getLink {
+	color: #60686f;
+}
+.getLink:hover {
+	color: #78828a;
+}
+/*===== End Member List Custom CSS =======*/
 
 .progress-table .table-head {
   display: flex; }

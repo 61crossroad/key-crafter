@@ -1,16 +1,26 @@
 package kr.co.keycrafter.controller;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
-
+import kr.co.keycrafter.domain.Criteria;
 import kr.co.keycrafter.domain.MemberVO;
+import kr.co.keycrafter.domain.PageDTO;
 import kr.co.keycrafter.service.MemberService;
 
 @Log4j
@@ -32,6 +42,31 @@ public class MemberController {
 		}
 	}
 	
+	@GetMapping("/register")
+	public String register() {
+		return "/member/memberRegister";
+	}
+	
+	@ResponseBody
+	@GetMapping("/checkId/{id}")
+	public ResponseEntity<String> checkId(@PathVariable("id") String id) {
+		String targetId = memberService.getId(id);
+		
+		return targetId == null ?
+				new ResponseEntity<>(HttpStatus.OK)
+				: new ResponseEntity<String>(targetId, HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@GetMapping("/checkEmail/{email}")
+	public ResponseEntity<String> checkEmail(@PathVariable("email") String email) {
+		String targetEmail = memberService.getEmail(email);
+		
+		return targetEmail == null ?
+				new ResponseEntity<>(HttpStatus.OK)
+				: new ResponseEntity<String>(targetEmail, HttpStatus.OK);
+	}
+	
 	@PostMapping("/insert")
 	public String insert(MemberVO member, RedirectAttributes rttr) {
 		log.info("Member Controller: insert");
@@ -42,19 +77,51 @@ public class MemberController {
 		return "redirect:/";
 	}
 	
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/update")
 	public String update(MemberVO member) {
 		log.info("Update result: " + memberService.updateMember(member));
 		return "/member/memberInfo";
 	}
 	
-	@GetMapping("/register")
-	public String register() {
-		return "/member/memberRegister";
-	}
-	
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/info")
 	public String info() {
 		return "/member/memberInfo";
+	}
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@GetMapping("/list")
+	public String getList(Criteria cri, Model model) {
+		int total = memberService.getMemberCount(cri);
+		
+		PageDTO pageDTO = new PageDTO(cri, total);
+		Criteria realCri = pageDTO.getCri();
+		
+		List<MemberVO> memberList = memberService.getMemberList(realCri);
+		
+		model.addAttribute("memberList", memberList);
+		model.addAttribute("pageMaker", pageDTO);
+		
+		return "/member/memberList";
+	}
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@GetMapping("/get")
+	public String getMemberInfo(@RequestParam("id") String id, @ModelAttribute("cri") Criteria cri, Model model) {
+		log.info("Get member with auth");
+		MemberVO member = memberService.getMemberWithAuth(id);
+		
+		model.addAttribute("member", member);
+		
+		return "/member/memberModify";
+	}
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PostMapping("/modify")
+	public String modifyMember(MemberVO member, Criteria cri) {
+		memberService.modifyMember(member);
+		
+		return "redirect:/member/list" + cri.getListLink() ;
 	}
 }

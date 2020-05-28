@@ -17,4 +17,5 @@ public class MemberVO {
 	private Date regDate;
 	private boolean enabled;
 	private List<AuthVO> authList;
+	private String role;
 }

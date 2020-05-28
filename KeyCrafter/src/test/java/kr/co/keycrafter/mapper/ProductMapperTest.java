@@ -27,7 +27,7 @@ public class ProductMapperTest {
 	@Setter(onMethod_ = @Autowired)
 	private ProductMapper productMapper;
 	
-	@Test
+	// @Test
 	public void testSearch() {
 		Criteria cri = new Criteria();
 
@@ -55,8 +55,8 @@ public class ProductMapperTest {
 	// @Test
 	public void getProductListWithPaging() {
 		Criteria cri = new Criteria();
-		cri.setShow(8);
-		cri.setPage(3);
+		cri.setShow(2);
+		cri.setPage(2);
 		
 		List<ProductVO> list = productMapper.getProductListWithPaging(cri);
 		

@@ -74,10 +74,10 @@
 							value='<sec:authentication property="principal.member.zipCode"/>'
 							maxlength="10" required >
 						</div>
-						<div class="mt-10">
+						<div class="input-group justify-content-center mt-sm">
 							<a href="javascript: window.history.back();">
 								<input type="button" class="genric-btn success" value="돌아가기">
-							</a>
+							</a>&nbsp;
 							<input type="submit" class="genric-btn info" value="정보 수정">
 						</div>
 						<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }">

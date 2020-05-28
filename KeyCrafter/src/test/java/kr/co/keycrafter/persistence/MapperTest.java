@@ -19,9 +19,11 @@ public class MapperTest {
 	@Setter(onMethod_ = @Autowired)
 	private MemberMapper memberMapper;
 	
+	/*
 	@Test
 	public void testGetTime() {
 		log.info(memberMapper.getClass().getName());
 		log.info(memberMapper.getTime());
 	}
+	*/
 }

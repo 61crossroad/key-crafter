@@ -81,6 +81,8 @@
 											</li>
 										</ul>
 									</li>
+									
+									<!--
 									<li class="nav-item submenu dropdown">
 										<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">고객지원</a>
 										<ul class="dropdown-menu">
@@ -92,6 +94,7 @@
 											</li>
 										</ul>
 									</li>
+									-->
 									
 									<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')">
 										<li class="nav-item submenu dropdown">
@@ -106,10 +109,19 @@
 												<li class="nav-item">
 													<a class="nav-link" href="/product/register">상품등록</a>
 												</li>
+											<sec:authorize access="hasRole('ROLE_ADMIN')">
+												<li class="nav-item">
+													<a class="nav-link" href="/member/list">회원관리</a>
+												</li>
+											</sec:authorize>
+												<li class="nav-item">
+													<a class="nav-link" href="/order/list">주문내역</a>
+												</li>
 											</ul>
 										</li>
 									</sec:authorize>
 									
+									<!-- 
 									<sec:authorize access="hasRole('ROLE_ADMIN')">
 										<li class="nav-item submenu dropdown">
 											<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">회원관리</a>
@@ -123,7 +135,7 @@
 											</ul>
 										</li>
 									</sec:authorize>
-									
+									-->
 								</ul>
 							</div>
 
@@ -154,21 +166,10 @@
 													<a class="nav-link" href="/member/info">내 정보</a>
 												</li>
 												<li class="nav-item">
-												<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')">
-													<a class="nav-link" href="/order/list">주문내역</a>
-												</sec:authorize>
-												<sec:authorize access="hasRole('ROLE_USER') and !hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')">
 													<a class="nav-link" href="/order/list?type=I&keyword=<sec:authentication property='principal.member.id'/>">주문내역</a>
-												</sec:authorize>
 												</li>
 												<li class="nav-item">
 													<input type="button" value="로그아웃" id="logoutBtn" class="nav-link logout" style="border: none; width: 100%; text-align: left;">
-													<!--
-													<form action="/member/logout" method="post">
-														<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }">
-														<input class="nav-link logout" type="submit" value="로그아웃" style="border: none; width: 100%; text-align: left;">
-													</form>
-													-->
 												</li>
 											</ul>
 										</sec:authorize>

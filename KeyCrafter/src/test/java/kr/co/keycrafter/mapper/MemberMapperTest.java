@@ -7,6 +7,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
@@ -17,6 +18,7 @@ import lombok.extern.log4j.Log4j;
 
 import kr.co.keycrafter.domain.MemberVO;
 import kr.co.keycrafter.domain.AuthVO;
+import kr.co.keycrafter.domain.Criteria;
 
 @Log4j
 @ContextConfiguration({"file:src/main/webapp/WEB-INF/spring/root-context.xml",
@@ -32,6 +34,32 @@ public class MemberMapperTest {
 	
 	@Setter(onMethod_ = @Autowired)
 	private DataSource ds;
+	
+	// @Test
+	public void checkId() {
+		String id = mapper.getId("bbb");
+		
+		log.info("Check id result: " + id);
+	}
+	
+	// @Test
+	public void getMemberCount() {
+		Criteria cri = new Criteria();
+		
+		int count = mapper.getMemberCount(cri);
+		
+		log.info("Total Members: " + count);
+	}
+	
+	@Test
+	public void getMemberList() {
+		Criteria cri = new Criteria();
+		cri.setPage(2);
+		cri.setShow(4);
+		List<MemberVO> memberList = mapper.getMemberList(cri);
+		
+		memberList.forEach(member -> log.info(member));
+	}
 	
 	// @Test
 	public void getMemberWithAuth() {

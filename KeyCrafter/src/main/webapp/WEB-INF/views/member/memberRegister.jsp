@@ -82,26 +82,28 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-	/*
 	$("#id").on("change", function() {
-		var id = $("#id").val(); 
-		console.log("id check for " + id);
+		var id = $("#id").val();
+		var regExpId = /^[a-z0-9+]*$/;
+		
+		if (regExpId.test(id)) {
+			alert("3 ~ 12 글자로 입력해주세요.");
+			$("#id").focus();
+			return;
+		}
 		
 		$.ajax({
-			url: "/member/idcheck",
+			url: "/member/checkId/" + id,
 			type: "GET",
-			data: id,
-			dataType: "text",
 			success: function(result) {
 				if (result == id) {
 					alert("이미 존재하는 아이디입니다.");
 				}
 				
-				this.focus();
+				$("#id").focus();
 			}
 		});
 	});
-	*/
 });
 </script>
 
