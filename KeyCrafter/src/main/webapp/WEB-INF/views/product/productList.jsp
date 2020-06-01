@@ -23,20 +23,15 @@
 			<div class="col-lg-9">
 				<div class="product_top_bar">
 					<div class="left_dorp">
-						<select class="sorting">
-							<option value="1">Default sorting</option>
-							<option value="2">Default sorting 01</option>
-							<option value="4">Default sorting 02</option>
-						</select>
 						<select class="show">
 							<c:forEach var="i" begin="0" end="2">
 								<c:set var="show" value="${ i * 4 + 8 }" />
 								<c:choose>
 									<c:when test="${ show eq pageMaker.cri.show }">
-										<option value="${ show }" selected>Show ${ show }</option>
+										<option value="${ show }" selected>${ show }개 표시</option>
 									</c:when>
 									<c:otherwise>
-										<option value="${ show }">Show ${ show }</option>
+										<option value="${ show }">${ show }개 표시</option>
 									</c:otherwise>
 								</c:choose>
 							</c:forEach>
@@ -160,8 +155,11 @@ $(document).ready(function() {
 	toggleModal(insertResult, updateResult, deleteResult);
 	
 	function toggleModal(insertParam, updateParam, deleteParam) {
+		/*
 		console.log("insertResult: " + insertParam);
 		console.log("updateResult: " + updateParam);
+		*/
+		console.log(insertParam + ", " + updateParam + ", " + deleteParam);
 		
 		if (insertParam > 0) {
 			$("#resultCenter .modal-body").html(parseInt(insertParam) + "번 상품을 등록했습니다.");
@@ -169,6 +167,10 @@ $(document).ready(function() {
 		}
 		else if (updateParam > 0){
 			$("#resultCenter .modal-body").html(parseInt(updateParam) + "번 상품을 수정했습니다.");
+			$("#resultCenter").modal("show");
+		}
+		else if (deleteParam == -1) {
+			$("#resultCenter .modal-body").html("주문 내역이 있는 상품은 삭제할 수 없습니다.");
 			$("#resultCenter").modal("show");
 		}
 		else if (deleteParam > 0){

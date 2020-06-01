@@ -27,29 +27,24 @@ public class ProductMapperTest {
 	@Setter(onMethod_ = @Autowired)
 	private ProductMapper productMapper;
 	
-	// @Test
+	@Test
 	public void testSearch() {
 		Criteria cri = new Criteria();
-
-		/*
-		String[] keyword = new String[1];
-		String[] type = new String[1];
 		
-		keyword[0] = "";
-		type[0] = "";
+		List<String> keyword = new ArrayList<String>();
+		keyword.add("dsa");
 		
-		keyword[1] = "바밀로";
-		type[1] = "P";
+		List<String> type = new ArrayList<String>();
+		type.add("CDGP");
 		
 		cri.setKeyword(keyword);
 		cri.setType(type);
-		*/
 		
 		List<ProductVO> list = productMapper.getProductListWithPaging(cri);
-		int total = productMapper.getTotalCount(cri);
-		
-		log.info("TOTAL: " + total);
 		list.forEach(product -> log.info(product));
+		
+		int total = productMapper.getTotalCount(cri);
+		log.info("TOTAL: " + total);
 	}
 	
 	// @Test

@@ -35,7 +35,7 @@ public class CategoryController {
 		log.info("* Get category list...... " + catNum);
 		
 		List<CategoryVO> list = categoryService.selectCategoryList(catNum, all);
-		list.forEach(category -> log.info(category));
+		// list.forEach(category -> log.info(category));
 		
 		// log.info(list);
 		
@@ -49,7 +49,7 @@ public class CategoryController {
 		List<CategoryVO> list = categoryService.selectCategoryForProduct(pid);
 		
 		log.info("* Categories for: " + pid);
-		list.forEach(category -> log.info(category));
+		// list.forEach(category -> log.info(category));
 		return new ResponseEntity<List<CategoryVO>>(list, HttpStatus.OK);
 	}
 	

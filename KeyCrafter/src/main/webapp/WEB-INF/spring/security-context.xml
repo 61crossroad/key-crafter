@@ -15,6 +15,7 @@
 			<security:concurrency-control max-sessions="1" />
 		</security:session-management>
 		<security:remember-me data-source-ref="dataSource" token-validity-seconds="604800" />
+		<security:intercept-url pattern="/order/*" access="isAuthenticated()"/>
 	</security:http>
 		
 	<security:authentication-manager>

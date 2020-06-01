@@ -15,12 +15,12 @@ import static kr.co.keycrafter.domain.Const.*;
 import kr.co.keycrafter.domain.ProductAttachVO;
 import kr.co.keycrafter.domain.ProductVO;
 import kr.co.keycrafter.domain.CategoryVO;
+import kr.co.keycrafter.domain.ProductReplyVO;
 import kr.co.keycrafter.domain.Criteria;
 import kr.co.keycrafter.mapper.ProductMapper;
 import kr.co.keycrafter.mapper.ProductAttachMapper;
 import kr.co.keycrafter.mapper.CategoryMapper;
 import kr.co.keycrafter.mapper.ProductReplyMapper;
-import kr.co.keycrafter.domain.ProductReplyVO;
 
 import lombok.extern.log4j.Log4j;
 import lombok.Setter;
@@ -39,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
 	
 	@Setter(onMethod_ = @Autowired)
 	private ProductReplyMapper productReplyMapper;
-
+	
 	@Transactional
 	@Override
 	public int insertProduct(ProductVO product) {
@@ -71,6 +71,7 @@ public class ProductServiceImpl implements ProductService {
 			productAttachMapper.insertAttach(attach);
 		});
 		
+		// 루트 댓글 생성
 		ProductReplyVO reply = new ProductReplyVO();
 		reply.setPid(resultPid);
 		reply.setLft(1);
@@ -158,13 +159,19 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	@Override
 	public int deleteProduct(int pid) {
-		int result;
+		int result = productMapper.getOrderCount(pid);
+		
+		if (result > 0) {
+			return -1;
+		}
 		
 		List<ProductAttachVO> attachList = productAttachMapper.getAttachForProduct(pid);
 		
 		// 모든 첨부파일을 DB에서 삭제
-		result = productAttachMapper.deleteAllAttach(pid);
-		log.info("Delete all attaches: " + result);
+		productAttachMapper.deleteAllAttach(pid);
+		
+		// 모든 댓글 삭제
+		productReplyMapper.deleteAllReply(pid);
 		
 		// 상품 삭제
 		result = productMapper.deleteProduct(pid);
@@ -173,8 +180,6 @@ public class ProductServiceImpl implements ProductService {
 		if (result > 0) {
 			deleteAttachByPath(attachList);
 		}
-		
-		productReplyMapper.deleteAllReply(pid);
 		
 		return result;
 	}

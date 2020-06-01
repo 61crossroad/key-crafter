@@ -47,6 +47,12 @@
 		WHERE email = #{email}
 	</select>
 	
+	<select id="getContact" resultType="string">
+		SELECT contact
+		FROM member
+		WHERE contact = #{contact}
+	</select>
+	
 	<select id="getMember" resultType="kr.co.keycrafter.domain.MemberVO">
 		SELECT id, password, name, email, contact, address, zipcode, regDate
 		FROM member

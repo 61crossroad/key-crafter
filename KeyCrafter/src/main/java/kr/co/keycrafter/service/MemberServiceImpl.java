@@ -1,6 +1,7 @@
 package kr.co.keycrafter.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class MemberServiceImpl implements MemberService {
 	PasswordEncoder passwordEncoder;
 	CustomUserDetailsService userDetailsService;
 	
+	@Transactional
 	@Override
 	public void insertMember(MemberVO member, String auth) {
 		log.info("insertMember: " + member.getId() + " with " + auth);
@@ -37,7 +39,6 @@ public class MemberServiceImpl implements MemberService {
 		memberAuth.setAuth(auth);
 		memberMapper.insertAuth(memberAuth);
 		
-		// To Be Modified?
 		member = memberMapper.getMemberWithAuth(member.getId());
 		
 		userDetailsService.addAuthentication(member);
@@ -68,6 +69,7 @@ public class MemberServiceImpl implements MemberService {
 		return result;
 	}
 	
+	@Transactional
 	@Override
 	public void modifyMember(MemberVO member) {
 		// 관리자가 회원 정보 업데이트
@@ -98,15 +100,36 @@ public class MemberServiceImpl implements MemberService {
 		
 		return member;
 	}
-
-	@Override
-	public String getId(String id) {
-		return memberMapper.getId(id);
-	}
 	
 	@Override
-	public String getEmail(String email) {
-		return memberMapper.getEmail(email);
+	public String checkOverlap(MemberVO member) {
+		String result;
+		
+		if (member.getId() != null) {
+			result = memberMapper.getId(member.getId());
+			
+			if (result != null) {
+				return "id";
+			}
+		}
+		
+		if (member.getEmail() != null) {
+			result = memberMapper.getEmail(member.getEmail());
+			
+			if (result != null) {
+				return "email";
+			}
+		}
+		
+		if (member.getContact() != null) {
+			result = memberMapper.getContact(member.getContact());
+			
+			if (result != null) {
+				return "contact";
+			}
+		}
+		
+		return "";
 	}
 	
 	@Override

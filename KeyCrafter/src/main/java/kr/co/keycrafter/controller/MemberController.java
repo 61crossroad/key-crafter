@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -48,23 +48,12 @@ public class MemberController {
 	}
 	
 	@ResponseBody
-	@GetMapping("/checkId/{id}")
-	public ResponseEntity<String> checkId(@PathVariable("id") String id) {
-		String targetId = memberService.getId(id);
+	@PostMapping(value = "/check",
+			consumes = "application/json")
+	public ResponseEntity<String> check(@RequestBody MemberVO member) {
+		String result = memberService.checkOverlap(member);
 		
-		return targetId == null ?
-				new ResponseEntity<>(HttpStatus.OK)
-				: new ResponseEntity<String>(targetId, HttpStatus.OK);
-	}
-	
-	@ResponseBody
-	@GetMapping("/checkEmail/{email}")
-	public ResponseEntity<String> checkEmail(@PathVariable("email") String email) {
-		String targetEmail = memberService.getEmail(email);
-		
-		return targetEmail == null ?
-				new ResponseEntity<>(HttpStatus.OK)
-				: new ResponseEntity<String>(targetEmail, HttpStatus.OK);
+		return new ResponseEntity<String>(result, HttpStatus.OK);
 	}
 	
 	@PostMapping("/insert")

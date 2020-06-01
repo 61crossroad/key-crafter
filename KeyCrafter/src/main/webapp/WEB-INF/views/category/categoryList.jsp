@@ -66,7 +66,7 @@ $(document).ready(function (){
 	var csrfTokenValue = "${_csrf.token}";
 	
 	var cat = "${ pageMaker.cri.cat }";
-	console.log("Selected Cat: " + cat);
+	// console.log("Selected Cat: " + cat);
 	
 	// List category when a page is loaded
 	getCatList();
@@ -77,11 +77,21 @@ $(document).ready(function (){
 			var depth = 0;
 			var str = "";
 			// $(".widgets_inner").html("");
+			var currLft, currRgt, currDepth;
+			
+			for (var i = 1; i < data.length; i++) {
+				if (data[i].catNum == cat) {
+					currLft = data[i].lft;
+					currRgt = data[i].rgt;
+					currDepth = data[i].depth;
+				}
+			}
 			
 			for (var i = 1; i < data.length; i++) {
 				if (depth < data[i].depth) {
 					depth = data[i].depth;
-					str += "<ul class='list'>";
+					
+					str += "<ul class='list' style='display: none;'>";
 				}
 				else if (depth > data[i].depth) {
 					for (var j = data[i].depth; j < depth; j++) {
@@ -96,10 +106,10 @@ $(document).ready(function (){
 				
 				
 				if (data[i].catNum == cat) {
-					str += "<li><a class='categoryMove' href='" + data[i].catNum + "'><b>" + data[i].catName + "</b></a>";
+					str += "<li name='" + data[i].catNum + "'><a class='categoryMove' href='" + data[i].catNum + "'><b>" + data[i].catName + "</b></a>";
 				}
 				else {
-					str += "<li><a class='categoryMove' href='" + data[i].catNum + "'>" + data[i].catName + "</a>";
+					str += "<li name='" + data[i].catNum + "'><a class='categoryMove' href='" + data[i].catNum + "'>" + data[i].catName + "</a>";
 				}
 				
 				if (i + 1 < data.length && depth < data[i + 1].depth) {
@@ -112,18 +122,24 @@ $(document).ready(function (){
 			}
 			
 			$(".widgets_inner").append(str);
+			
+			var currLi = $("li[name='" + cat + "']");
+			
+			currLi.parents("ul").attr("style", "");
+			currLi.children("ul").attr("style", "");
+			$(".widgets_inner").children("ul").attr("style", "");
 		});
 	}
 	
 	$(".widgets_inner").on("click", ".subList", function(event) {
 		event.preventDefault();
-		console.log("icon clicked");
+		// console.log("icon clicked");
 		$(this).closest("li").children("ul").toggle();
 	});
 	
 	$(".widgets_inner").on("click", ".categoryMove", function(event) {
-		console.log("category clicked");
 		event.preventDefault();
+		// console.log("category clicked");
 		
 		var categoryForm = $("#categoryForm");
 		// console.log($(this));

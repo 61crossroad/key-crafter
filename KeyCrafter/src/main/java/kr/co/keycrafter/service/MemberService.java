@@ -14,9 +14,7 @@ public interface MemberService {
 	
 	public MemberVO getMemberWithAuth(String id);
 	
-	public String getId(String id);
-	
-	public String getEmail(String email);
+	public String checkOverlap(MemberVO member);
 	
 	public List<MemberVO> getMemberList(Criteria cri);
 	

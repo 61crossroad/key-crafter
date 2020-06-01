@@ -71,13 +71,16 @@
 										<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">악세사리</a>
 										<ul class="dropdown-menu">
 											<li class="nav-item">
-												<a class="nav-link" href="category.html">Cherry 키캡</a>
+												<a class="nav-link" href="/product/list?cat=3">모든 키캡</a>
 											</li>
 											<li class="nav-item">
-												<a class="nav-link" href="single-product.html">OEM 키캡</a>
+												<a class="nav-link" href="/product/list?cat=10">Cherry 키캡</a>
 											</li>
 											<li class="nav-item">
-												<a class="nav-link" href="checkout.html">포인트 키캡</a>
+												<a class="nav-link" href="/product/list?cat=11">OEM 키캡</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" href="/product/list?cat=12">DSA 키캡</a>
 											</li>
 										</ul>
 									</li>
@@ -104,7 +107,7 @@
 													<a class="nav-link" href="/category/modify">카테고리</a>
 												</li>
 												<li class="nav-item">
-													<a class="nav-link" href="/product/list?page=1&show=12">전체상품</a>
+													<a class="nav-link" href="/product/list?cat=1">전체상품</a>
 												</li>
 												<li class="nav-item">
 													<a class="nav-link" href="/product/register">상품등록</a>
@@ -115,7 +118,7 @@
 												</li>
 											</sec:authorize>
 												<li class="nav-item">
-													<a class="nav-link" href="/order/list">주문내역</a>
+													<a class="nav-link" href="/order/list">주문관리</a>
 												</li>
 											</ul>
 										</li>
@@ -143,7 +146,7 @@
 								<ul class="nav navbar-nav navbar-right right_nav pull-right">
 									<hr>
 									<li class="nav-item">
-										<a href="#" class="icons">
+										<a href="#" class="icons" id="showSearch">
 											<i class="fa fa-search" aria-hidden="true"></i>
 										</a>
 									</li>
@@ -169,7 +172,7 @@
 													<a class="nav-link" href="/order/list?type=I&keyword=<sec:authentication property='principal.member.id'/>">주문내역</a>
 												</li>
 												<li class="nav-item">
-													<input type="button" value="로그아웃" id="logoutBtn" class="nav-link logout" style="border: none; width: 100%; text-align: left;">
+													<a id="logoutBtn" class="nav-link" href="#">로그아웃</a>
 												</li>
 											</ul>
 										</sec:authorize>
@@ -192,6 +195,35 @@
 			</nav>
 		</div>
 	</header>
+	<!--================End Header Menu Area =================-->
+	
+	<!--==================Search Modal ===================-->
+	<div class="modal" id="searchModal" tabindex="-1" role="dialog">
+	  <div class="modal-dialog modal-lg">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title">상품 검색</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	      	<form id="searchForm" action="/product/list" method="GET">
+	      		<div class="input-group mb-3">
+					<input type="text" class="form-control" id="keyword" name="keyword">
+					<input type="hidden" name="type" value="CDGP">
+					<div class="input-group-append">
+					  <button class="btn btn-outline-secondary" type="submit" id="searchBtn">
+					  	<i class="fa fa-search" aria-hidden="true"></i>
+					  </button>
+					</div>
+				</div>
+			</form>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<!--==================End Search Modal ===================-->
 	
 	<script src="/resources/js/jquery-3.2.1.min.js"></script>
 	
@@ -200,7 +232,9 @@
 			var csrfHeaderName = "${_csrf.headerName}";
 			var csrfTokenValue = "${_csrf.token}";
 			
-			$("#logoutBtn").on("click", function() {
+			$("#logoutBtn").on("click", function(event) {
+				event.preventDefault();
+				
 				$.ajax({
 					url: '/member/logout',
 					type: 'post',
@@ -212,7 +246,21 @@
 					}
 				});
 			});
+			
+			$("#showSearch").on("click", function(event) {
+				event.preventDefault();
+				$("#searchModal").modal("show");
+			});
+			
+			$("#searchBtn").on("click", function(event) {
+				event.preventDefault();
+				
+				var keyword = $("#keyword").val();
+				
+				if (keyword == null || keyword == "") {
+					$("#searchModal").modal("hide");
+				}
+				$("#searchForm").submit();
+			});
 		});
 	</script>
-
-	<!--================Header Menu Area =================-->

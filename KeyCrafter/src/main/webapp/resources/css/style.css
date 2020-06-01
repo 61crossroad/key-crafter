@@ -2912,6 +2912,28 @@ h6 {
   .main_btn:hover {
     background: transparent;
     color: #1641ff; }
+    
+.null_btn {
+  display: inline-block;
+  background: #60686f;
+  padding: 0px 30px;
+  color: #fff;
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 48px;
+  border: 1px solid #60686f;
+  border-radius: 0px;
+  outline: none !important;
+  box-shadow: none !important;
+  text-align: center;
+  border: 1px solid #60686f;
+  cursor: pointer;
+  transition: all 300ms linear 0s;
+  border-radius: 5px; }
+  .null_btn:hover {
+    background: transparent;
+    color: #78828a; }
 
 .main_btn2 {
   display: inline-block;
@@ -3462,7 +3484,7 @@ h6 {
     border-top: 1px dotted #d5d5d5;
     margin-top: 20px;
     /* margin-bottom: 70px; */ }
-  .s_product_text .card_area .main_btn {
+  .s_product_text .card_area .main_btn, .s_product_text .card_area .null_btn {
     line-height: 38px;
     padding: 0px 38px;
     text-transform: uppercase;
@@ -4142,10 +4164,12 @@ h6 {
       color: #222222; }
     .order_box .creat_account a {
       color: #1641ff; }
-  .order_box .main_btn {
+      /**
+  .order_box .main_btn, .order_box .null_btn {
     display: block;
     line-height: 38px;
     text-transform: uppercase; }
+    **/
 
 .order_details .title_confirmation {
   text-align: center;

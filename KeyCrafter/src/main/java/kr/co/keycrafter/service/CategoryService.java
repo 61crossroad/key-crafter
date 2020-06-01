@@ -14,4 +14,6 @@ public interface CategoryService {
 	public int updateCategory(CategoryVO category);
 	
 	public int deleteCategory(int catNum);
+	
+	public int getCategoryForKeyword(String keyword);
 }

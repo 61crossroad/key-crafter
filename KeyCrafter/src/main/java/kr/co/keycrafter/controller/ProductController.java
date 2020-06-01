@@ -15,6 +15,7 @@ import kr.co.keycrafter.domain.ProductVO;
 import kr.co.keycrafter.domain.Criteria;
 import kr.co.keycrafter.domain.PageDTO;
 import kr.co.keycrafter.service.ProductService;
+import kr.co.keycrafter.service.CategoryService;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,6 +30,7 @@ import lombok.extern.log4j.Log4j;
 @Controller
 public class ProductController {
 	private ProductService productService;
+	private CategoryService categoryService;
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MEMBER')")
 	@GetMapping("/register")
@@ -76,6 +78,7 @@ public class ProductController {
 		
 		model.addAttribute("list", list);
 		model.addAttribute("pageMaker", pageDTO);
+		log.info(pageDTO);
 		
 		if (requestedValue.contains("index")) {
 			return "/index";
@@ -142,6 +145,20 @@ public class ProductController {
 		if (deleteResult > 0) {
 			rttr.addFlashAttribute("deleteResult", pid);
 		}
+		else if (deleteResult == -1) {
+			rttr.addFlashAttribute("deleteResult", deleteResult);
+		}
+		
+		return "redirect:/product/list" + cri.getListLink();
+	}
+	
+	@GetMapping("/search")
+	public String searchProduct(Criteria cri) {
+		log.info("Search products");
+		log.info(cri);
+		
+		int catNum = categoryService.getCategoryForKeyword(cri.getKeyword().get(0));
+		cri.setCat(catNum);
 		
 		return "redirect:/product/list" + cri.getListLink();
 	}

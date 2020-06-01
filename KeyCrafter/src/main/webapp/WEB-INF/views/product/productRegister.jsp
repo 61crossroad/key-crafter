@@ -122,7 +122,6 @@ $(document).ready(function() {
 	
 	// 카테고리 목록 추가 및 삭제
 	$("#categoryList").on("change", "div select", function() {
-		console.log($(this).val());
 		var action = $(this).val();
 		
 		if (action > 0) {
@@ -167,7 +166,7 @@ $(document).ready(function() {
 			}
 			
 			formData.append("uploadFile", files[i]);
-			console.log(formData);
+			// console.log(formData);
 		}
 
 		$.ajax({
@@ -181,7 +180,7 @@ $(document).ready(function() {
 				xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
 			},
 			success: function(result) {
-				console.log(result);
+				// console.log(result);
 				showUploadResult(result);
 				$(".uploadDiv").html(cloneObj.html());
 				// $(".uploadDiv").replaceWith(cloneObj);
@@ -213,7 +212,7 @@ $(document).ready(function() {
 		var fileName = $(this).data("file");
 		var targetDiv = $(this).closest("div");
 		
-		console.log("Delete file: " + fileName);
+		// console.log("Delete file: " + fileName);
 		
 		$.ajax({
 			url: '/deleteFile',

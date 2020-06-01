@@ -1,4 +1,6 @@
-	<!--================ start footer Area  =================-->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    <!--================ start footer Area  =================-->
 	<footer class="footer-area">
 		<div class="container">
 			<div class="row justify-content-around">
@@ -6,14 +8,14 @@
 				<!-- div class="col-lg-3  col-md-6 col-sm-6" -->
 					<div class="single-footer-widget">
 						<h6 class="footer_title">About Us</h6>
-						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore dolore magna aliqua.</p>
+						<p>기계식 키보드와 악세사리를 판매하는 "키크래프터"입니다.</p>
 					</div>
 				</div>
 				<div class="col-lg-2 col-md-3 col-sm-4">
 				<!-- div class="col-lg-2 col-md-6 col-sm-6" -->
 					<div class="single-footer-widget f_social_wd">
 						<h6 class="footer_title">Follow Us</h6>
-						<p>Let us be social</p>
+						<p>SNS를 팔로우하세요!</p>
 						<div class="f_social">
 							<a href="#">
 								<i class="fa fa-facebook"></i>

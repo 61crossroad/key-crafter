@@ -68,9 +68,19 @@
 					<p></p>
 					<div class="product_count">
 						<label for="qty">수량:</label>
+				<c:choose>
+					<c:when test="${ product.quantity > 0 }">
 						<input type="text" name="qty" id="qty" maxlength="12" value="1" title="Quantity:" class="input-text qty">
 						<button id="qty-up" class="increase items-count"><i class="lnr lnr-chevron-up"></i></button>
 						<button id="qty-dn" class="reduced items-count"><i class="lnr lnr-chevron-down"></i></button>
+					</c:when>
+					<c:otherwise>
+						<input type="text" name="qty" id="qty" maxlength="12" value="0" title="Quantity:" class="input-text qty">
+						<button class="increase items-count"><i class="lnr lnr-chevron-up"></i></button>
+						<button class="reduced items-count"><i class="lnr lnr-chevron-down"></i></button>
+					</c:otherwise>
+				</c:choose>
+						
 					</div>
 					<div class="card_area">
 						<form id="cartAddList" action="/cart/addList" method="post">
@@ -84,12 +94,23 @@
 							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 						</form>
 						
+				<c:choose>
+					<c:when test="${ product.quantity > 0 }">
 						<a class="main_btn" href="#">주문하기</a>
 						<a class="icon_btn addToCart" href="#">
 							<i class="lnr lnr lnr-cart"></i>
 						</a>
+					</c:when>
+					<c:otherwise>
+						<a class="null_btn" href="#">품&nbsp;&nbsp;절</a>
+						<a class="icon_btn">
+							<i class="lnr lnr lnr-cart"></i>
+						</a>
+					</c:otherwise>
+				</c:choose>
+						
 						<a class="icon_btn" href="javascript: window.history.back();">
-							<i class="fa fa-undo"></i>
+							<i class="fa fa-arrow-left"></i>
 						</a>
 					</div>
 				</div>
@@ -167,33 +188,6 @@
 </section>
 <!--================End Product Description Area =================-->
 
-<!--============================= Reply delte modal =============================== -->
-<div class="modal fade" id="replyModal" tabindex="-1" role="dialog" aria-labelledby="replyModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-    <!-- 
-      <div class="modal-header">
-        <h4 class="modal-title" id="replyModalLabel">댓글을 삭제할까요?</h4>
-      </div>
-      -->
-      <div class="modal-body">
-      	<h4>댓글을 삭제할까요?</h4><p></p>
-      	<div class="input-group mb-3">
-      		<div class="input-group-prepend">
-      			<span class="input-group-text" id="password-addon">비밀번호</span>
-      		</div>
-      		<input type="password" class="form-control" name="password" aria-describedby="password-addon">
-      	</div>
-      </div>
-      <div class="modal-footer">
-      	<input type="button" value="삭제" id="deleteAccepted" class="btn btn-warning">
-        <input type="button" value="취소" class="btn btn-secondary" data-dismiss="modal">
-      </div>
-    </div>
-  </div>
-</div>
-<!--========================= End reply delete modal ============================== -->
-
 <script type="text/javascript">
 $(document).ready(function() {
 	var csrfHeaderName = "${_csrf.headerName}";
@@ -233,75 +227,87 @@ $(document).ready(function() {
 			var id = $("#newParentReply .col-md-12 .form-group input[name='id']").val();
 			
 			var str = "";
-			$(".comment_list").html("");
+			var comment_list = $(".comment_list");
 			
-			result.replyList.forEach(function(reply) {
-				var padding = 28 * (reply.depth - 1);
-				var date = new Date(reply.updateDate);
-				
-				str += "<div class=\"review_item\" style=\"padding-left: " + padding
-					+ "px;\" data-padding=\"" + padding + "\" data-rnum=\"" + reply.rnum + "\">";
-				str += "<div class=\"media\"><div class=\"media-body\"><h4>";
-				
-				if (reply.id == null) {
-					str += reply.name;
-				}
-				else {
-					str += reply.userName;
-				}
-				
-				str += "</h4><h5>" + date.getFullYear() + "." + date.getMonth() + 1 + "." + date.getDate() + ". "
-					+ date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + "</h5>";
-				
-				if (reply.deleted == 'N') {
-					// 비회원이 작성한 댓글
+			comment_list.html("");
+			comment_list.data("rnum", result.rootRnum);
+			
+			if (result.count == 0) {
+				str += "<div class=\"review_item\"><div class=\"media\"><div class=\"media-body\"><h4 style=\"margin-left: 40%;\">댓글이 없습니다.</h4></div></div></div>";
+				comment_list.append(str);
+			}
+			
+			else {
+				result.replyList.forEach(function(reply) {
+					var padding = 28 * (reply.depth - 1);
+					var date = new Date(reply.updateDate);
+					
+					str += "<div class=\"review_item\" style=\"padding-left: " + padding
+						+ "px;\" data-padding=\"" + padding + "\" data-rnum=\"" + reply.rnum + "\">";
+					str += "<div class=\"media\"><div class=\"media-body\"><h4>";
+					
 					if (reply.id == null) {
-						str += "<a class=\"delete_btn\" href=\"" + reply.rnum + "\"><i class=\"fa fa-eraser\"></i></a>";
+						str += reply.name;
+					}
+					else {
+						str += reply.userName;
 					}
 					
-					// 회원 자신이 작성한 댓글
-					else if (reply.id != null && reply.id == id) {
-						str += "<a class=\"delete_btn\" href=\"" + reply.rnum + "\"><i class=\"fa fa-eraser\"></i></a>";
+					str += "</h4><h5>" + date.getFullYear() + "." + date.getMonth() + 1 + "." + date.getDate() + ". "
+						+ date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + "</h5>";
+					
+					if (reply.deleted == 'N') {
+						// 비회원이 작성한 댓글
+						if (reply.id == null) {
+							str += "<a class=\"delete_btn\" href=\"" + reply.rnum + "\"><i class=\"fa fa-eraser\"></i></a>";
+						}
+						
+						// 회원 자신이 작성한 댓글
+						else if (reply.id != null && reply.id == id) {
+							str += "<a class=\"delete_btn\" href=\"" + reply.rnum + "\"><i class=\"fa fa-eraser\"></i></a>";
+						}
 					}
+					
+					str += "<a class=\"reply_btn\" href=\"" + reply.rnum + "\"><i class=\"fa fa-comments\"></i></a>";
+					
+					var deletedContent = reply.deleted == 'Y' ? " class=\"deleted_reply\"" : ''; 
+					str += "</div></div>" + "<p><span" + deletedContent + ">"
+						+ reply.content + "</span></p><hr></div>"; 
+				});
+				
+				var currPage, firstPage, lastPage, totalPage;
+				
+				totalPage = Math.ceil(result.count / 10);
+				currPage = page == 0 ? totalPage : page;
+				lastPage = Math.ceil(currPage / 5) * 5;
+				firstPage = (lastPage - 4) < 0 ? 1 : lastPage - 4;
+				lastPage = totalPage < lastPage ? totalPage : lastPage;
+				
+				// console.log(firstPage + " < " + currPage + " < " + lastPage + " [" + totalPage + "]");
+				
+				str += "<div class=\"row review_item mt-sm\">"
+					+ "<nav class=\"cat_page mx-auto\" aria-label=\"Page navigation\">"
+					+ "<ul class=\"pagination\" data-page=\"" + currPage + "\">";
+				
+				if (firstPage > 1) {
+					str +=  "<li class=\"page-item\"><a class=\"page-link\" href=\"" + firstPage - 1 + "\">"
+						+ "<i class=\"fa fa-chevron-left\" aria-hidden=\"true\"></i></a></li>";
 				}
 				
-				str += "<a class=\"reply_btn\" href=\"" + reply.rnum + "\"><i class=\"fa fa-comments\"></i></a>";
+				for (var i = firstPage; i <= lastPage; i++) {
+					str += "<li class=\"page-item" + (i == currPage ? " active\" data-disabled=\"T\"" : "") + "\"><a class=\"page-link\" href=\"" + i + "\">" + i + "</a></li>";
+				}
 				
-				var deletedContent = reply.deleted == 'Y' ? " class=\"deleted_reply\"" : ''; 
-				str += "</div></div>" + "<p><span" + deletedContent + ">"
-					+ reply.content + "</span></p><hr></div>"; 
-			});
-			
-			var currPage, firstPage, lastPage, totalPage;
-			
-			totalPage = Math.ceil(result.count / 10);
-			currPage = page == 0 ? totalPage : page;
-			lastPage = Math.ceil(currPage / 5) * 5;
-			firstPage = lastPage - 4;
-			lastPage = totalPage < lastPage ? totalPage : lastPage;
-			
-			// console.log(firstPage + " < " + currPage + " < " + lastPage + " [" + totalPage + "]");
-			
-			str += "<div class=\"row review_item mt-sm\">"
-				+ "<nav class=\"cat_page mx-auto\" aria-label=\"Page navigation\">"
-				+ "<ul class=\"pagination\" data-page=\"" + currPage + "\">";
-			
-			if (firstPage > 1) {
-				str +=  "<li class=\"page-item\"><a class=\"page-link\" href=\"" + firstPage - 1 + "\">"
-					+ "<i class=\"fa fa-chevron-left\" aria-hidden=\"true\"></i></a></li>";
+				if (lastPage < totalPage) {
+					str +=  "<li class=\"page-item\"><a class=\"page-link\" href=\"" + lastPage + 1 + "\">"
+						+ "<i class=\"fa fa-chevron-right\" aria-hidden=\"true\"></i></a></li>";
+				}
+				
+				str += "</ul></nav></div>";
+				
+				comment_list.append(str);
+				comment_list.data("rnum", result.rootRnum);
 			}
-			
-			for (var i = firstPage; i <= lastPage; i++) {
-				str += "<li class=\"page-item" + (i == currPage ? " active\" data-disabled=\"T\"" : "") + "\"><a class=\"page-link\" href=\"" + i + "\">" + i + "</a></li>";
-			}
-			
-			if (lastPage < totalPage) {
-				str +=  "<li class=\"page-item\"><a class=\"page-link\" href=\"" + lastPage + 1 + "\">"
-					+ "<i class=\"fa fa-chevron-right\" aria-hidden=\"true\"></i></a></li>";
-			}
-			
-			$(".comment_list").append(str);
-			$(".comment_list").data("rnum", result.rootRnum);
 		});
 	}
 	
@@ -332,6 +338,9 @@ $(document).ready(function() {
 				xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
 			},
 			success: function(result) {
+				if (result == "forbidden") {
+					alert("비밀번호가 맞지 않습니다.");
+				}
 				if (callback) {
 					callback(page);
 				}
@@ -354,7 +363,7 @@ $(document).ready(function() {
 		
 		var subReplyForm = $("#subReplyForm");
 		var formStatus = subReplyForm.data("show");
-		console.log(formStatus);
+		// console.log(formStatus);
 		
 		if (formStatus == undefined) {
 			// 현재 로그인 상태 확인을 위한 정보
@@ -440,7 +449,7 @@ $(document).ready(function() {
 		
 		var deleteReplyForm = $("#deleteReplyForm");
 		var formStatus = deleteReplyForm.data("show");
-		console.log(formStatus);
+		// console.log(formStatus);
 		
 		if (formStatus == undefined) {
 			// 현재 로그인 상태 확인을 위한 정보
@@ -569,7 +578,7 @@ $(document).ready(function() {
 		event.preventDefault();
 		
 		cartProduct.quantity = qty.val();
-		console.log(cartProduct);
+		// console.log(cartProduct);
 		
 		$.ajax({
 			url: "/cart/add",
@@ -592,6 +601,10 @@ $(document).ready(function() {
 		
 		var str = "<input type='hidden' name='quantity' value='" + qty.val() + "'>";
 		$("#cartAddList").append(str).submit();
+	});
+	
+	$(".null_btn").on("click", function(event) {
+		event.preventDefault();
 	});
 });
 </script>

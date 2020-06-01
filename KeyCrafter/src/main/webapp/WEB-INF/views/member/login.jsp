@@ -42,7 +42,7 @@
 						</div>
 						<div class="col-md-12 form-group">
 							<button type="submit" value="submit" class="btn submit_btn">로그인</button>
-							<a href="#">비밀번호 찾기</a>
+							<!-- <a href="#">비밀번호 찾기</a> -->
 						</div>
 						<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }"/>
 					</form>

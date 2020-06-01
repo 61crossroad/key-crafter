@@ -33,8 +33,15 @@ public class CategoryMapperTest {
 		log.info(categoryMapper.selectCategoryList());
 	}
 	
-	@Test
+	// @Test
 	public void selectCategorySubList() {
 		log.info(categoryMapper.selectCategorySubList(1, 1));
+	}
+	
+	@Test
+	public void search() {
+		int catNum = categoryMapper.selectCategoryForKeyword("키캡");
+		
+		log.info(categoryMapper.selectCategory(catNum));
 	}
 }

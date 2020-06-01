@@ -65,13 +65,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public List<CategoryVO> selectCategoryList(int rootCatNum, int all) {
-		/* WHY DID IT?
-		CategoryVO rootCategory = categoryMapper.selectCategory(rootCatNum);
-		log.info(rootCategory);
-		*/
-		
 		return categoryMapper.selectCategorySubList(rootCatNum, all);
-		
 	}
 	
 	@Override
@@ -104,5 +98,10 @@ public class CategoryServiceImpl implements CategoryService {
 		categoryMapper.updateLeft(left, -1 * width);
 		
 		return result;
+	}
+	
+	@Override
+	public int getCategoryForKeyword(String keyword) {
+		return categoryMapper.selectCategoryForKeyword(keyword);
 	}
 }

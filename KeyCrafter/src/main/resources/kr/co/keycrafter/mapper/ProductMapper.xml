@@ -80,14 +80,10 @@
 		FROM (
 			SELECT rownum rn, pi.pid, pi.pname, pi.price, pi.company
 			FROM (
-				SELECT cri.catnum, pu.pid, pu.pname, pu.price, pu.productdesc, pu.company, pu.catnum
+				SELECT pu.pid, pu.pname, pu.price, pu.productdesc, pu.company, c.lft, c.rgt
 				FROM category cri, product pu
 				LEFT OUTER JOIN category c
 				ON pu.catnum = c.catnum
-				<!-- 
-				LEFT OUTER JOIN category cri
-				ON cri.catnum = #{cat}
-				-->
 				WHERE
 				cri.catnum = #{cat}
 				AND (c.lft BETWEEN cri.lft AND cri.rgt)
@@ -98,13 +94,38 @@
 	<foreach item="keywordValue" index="i" collection="keyword">
 		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
 			<if test='type[i].contains("P")'>
-				OR pi.pname like '%'||#{keywordValue}||'%'
+				OR UPPER(pi.pname) like '%'||UPPER(#{keywordValue})||'%'
 			</if>
 			<if test='type[i].contains("D")'>
-				OR pi.productdesc like '%'||#{keywordValue}||'%'
+				OR UPPER(pi.productdesc) like '%'||UPPER(#{keywordValue})||'%'
 			</if>
 			<if test='type[i].contains("C")'>
-				OR pi.company like '%'||#{keywordValue}||'%'
+				OR UPPER(pi.company) like '%'||UPPER(#{keywordValue})||'%'
+			</if>
+			<if test='type[i].contains("G")'>
+				OR (
+					pi.lft BETWEEN
+						(SELECT lft FROM category WHERE lft = (
+							SELECT MIN(lft) FROM category WHERE UPPER(catname) like '%'||UPPER(#{keywordValue})||'%'
+							)
+						)
+						AND
+						(SELECT rgt FROM category WHERE lft = (
+							SELECT MIN(lft) FROM category WHERE UPPER(catname) like '%'||UPPER(#{keywordValue})||'%'
+							)
+						)
+					AND
+					pi.rgt BETWEEN
+						(SELECT lft FROM category WHERE lft = (
+							SELECT MIN(lft) FROM category WHERE UPPER(catname) like '%'||UPPER(#{keywordValue})||'%'
+							)
+						)
+						AND
+						(SELECT rgt FROM category WHERE lft = (
+							SELECT MIN(lft) FROM category WHERE UPPER(catname) like '%'||UPPER(#{keywordValue})||'%'
+							)
+						)
+				)
 			</if>
 		</trim>
 	</foreach>
@@ -119,28 +140,58 @@
 	</select>
 	
 	<select id="getTotalCount" resultType="int">
-		SELECT COUNT(DISTINCT p.pid) FROM product p
+		SELECT COUNT(DISTINCT p.pid) FROM category cri, product p
 		LEFT OUTER JOIN category c
 		ON p.catnum = c.catnum
-		LEFT OUTER JOIN category cri
-		ON cri.catnum = #{cat}
 		WHERE
-		(c.lft BETWEEN cri.lft AND cri.rgt)
+		cri.catnum = #{cat}
+		AND (c.lft BETWEEN cri.lft AND cri.rgt)
 		AND (c.rgt BETWEEN cri.lft AND cri.rgt) AND		
 		<foreach item="keywordValue" index="i" collection="keyword">
 			<trim prefix="(" suffix=") AND " prefixOverrides="OR">
 				<if test='type[i].contains("P")'>
-					OR p.pname like '%'||#{keywordValue}||'%'
+					OR UPPER(p.pname) like '%'||UPPER(#{keywordValue})||'%'
 				</if>
 				<if test='type[i].contains("D")'>
-					OR p.productdesc like '%'||#{keywordValue}||'%'
+					OR UPPER(p.productdesc) like '%'||UPPER(#{keywordValue})||'%'
 				</if>
 				<if test='type[i].contains("C")'>
-					OR p.company like '%'||#{keywordValue}||'%'
+					OR UPPER(p.company) like '%'||UPPER(#{keywordValue})||'%'
+				</if>
+				<if test='type[i].contains("G")'>
+					OR (
+						c.lft BETWEEN
+							(SELECT lft FROM category WHERE lft = (
+								SELECT MIN(lft) FROM category WHERE UPPER(catname) like '%'||UPPER(#{keywordValue})||'%'
+								)
+							)
+							AND
+							(SELECT rgt FROM category WHERE lft = (
+								SELECT MIN(lft) FROM category WHERE UPPER(catname) like '%'||UPPER(#{keywordValue})||'%'
+								)
+							)
+						AND
+						c.rgt BETWEEN
+							(SELECT lft FROM category WHERE lft = (
+								SELECT MIN(lft) FROM category WHERE UPPER(catname) like '%'||UPPER(#{keywordValue})||'%'
+								)
+							)
+							AND
+							(SELECT rgt FROM category WHERE lft = (
+								SELECT MIN(lft) FROM category WHERE UPPER(catname) like '%'||UPPER(#{keywordValue})||'%'
+								)
+							)
+					)
 				</if>
 			</trim>
 		</foreach>
 		p.pid > 0
 		
+	</select>
+	
+	<select id="getOrderCount" resultType="int">
+		SELECT COUNT(DISTINCT onum)
+		FROM order_product
+		WHERE pid = #{pid}
 	</select>
 </mapper>

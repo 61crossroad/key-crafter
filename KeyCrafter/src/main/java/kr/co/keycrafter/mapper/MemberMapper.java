@@ -15,6 +15,8 @@ public interface MemberMapper {
 	
 	public String getEmail(String email);
 	
+	public String getContact(String contact);
+	
 	public MemberVO getMember(String id);
 	
 	public MemberVO getMemberWithAuth(String id);

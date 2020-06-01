@@ -26,4 +26,6 @@ public interface CategoryMapper {
 	public int updateCategory(CategoryVO category);
 	
 	public int deleteCategory(CategoryVO category);
+	
+	public int selectCategoryForKeyword(String keyword);
 }

@@ -15,7 +15,7 @@
 </head>
 <body>
 	<div class="container">
-		<h1>:: 존재하지 않는 주소입니다 ::</h1>
+		<h1>"존재하지 않는 주소입니다."</h1>
 	</div>
 </body>
 </html>

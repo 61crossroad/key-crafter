@@ -22,4 +22,6 @@ public interface ProductMapper {
 	public List<ProductVO> getProductListWithPaging(Criteria cri);
 	
 	public int getTotalCount(Criteria cri);
+	
+	public int getOrderCount(int pid);
 }

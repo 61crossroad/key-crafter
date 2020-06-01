@@ -82,4 +82,14 @@
 		DELETE FROM category
 		WHERE lft BETWEEN #{lft} AND #{rgt}
 	</delete>
+	
+	<select id="selectCategoryForKeyword" resultType="int">
+		SELECT catnum
+		FROM category
+		WHERE lft = (
+			SELECT MIN(lft)
+			FROM category
+			WHERE catname like '%'||#{keyword}||'%'
+		)
+	</select>
 </mapper>
