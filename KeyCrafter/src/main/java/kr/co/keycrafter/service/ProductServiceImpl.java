@@ -47,6 +47,7 @@ public class ProductServiceImpl implements ProductService {
 		
 		// 상품 이미지가 없을 경우 기본 이미지 설정
 		if (product.getAttachList() == null || product.getAttachList().size() <= 0) {
+			log.info("Null Product Attach");
 			List<ProductAttachVO> attachList = new ArrayList<>();
 			ProductAttachVO attachDefault = new ProductAttachVO();
 			
@@ -63,6 +64,11 @@ public class ProductServiceImpl implements ProductService {
 		
 		productMapper.insertSelectKeyProduct(product);
 		int resultPid = product.getPid();
+		/*
+		productMapper.insertProduct(product);
+		int resultPid = product.getPid();
+		*/
+		log.info("Insert Result: " + resultPid);
 		
 		// product_attach 테이블에 첨부파일 insert
 		product.getAttachList().forEach(attach -> {

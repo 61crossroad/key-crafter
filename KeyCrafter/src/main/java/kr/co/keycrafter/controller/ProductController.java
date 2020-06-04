@@ -76,6 +76,8 @@ public class ProductController {
 		
 		List<ProductVO> list = productService.getProductList(realCri);
 		
+		// list.forEach(product -> log.info(product));
+		
 		model.addAttribute("list", list);
 		model.addAttribute("pageMaker", pageDTO);
 		log.info(pageDTO);

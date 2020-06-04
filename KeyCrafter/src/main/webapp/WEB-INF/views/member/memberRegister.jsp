@@ -8,7 +8,7 @@
 			<div class="row mt-lg">
 				<div class="col-lg-8 col-md-8">
 					<h3 class="mb-30 title_color">회원 가입</h3>
-					<form action="/member/insert" method="post">
+					<form id="regForm" action="/member/insert" method="post">
 						<div class="input-group-icon mt-10">
 							<div class="icon">
 								<i class="fa fa-user" aria-hidden="true"></i>
@@ -201,9 +201,10 @@ $(document).ready(function() {
 			$(this).focus();
 		}
 	});
-	
+	/*
 	$("input[type='submit']").on("click", function(event) {
 		event.preventDefault();
+		console.log($("#regForm"));
 		
 		var id = $("input[name='id']");
 		var password = $("input[name='password']");
@@ -215,33 +216,39 @@ $(document).ready(function() {
 		if (!regExpId.test(id.val())) {
 			alert("형식에 맡지 않는 아이디입니다.");
 			id.focus();
+			return;
 		}
 		
 		else if (password.val() < 4) {
 			alert("비밀번호는 4글자 이상이어야 합니다.");
 			password.focus();
+			return;
 		}
 		
 		else if (rePassword.val() != password.val()) {
 			alert("비밀번호가 일치하지 않습니다.");
 			rePassword.focus();
+			return;
 		}
 		
 		else if (!regExpEmail.test(email.val())) {
 			alert("이메일 형식에 맞지 않습니다.");
 			email.focus();
+			return;
 		}
 		
 		else if (!regExpNum.test(contact.val())) {
 			alert("숫자만 입력해주세요.");
 			contact.focus();
+			return;
 		}
 		
 		else if (!regExpNum.test(zipCode.val())) {
 			alert("숫자만 입력해주세요.");
 			zipCode.focus();
+			return;
 		}
-		
+
 		else {
 			var member = new Object();
 			member.id = id.val();
@@ -258,6 +265,7 @@ $(document).ready(function() {
 					xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
 				},
 				success: function(result) {
+					console.log(result);
 					if (result == "id") {
 						alert("이미 존재하는 아이디입니다.");
 						$("input[name='id']").focus();
@@ -272,10 +280,17 @@ $(document).ready(function() {
 						alert("이미 존재하는 전화번호입니다.");
 						$("input[name='contact']").focus();
 					}
+					else {
+						console.log("All cleared");
+					}
 				}
 			});
 		}
+
+		console.log("last line");
+		$("#regForm").submit();
 	});
+	*/
 });
 </script>
 

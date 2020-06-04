@@ -1,11 +1,10 @@
 package kr.co.keycrafter.service;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -14,17 +13,15 @@ import kr.co.keycrafter.domain.MemberVO;
 import kr.co.keycrafter.domain.AuthVO;
 import kr.co.keycrafter.domain.Criteria;
 import kr.co.keycrafter.mapper.MemberMapper;
-import kr.co.keycrafter.mapper.OrderMapper;
 import kr.co.keycrafter.security.CustomUserDetailsService;
 
 @Log4j
 @AllArgsConstructor
 @Service
 public class MemberServiceImpl implements MemberService {
-	MemberMapper memberMapper;
-	OrderMapper orderMapper;
-	PasswordEncoder passwordEncoder;
-	CustomUserDetailsService userDetailsService;
+	private MemberMapper memberMapper;
+	private PasswordEncoder passwordEncoder;
+	private CustomUserDetailsService userDetailsService;
 	
 	@Transactional
 	@Override

@@ -7,6 +7,8 @@ import kr.co.keycrafter.domain.MemberVO;
 import kr.co.keycrafter.domain.AuthVO;
 
 public interface MemberMapper {
+	public String getTime();
+	
 	public void insertMember(MemberVO member);
 	
 	public void insertAuth(AuthVO memberAuth);

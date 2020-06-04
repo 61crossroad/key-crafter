@@ -16,33 +16,33 @@
 			</ol>
 			<div class="carousel-inner h-600">
 				<div class="carousel-item active">
-					<a href="/product/get?pid=10">					
+					<a href="/product/get?pid=1">					
 						<img src="/resources/img/banner/anne-pro-2.png" class="d-block w-100" alt="1st">
 					</a>					
 					<div class="carousel-caption d-none d-block">
-						<a href="/product/get?pid=10">
+						<a href="/product/get?pid=1">
 							<h3>Anne Pro 2</h3>
 						</a>
 						<h4>Nulla vitae elit libero, a pharetra augue mollis interdum.</h4>
 					</div>
 				</div>
 				<div class="carousel-item">
-					<a href="/product/get?pid=11">
+					<a href="/product/get?pid=2">
 						<img src="/resources/img/banner/hhkb02.png" class="d-block w-100" alt="2nd">
 					</a>
 					<div class="carousel-caption d-none d-block">
-						<a href="/product/get?pid=11">
+						<a href="/product/get?pid=2">
 							<h3>HHKB</h3>
 						</a>
 						<h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h4>
 					</div>
 				</div>
 				<div class="carousel-item">
-					<a href="/product/get?pid=7">
+					<a href="/product/get?pid=3">
 						<img src="/resources/img/banner/realforce01.png" class="d-block w-100" alt="3rd">
 					</a>
 					<div class="carousel-caption d-none d-block">
-						<a href="/product/get?pid=7">
+						<a href="/product/get?pid=3">
 							<h3>Leopold Realforce R2</h3>
 						</a>
 						<h4>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</h4>

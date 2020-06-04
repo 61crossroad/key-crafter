@@ -7,6 +7,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -54,8 +55,17 @@ public class MemberMapperTest {
 	@Test
 	public void getMemberList() {
 		Criteria cri = new Criteria();
-		cri.setPage(2);
-		cri.setShow(4);
+		cri.setPage(1);
+		cri.setShow(10);
+		
+		List<String> keyword = new ArrayList<String>();
+		keyword.add("aaa");
+		
+		List<String> type = new ArrayList<String>();
+		type.add("EINT");
+		
+		cri.setKeyword(keyword);
+		cri.setType(type);
 		List<MemberVO> memberList = mapper.getMemberList(cri);
 		
 		memberList.forEach(member -> log.info(member));

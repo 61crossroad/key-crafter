@@ -21,6 +21,10 @@
 		<result property="auth" column="auth"/>
 	</resultMap>
 	
+	<select id="getTime" resultType="string">
+		SELECT CURRENT_TIMESTAMP;
+	</select>
+	
 	<insert id="insertMember">
 		INSERT INTO member
 		(id, password, name, email, contact, address, zipcode)
@@ -98,6 +102,40 @@
 	<select id="getMemberList" resultMap="memberMap">
 		SELECT m.id, m.name, m.email, m.contact, a.auth
 		FROM (
+			SELECT rn, id, name, email, contact
+			FROM (
+				SELECT row_number() over(ORDER BY id ASC) rn, id, name, email, contact
+				FROM member
+			) ml
+			WHERE
+	<foreach item="keywordValue" index="i" collection="keyword">
+		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+			<if test='type[i].contains("I")'>
+				OR id like CONCAT('%', #{keywordValue}, '%')
+			</if>
+			<if test='type[i].contains("N")'>
+				OR name like CONCAT('%', #{keywordValue}, '%')
+			</if>
+			<if test='type[i].contains("T")'>
+				OR contact like CONCAT('%', #{keywordValue}, '%')
+			</if>
+			<if test='type[i].contains("E")'>
+				OR email like CONCAT('%', #{keywordValue}, '%')
+			</if>
+		</trim>
+	</foreach>
+			<![CDATA[
+				ml.rn <= #{page} * #{show}
+			]]>
+		) m
+		LEFT OUTER JOIN member_auth a
+		ON m.id = a.id
+		WHERE m.rn > (#{page} - 1) * #{show}
+		ORDER BY m.id ASC
+		
+	<!-- ORACLE VER.
+		SELECT m.id, m.name, m.email, m.contact, a.auth
+		FROM (
 			SELECT rownum rn, id, name, email, contact
 			FROM (
 				SELECT * FROM member ORDER BY id ASC
@@ -127,9 +165,33 @@
 		ON m.id = a.id
 		WHERE rn > (#{page} - 1) * #{show}
 		ORDER BY m.id ASC
+	-->
 	</select>
 	
 	<select id="getMemberCount" resultType="int">
+		SELECT COUNT(DISTINCT id)
+		FROM member
+		WHERE
+<foreach item="keywordValue" index="i" collection="keyword">
+	<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+		<if test='type[i].contains("I")'>
+			OR id like CONCAT('%', #{keywordValue}, '%')
+		</if>
+		<if test='type[i].contains("N")'>
+			OR name like CONCAT('%', #{keywordValue}, '%')
+		</if>
+		<if test='type[i].contains("T")'>
+			OR contact like CONCAT('%', #{keywordValue}, '%')
+		</if>
+		<if test='type[i].contains("E")'>
+			OR email like CONCAT('%', #{keywordValue}, '%')
+		</if>
+	</trim>
+</foreach>
+			id != '_'
+	</select>
+	
+	<!-- ORACLE VER.
 		SELECT COUNT(DISTINCT id)
 		FROM member
 		WHERE
@@ -151,4 +213,5 @@
 </foreach>
 			id != '_'
 	</select>
+	 -->
 </mapper>

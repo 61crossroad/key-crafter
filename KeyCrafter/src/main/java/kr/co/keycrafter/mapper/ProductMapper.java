@@ -7,6 +7,8 @@ import kr.co.keycrafter.domain.Criteria;
 import kr.co.keycrafter.domain.ProductVO;
 
 public interface ProductMapper {
+	public void insertProduct(ProductVO product);
+	
 	public void insertSelectKeyProduct(ProductVO product);
 	
 	public int updateProduct(ProductVO product);

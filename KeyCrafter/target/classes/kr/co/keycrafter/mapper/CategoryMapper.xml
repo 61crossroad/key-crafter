@@ -5,9 +5,15 @@
 <mapper namespace="kr.co.keycrafter.mapper.CategoryMapper">
 	<insert id="insertCategory">
 		INSERT INTO category
+			(catname, lft, rgt)
+		VALUES
+			(#{catName}, #{lft}, #{rgt})
+	<!-- ORACLE VER.
+		INSERT INTO category 
 			(catnum, catname, lft, rgt)
 		VALUES
 			(seq_category.nextval, #{catName}, #{lft}, #{rgt})
+	-->
 	</insert>
 	
 	<select id="selectCategory" resultType="kr.co.keycrafter.domain.CategoryVO">
@@ -89,7 +95,16 @@
 		WHERE lft = (
 			SELECT MIN(lft)
 			FROM category
+			WHERE catname like CONCAT('%', #{keyword}, '%')
+		)
+	<!-- ORACLE VER.
+		SELECT catnum
+		FROM category
+		WHERE lft = (
+			SELECT MIN(lft)
+			FROM category
 			WHERE catname like '%'||#{keyword}||'%'
 		)
+	-->
 	</select>
 </mapper>

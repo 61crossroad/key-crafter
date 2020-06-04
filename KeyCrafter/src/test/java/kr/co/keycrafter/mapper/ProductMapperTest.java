@@ -32,7 +32,7 @@ public class ProductMapperTest {
 		Criteria cri = new Criteria();
 		
 		List<String> keyword = new ArrayList<String>();
-		keyword.add("dsa");
+		keyword.add("키크론");
 		
 		List<String> type = new ArrayList<String>();
 		type.add("CDGP");
@@ -51,11 +51,13 @@ public class ProductMapperTest {
 	public void getProductListWithPaging() {
 		Criteria cri = new Criteria();
 		cri.setShow(2);
-		cri.setPage(2);
+		cri.setPage(1);
 		
 		List<ProductVO> list = productMapper.getProductListWithPaging(cri);
 		
 		list.forEach(product -> log.info(product));
+		
+		log.info(productMapper.getTotalCount(cri));
 	}
 	// @Test
 	public void getSingleProduct() {
@@ -97,15 +99,18 @@ public class ProductMapperTest {
 	// @Test
 	public void insertProduct() {
 		ProductVO product = new ProductVO();
-		product.setPname("상품3");
-		product.setPrice(10000);
+		product.setPname("K4");
+		product.setPrice(125000);
 		product.setQuantity(100);
-		product.setProductDesc("test 테스트");
-		product.setCompany("그 회사");
-		product.setMadeIn("KOREA");
+		product.setProductDesc("키크론 K4 풀배열");
+		product.setCompany("키크론 (Key Chron)");
+		product.setMadeIn("홍콩 (HongKong)");
+		product.setCatNum(1);
 		
 		log.info(product);
 		
+		productMapper.insertSelectKeyProduct(product);
+		log.info("Result pid: " + product.getPid());
 		// productMapper.insertProduct(product);
 	}
 }
