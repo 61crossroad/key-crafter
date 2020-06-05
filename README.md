@@ -6,15 +6,26 @@
 http://13.209.232.233:8080/
 
 테스트 아이디/비밀번호 : aaa/aaaa
-또는 계정 생성도 가능합니다.
+
+직접 계정을 만들어서도 테스트 가능합니다. (스프링 시큐리티 적용)
 
 
 ## 목차
-[1.개발 환경](#개발-환경)
+[1.개발 환경](#1.개발-환경)
 
-[2.데이터베이스 ERD](#데이터베이스-ERD)
+[2.데이터베이스 ERD](#2.데이터베이스-ERD)
 
-### 개발 환경
+[3.프로젝트의 기본 구조](#3.프로젝트의-기본-구조)
+
+[4.HTTP/RESTful API 구현](#4.HTTP/RESTful-API-구현)
+
+[5.스프링 시큐리티](#5.스프링-시큐리티)
+
+[6.파일 업로드](#6.파일-업로드)
+
+[7.카테고리와 댓글의 계층 알고리즘](#7.카테고리와-댓글의-계층-알고리즘)
+
+### 1.개발 환경
 1.Back-end
 Java 8
 Java Spring Framework 5.0.7
@@ -26,4 +37,63 @@ HTML5 + CSS3
 Bootstrap
 Javascript + JQuery(3.2.1)
 
-### 데이터베이스 ERD
+### 2.데이터베이스 ERD
+로컬에서는 Oracle 11g R2 버전에서 데이터베이스 구조와 쿼리를 만들었지만,
+AWS 프리티어에서는 MariaDB만 가능해서 배포를 준비하며 다시 MariaDB로 변환했습니다.
+
+아래 그림은 MySQL Workbench로 작성한 ERD입니다.
+
+![KeyCrafter ERD](https://drive.google.com/uc?id=1dhmfSEqjVt9jxAZGYYyifl3mI45hRyUd)
+
+##### 테이블 설명
+1. member : 회원 정보
+2. member_auth : 회원의 권한 (스프링 시큐리티)
+3. persistent_logins : 스프링 시큐리티의 principal, authorize, authentication 등 여러 기능을 이용하기 위한 테이블
+4. category : 카테고리
+5. product : 상품 정보
+6. product_attach : 상품의 이미지 파일 정보
+7. product_reply : 상품의 후기(댓글) 정보
+8. order_info : 주문 정보
+9. order_product : product와 order_info을 1대다로 연결하기 위한 테이블
+10. order_status : 입금 대기, 배송 준비 중 등 주문 상태를 가지고 있는 테이블
+
+### 3.프로젝트의 기본 구조
+스프링 MVC 모델2 계층을 따라서 구성하였습니다.
+클라이언트(브라우저) - 뷰(JSP) - 컨트롤러 - 서비스 - 영속 - 데이터베이스
+
+### 4.HTTP/RESTful API 구현
+클라이언트와 서버의 통신은 전통적인 HTTP와 JQuery AJAX를 이용한 RESTful API를 상황에 따라 사용하였습니다.
+그 중심에 있는 컨트롤러는 다음과 같이 나눠져 있습니다.
+(REST도 HTTP프로토콜을 이용한 통신이지만 편의를 위해 HTTP/REST로 나눠서 표기합니다.)
+
+1. Cart : 장바구니 (HTTP + REST)
+2. Category : 카테고리 (전체 카테고리를 수정하는 기능만 HTTP, 나머지는 REST)
+3. Member : 회원 가입, 조회, 변경 등 (회원 가입 폼에서 중복 항목 검사만 REST로 구현)
+4. Order : 주문 (HTTP)
+5. Product : 상품 CRUD (HTTP)
+6. ProductReply : 상품 페이지의 댓글 (뷰 전환을 하지 않아야하고, 동시에 여러 댓글이 달리는 경우 즉각적인 반응을 위해 비동기 방식인 REST만 이용)
+7. UploadController : 파일 업로드 (REST)
+
+### 5.스프링 시큐리티
+User를 상속한 CustomUser 도메인과 UserDetailsService를 상속한 CustomUserDetailsService를 구현하였습니다.
+
+권한은 'ROLE_ADMIN', 'ROLE_MEMBER', 'ROLE_USER'입니다.
+
+1.ROLE_ADMIN : 최고 관리자로서 서비스에 관한 모든 권한을 가집니다.
+
+2.ROLE_MEMBER : 운영자이며 다른 회원의 권한을 수정할 수 없는 제약이 있습니다.
+
+3.ROLE_USER : 일반 고객입니다.
+
+### 6.파일 업로드
+서블릿 3.0 이상에서 지원하는 자체 API와 JQuery AJAX를 이용해서 구현하였습니다.
+
+1. 파일명이 중복되는 것을 막기 위해 파일명에 UUID를 덧붙였습니다.
+2. 파일 저장 위치는 년/월/일 계층의 폴더로 나눠서 한 폴더에 너무 많은 파일을 넣지 않도록 했습니다.
+3. 상품 사진은 원본, 중간 크기, 작은 크기가 필요했기 때문에 Thumbnailator 라이브러리를 이용해서 섬네일을 만들었습니다.
+
+로컬에서는 아무 이상없이 작동했으나 AWS에 배포한 뒤에는 파일을 업로드해도 기본 이미지로만 저장되는 문제가 발생했습니다.
+이 이슈를 해결한 뒤에 배포를 하고 싶었지만 너무 오랜 시간을 잡아먹고 있어서 우선 배포를 하기로 결정했습니다.
+현재 AWS SDK for Java와 S3 서비스를 이용한 업로드 방식으로 바꿔보려고 합니다.
+
+### 7.카테고리와 댓글의 계층 알고리즘
