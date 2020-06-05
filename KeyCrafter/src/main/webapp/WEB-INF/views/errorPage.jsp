@@ -17,9 +17,10 @@
 </head>
 <body>
 	<div class="container">
+	<!-- 
 			<h1>"오류가 발생했습니다."</h1>
 			<h2>관리자에게 문의하세요.</h2>
-		<!-- 
+	-->
 	<h4><c:out value="${ exception.getMessage() }"></c:out></h4>
 
 	<ul>
@@ -27,7 +28,6 @@
 			<li><c:out value="${ stack }"/></li>
 		</c:forEach>
 	</ul>
-	-->
 	</div>
 </body>
 </html>

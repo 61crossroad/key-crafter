@@ -156,6 +156,10 @@ $(document).ready(function() {
 		return true;
 	}
 	
+	//
+	// TRY AJAX CALLBACK
+	//
+	
 	// file 필드에 파일이 선택되면 임시로 파일 업로드
 	$("input[type = 'file']").on("change", function(e) {
 		var formData = new FormData();
@@ -169,8 +173,15 @@ $(document).ready(function() {
 			
 			formData.append("uploadFile", files[i]);
 			// console.log(formData);
+			
+			tempUpload(formData, function(result) {
+				showUploadResult(result);
+				$(".uploadDiv").html(cloneObj.html());
+			});
 		}
-
+	});
+	
+	function tempUpload(formData, callback) {
 		$.ajax({
 			url: '/uploadAjaxAction',
 			type: 'post',
@@ -183,12 +194,17 @@ $(document).ready(function() {
 			},
 			success: function(result) {
 				// console.log(result);
+				if (callback) {
+					callback(result);
+				}
+				/*
 				showUploadResult(result);
 				$(".uploadDiv").html(cloneObj.html());
+				*/
 				// $(".uploadDiv").replaceWith(cloneObj);
 			}
 		});
-	});
+	}
 	
 	// 임시로 파일 업로드 후 확인과 삭제를 위한 div 생성
 	function showUploadResult(result) {
@@ -216,6 +232,15 @@ $(document).ready(function() {
 		
 		// console.log("Delete file: " + fileName);
 		
+		deleteTempUpload(fileName, function(result) {
+			result = decodeURIComponent(result);
+			alert(result);
+			targetDiv.remove();
+		});
+		
+	});
+	
+	function deleteTempUpload(fileName, callback) {
 		$.ajax({
 			url: '/deleteFile',
 			type: 'post',
@@ -225,12 +250,12 @@ $(document).ready(function() {
 				xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
 			},
 			success: function(result) {
-				result = decodeURIComponent(result);
-				alert(result);
-				targetDiv.remove();
+				if (callback) {
+					callback(result);
+				}
 			}
 		});
-	});
+	}
 	
 	// 등록 form에 첨부파일과 카테고리 추가 후 submit
 	$("input[type = 'submit']").on("click", function(e) {
