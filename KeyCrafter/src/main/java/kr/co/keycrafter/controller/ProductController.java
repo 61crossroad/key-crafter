@@ -43,7 +43,7 @@ public class ProductController {
 	@PostMapping("/insert")
 	public String insertProduct(Criteria cri, ProductVO product, RedirectAttributes rttr) {
 		log.info("Insert product......");
-		log.info(product);
+		// log.info(product);
 		
 		int insertResult = productService.insertProduct(product);
 		log.info("result: " + insertResult);
@@ -63,7 +63,7 @@ public class ProductController {
 		
 		UriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequest();
 		String requestedValue = builder.buildAndExpand().getPath();
-		log.info("Request: " + requestedValue);
+		// log.info("Request: " + requestedValue);
 		
 		if (requestedValue.contains("index")) {
 			cri.setShow(10);
@@ -80,7 +80,7 @@ public class ProductController {
 		
 		model.addAttribute("list", list);
 		model.addAttribute("pageMaker", pageDTO);
-		log.info(pageDTO);
+		// log.info(pageDTO);
 		
 		if (requestedValue.contains("index")) {
 			return "/index";
@@ -121,7 +121,7 @@ public class ProductController {
 	@PostMapping("/update")
 	public String updateProduct(Criteria cri, ProductVO product, RedirectAttributes rttr) {
 		log.info("Update product......");
-		log.info(product);
+		// log.info(product);
 		
 		int updateResult;
 		if (productService.updateProduct(product) > 0) {
@@ -157,7 +157,7 @@ public class ProductController {
 	@GetMapping("/search")
 	public String searchProduct(Criteria cri) {
 		log.info("Search products");
-		log.info(cri);
+		// log.info(cri);
 		
 		int catNum = categoryService.getCategoryForKeyword(cri.getKeyword().get(0));
 		cri.setCat(catNum);

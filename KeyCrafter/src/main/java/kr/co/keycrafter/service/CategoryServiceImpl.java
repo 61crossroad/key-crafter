@@ -22,15 +22,15 @@ public class CategoryServiceImpl implements CategoryService {
 	public void insertCategory(CategoryVO category) {
 		log.info("insert Category: " + category.getCatName());
 		List<CategoryVO> subList = categoryMapper.selectCategorySubList(category.getCatNum(), 0);
-		log.info(subList);
+		// log.info(subList);
 		
 		// 다른 형제 카테고리가 없는 경우
 		if (subList.size() == 1) {
-			log.info("Only child");
+			// log.info("Only child");
 			// 부모의 left 값을 get
 			int left = subList.get(0).getLft();
 			
-			log.info("Left value: " + left);
+			// log.info("Left value: " + left);
 			
 			// 부모의 left 값을 기준으로 다른 카테고리들의 위치 이동
 			categoryMapper.updateRight(left, 2);
@@ -40,13 +40,13 @@ public class CategoryServiceImpl implements CategoryService {
 			newCategory.setCatName(category.getCatName());
 			newCategory.setLft(left + 1);
 			newCategory.setRgt(left + 2);
-			log.info(newCategory);
+			// log.info(newCategory);
 			
 			categoryMapper.insertCategory(newCategory);
 		}
 		// 형제들 중 마지막에 insert
 		else {
-			log.info("Last child");
+			// log.info("Last child");
 			// 현재 마지막 순서에 있는 형제의 right 값을 get
 			int right = subList.get(subList.size() - 1).getRgt();
 			

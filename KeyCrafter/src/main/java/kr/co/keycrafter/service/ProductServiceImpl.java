@@ -128,14 +128,14 @@ public class ProductServiceImpl implements ProductService {
 		
 		// 모든 첨부파일을 DB에서  삭제
 		result = productAttachMapper.deleteAllAttach(pid);
-		log.info("Delete all attaches: " + result);
+		// log.info("Delete all attaches: " + result);
 		
 		result = productMapper.updateProduct(product);
-		log.info("Product updated");
+		// log.info("Product updated");
 		
 		// 첨부파일이 모두 삭제되었을때 기본 이미지 삽입
 		if (product.getAttachList() == null || product.getAttachList().size() <= 0) {
-			log.info("Default image added");
+			// log.info("Default image added");
 			
 			List<ProductAttachVO> attachList = new ArrayList<>();
 			ProductAttachVO attachDefault = new ProductAttachVO();
@@ -154,8 +154,8 @@ public class ProductServiceImpl implements ProductService {
 		// 상품 정보에 첨부파일이 있으면 DB의 product_attach 테이블에 파일 정보 insert
 		product.getAttachList().forEach(attach -> {
 			attach.setPid(pid);
-			log.info("Attach list");
-			log.info(attach);
+			// log.info("Attach list");
+			// log.info(attach);
 			productAttachMapper.insertAttach(attach);
 		});
 		
@@ -192,7 +192,7 @@ public class ProductServiceImpl implements ProductService {
 	
 	private void deleteAttachByPath(List<ProductAttachVO> attachList) {
 		log.info("Delete all attaches...");
-		log.info(attachList);
+		// log.info(attachList);
 		
 		attachList.forEach(attach -> {
 			try {
@@ -203,8 +203,8 @@ public class ProductServiceImpl implements ProductService {
 					mediumFile = Paths.get(uploadRoot, attach.getUploadPath(), "m_" + attach.getUuid() + "_" + attach.getFileName());
 					smallFile = Paths.get(uploadRoot, attach.getUploadPath(), "s_" + attach.getUuid() + "_" + attach.getFileName());
 					
-					log.info(originalFile);
-					log.info(smallFile);
+					// log.info(originalFile);
+					// log.info(smallFile);
 					
 					Files.delete(originalFile);
 					Files.delete(mediumFile);

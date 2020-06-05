@@ -145,7 +145,7 @@ $(document).ready(function (){
 		// console.log($(this));
 		categoryForm.find("input[name = 'cat']").val($(this).attr("href"));
 		
-		console.log(categoryForm.find("input[name = 'cat']").val());
+		// console.log(categoryForm.find("input[name = 'cat']").val());
 		
 		categoryForm.submit();
 	});

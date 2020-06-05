@@ -78,7 +78,7 @@ public class CategoryController {
 	@PostMapping("/update")
 	public String update(CategoryVO category) {
 		log.info("Update Category");
-		log.info(category);
+		// log.info(category);
 		
 		categoryService.updateCategory(category);
 		

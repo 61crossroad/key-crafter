@@ -8,7 +8,7 @@
 			<div class="row mt-lg">
 				<div class="col-lg-8 col-md-8">
 					<h3 class="mb-30 title_color">회원 가입</h3>
-					<form id="regForm" action="/member/insert" method="post">
+					<form name="regForm" action="/member/insert" method="post">
 						<div class="input-group-icon mt-10">
 							<div class="icon">
 								<i class="fa fa-user" aria-hidden="true"></i>
@@ -75,7 +75,7 @@
 							숫자만 입력해주세요.
 						</div>
 						<div class="mt-10">
-							<input type="submit" name="submit" class="genric-btn info" value="가입하기">
+							<input type="submit" class="genric-btn info" value="가입하기">
 						</div>
 						<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }">
 					</form>
@@ -201,10 +201,9 @@ $(document).ready(function() {
 			$(this).focus();
 		}
 	});
-	/*
+	
 	$("input[type='submit']").on("click", function(event) {
 		event.preventDefault();
-		console.log($("#regForm"));
 		
 		var id = $("input[name='id']");
 		var password = $("input[name='password']");
@@ -255,42 +254,44 @@ $(document).ready(function() {
 			member.email = email.val();
 			member.contact = contact.val();
 			
-			$.ajax({
-				url: "/member/check",
-				type: "POST",
-				data: JSON.stringify(member),
-				contentType: "application/json;charset=utf-8",
-				dataType: "text",
-				beforeSend: function(xhr) {
-					xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
-				},
-				success: function(result) {
-					console.log(result);
-					if (result == "id") {
-						alert("이미 존재하는 아이디입니다.");
-						$("input[name='id']").focus();
-					}
-					
-					else if (result == "email") {
-						alert("이미 존재하는 이메일 주소입니다.");
-						$("input[name='email']").focus();
-					}
-					
-					else if (result == "contact") {
-						alert("이미 존재하는 전화번호입니다.");
-						$("input[name='contact']").focus();
-					}
-					else {
-						console.log("All cleared");
-					}
-				}
+			checkInfo(member, function(result) {
+				$("form[name='regForm']").submit();
 			});
 		}
-
-		console.log("last line");
-		$("#regForm").submit();
 	});
-	*/
+	
+	function checkInfo(member, callback) {
+		$.ajax({
+			url: "/member/check",
+			type: "POST",
+			data: JSON.stringify(member),
+			contentType: "application/json;charset=utf-8",
+			dataType: "text",
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+			},
+			success: function(result) {
+				if (result == "id") {
+					alert("이미 존재하는 아이디입니다.");
+					$("input[name='id']").focus();
+				}
+				
+				else if (result == "email") {
+					alert("이미 존재하는 이메일 주소입니다.");
+					$("input[name='email']").focus();
+				}
+				
+				else if (result == "contact") {
+					alert("이미 존재하는 전화번호입니다.");
+					$("input[name='contact']").focus();
+				}
+				
+				else if(callback) {
+					callback(result);
+				}
+			}
+		});
+	}
 });
 </script>
 

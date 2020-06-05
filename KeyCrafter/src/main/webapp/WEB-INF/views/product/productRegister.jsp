@@ -89,6 +89,8 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
+	var regExpNum = /^[0-9]*$/;
+	
 	var formObj = $("form[role = 'form']");
 	var cloneObj = $(".uploadDiv").clone();
 	
@@ -233,6 +235,36 @@ $(document).ready(function() {
 	// 등록 form에 첨부파일과 카테고리 추가 후 submit
 	$("input[type = 'submit']").on("click", function(e) {
 		e.preventDefault();
+		
+		var pname = $("#pname").val();
+		var price = $("#price").val();
+		var quantity = $("#quantity").val();
+		
+		if (pname == undefined || pname == null || pname == "") {
+			alert("상품명을 입력하세요.");
+			return;
+		}
+		
+		else if (price == undefined || price == null || price == "") {
+			alert("가격을 입력하세요.");
+			return;
+		}
+		
+		else if (!regExpNum.test(price)) {
+			alert("가격은 숫자만 쓸 수 있습니다.");
+			return;
+		}
+		
+		else if (quantity == undefined || quantity == null || quantity == "") {
+			alert("수량을 입력하세요.");
+			return;
+		}
+		
+		else if (!regExpNum.test(quantity)) {
+			alert("수량은 숫자만 쓸 수 있습니다.");
+			return;
+		}
+		
 		
 		var str="";
 		$(".uploadResult div").each(function(i, obj) {

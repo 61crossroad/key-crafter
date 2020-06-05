@@ -158,8 +158,8 @@ $(document).ready(function() {
 		/*
 		console.log("insertResult: " + insertParam);
 		console.log("updateResult: " + updateParam);
-		*/
 		console.log(insertParam + ", " + updateParam + ", " + deleteParam);
+		*/
 		
 		if (insertParam > 0) {
 			$("#resultCenter .modal-body").html(parseInt(insertParam) + "번 상품을 등록했습니다.");

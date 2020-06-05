@@ -51,7 +51,7 @@ public class UploadController {
 		}
 		
 		for (MultipartFile multipartFile : uploadFile) {
-			log.info("-----------------------------------");
+			// log.info("-----------------------------------");
 			log.info("Upload file name: " + multipartFile.getOriginalFilename());
 			log.info("Upload file size: " + multipartFile.getSize());
 			
