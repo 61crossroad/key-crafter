@@ -97,3 +97,18 @@ User를 상속한 CustomUser 도메인과 UserDetailsService를 상속한 Custom
 현재 AWS SDK for Java와 S3 서비스를 이용한 업로드 방식으로 바꿔보려고 합니다.
 
 ### 7.카테고리와 댓글의 계층 알고리즘
+reference/parent와 sequence, depth 파라미터 등을 이용한 연결 리스트는 직관적으로 떠올려보기는 쉽습니다.
+하지만 여러 예외 처리를 위해 코드가 지저분해지고, 유연하게 변형하기가 어렵다고 생각했습니다.
+
+그래서 다른 계층형 자료구조를 찾던 중 아래와 같은 'Nested Set Model'을 발견해서 카테고리와 댓글에 모두 적용했습니다.
+
+http://mikehillyer.com/articles/managing-hierarchical-data-in-mysql/
+
+![nested set diagram](http://mikehillyer.com/media//nested_numbered.png)
+
+![nested set tree](http://mikehillyer.com/media//numbered_tree.png)
+
+간단히 요약하자면, 하위 계층은 상위 계층의 부분 집합으로 표현할 수 있기 때문에 집합을 이용해서 트리를 구성할 수 있었습니다.
+이런 집합 관계는 각 노드가 갖고 있는 left, right 값으로 구분합니다.
+
+위 그림에 잘 나타나 있듯이 경계값(left, right)이 2 ~ 9 인 TELEVISION의 하위 계층은, 2와 9 사이가 자신의 경계인 TUBE, LCD, PLASMA입니다.
