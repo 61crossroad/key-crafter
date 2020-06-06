@@ -45,6 +45,7 @@ Javascript + JQuery(3.2.1)
 ### 데이터베이스 erd
 ---
 로컬에서는 Oracle 11g R2 버전에서 데이터베이스 구조와 쿼리를 만들었지만,
+
 AWS 프리티어에서는 MariaDB만 가능해서 배포를 준비하며 다시 MariaDB로 변환했습니다.
 
 아래 그림은 MySQL Workbench로 작성한 ERD입니다.
@@ -67,6 +68,7 @@ AWS 프리티어에서는 MariaDB만 가능해서 배포를 준비하며 다시 
 ### 프로젝트의 기본 구조
 ---
 스프링 MVC 모델2 계층을 따라서 구성하였습니다.
+
 클라이언트(브라우저) - 뷰(JSP) - 컨트롤러 - 서비스 - 영속 - 데이터베이스
 
 ### http 및 rest api 구현
@@ -129,19 +131,21 @@ http://mikehillyer.com/articles/managing-hierarchical-data-in-mysql/
 TUBE의 경계 3 ~ 4를 포함하는 노드는 TELEVISION(2 ~ 9)와 ELECTRONICS(1 ~ 20) 두 개 이므로 TUBE의 깊이는 2가 됩니다.
 
 노드를 추가할 때는 추가될 노드의 부모와 더 오른쪽에 있는 노드들의 right 값을 +2만 해주면 됩니다.
-예를 들어 OLED를 TELEVISION 하위, PLASMA의 형제로 넣으려고 한다면
-PLASMA의 right 값인 8보다 right가 큰 노드들의 값을 모두 2씩 증가시킵니다. (경우에 따라 left와 right를 모두 증가시키는 노드도 있습니다.)
+예를 들어 OLED를 TELEVISION 하위, PLASMA의 형제로 넣으려고 한다면 PLASMA의 right 값인 8보다 right가 큰 노드들의 값을 모두 2씩 증가시킵니다.
+(경우에 따라 left와 right를 모두 증가시키는 노드도 있습니다.)
 이 과정 이후에 2[TELEVISION]11과 7[PLASMA]8 사이에 9와 10이 비어있으므로, 9[OLED]10을 생성해서 넣을 수 있습니다.
 
 ![Nested Set Model, Create](https://drive.google.com/uc?id=1wQYEpHHLgRJeONvPi4lY_4hxrWRjrwAM)
 
-삭제는 반대로 타겟 노드를 삭제하고 그 노드의 넓이(right - left)만큼 기존 노드들의 left 또는 right 값을 줄여서 트리를 유지합니다.
+삭제는 반대로 타겟 노드를 삭제하고 그 노드의 넓이(right - left + 1)만큼 기존 노드들의 left 또는 right 값을 줄여서 트리를 유지합니다.
 
 ### aws와 배포
 ---
 1년 동안 무료로 사용할 수 있는 aws 프리티어를 이용했습니다.
+
 EC2 - 아마존 리눅스 AMI
 RDS - MariaDB 10.3
+
 EC2에 Apache Tomcat 9.0을 설치해서 웹서버로 사용 중입니다.
 
 ### 차후 개선 사항
