@@ -1,6 +1,6 @@
 ## key-crafter
 
-'키크래프터'는 기계식 키보드와 주변기기를 판매하는 온라인 쇼핑몰입니다.
+'키크래프터'는 기계식 키보드와 관련 주변기기를 판매하는 온라인 쇼핑몰입니다.
 아래 링크에서 테스트 가능합니다.
 
 http://13.209.232.233:8080/
@@ -70,7 +70,7 @@ AWS 프리티어에서는 MariaDB만 가능해서 배포를 준비하며 다시 
 6. product_attach : 상품의 이미지 파일 정보
 7. product_reply : 상품의 후기(댓글) 정보
 8. order_info : 주문 정보
-9. order_product : product와 order_info을 1대다로 연결하기 위한 테이블
+9. order_product : product와 order_info를 1대다로 연결하기 위한 테이블
 10. order_status : 입금 대기, 배송 준비 중 등 주문 상태를 가지고 있는 테이블
 
 ### 프로젝트의 기본 구조
