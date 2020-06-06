@@ -32,14 +32,22 @@ http://13.209.232.233:8080/
 ### 개발 환경
 ---
 1.Back-end
+
 Java 8
+
 Java Spring Framework 5.0.7
+
 Mybatis 3.4.6 (Mybatis-Spring 1.3.2)
+
 HikariCP 2.7.8
 
+
 2.Front-end
+
 HTML5 + CSS3
+
 Bootstrap
+
 Javascript + JQuery(3.2.1)
 
 ### 데이터베이스 erd
