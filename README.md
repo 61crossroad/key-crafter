@@ -112,3 +112,16 @@ http://mikehillyer.com/articles/managing-hierarchical-data-in-mysql/
 이런 집합 관계는 각 노드가 갖고 있는 left, right 값으로 구분합니다.
 
 위 그림에 잘 나타나 있듯이 경계값(left, right)이 2 ~ 9 인 TELEVISION의 하위 계층은, 2와 9 사이가 자신의 경계인 TUBE, LCD, PLASMA입니다.
+
+또한 계층의 깊이는 자신을 포함하는 부모 노드의 수를 세어서 구할 수 있습니다.
+TUBE의 경계 3 ~ 4를 포함하는 노드는 TELEVISION(2 ~ 9)와 ELECTRONICS(1 ~ 20) 두 개 이므로 TUBE의 깊이는 2가 됩니다.
+
+노드를 추가할 때는 추가될 노드의 부모와 더 오른쪽에 있는 노드들의 right 값을 +2만 해주면 됩니다.
+예를 들어 OLED를 TELEVISION 하위, PLASMA의 형제로 넣으려고 한다면
+PLASMA의 right 값인 8보다 right가 큰 노드들의 값을 모두 2씩 증가시킵니다. (경우에 따라 left와 right를 모두 증가시키는 노드도 있습니다.)
+이 과정 이후에 2[TELEVISION]11과 7[PLASMA]8 사이에 9와 10이 비어있으므로, 9[OLED]10을 생성해서 넣을 수 있습니다.
+
+![Nested Set Model, Create](https://drive.google.com/uc?id=1wQYEpHHLgRJeONvPi4lY_4hxrWRjrwAM)
+
+삭제는 반대로
+![Nested Set Model, Create](https://drive.google.com/uc?id=1wQYEpHHLgRJeONvPi4lY_4hxrWRjrwAM)
