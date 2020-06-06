@@ -50,7 +50,7 @@ AWS 프리티어에서는 MariaDB만 가능해서 배포를 준비하며 다시 
 
 아래 그림은 MySQL Workbench로 작성한 ERD입니다.
 
-![KeyCrafter ERD](https://drive.google.com/uc?id=1dhmfSEqjVt9jxAZGYYyifl3mI45hRyUd)
+![KeyCrafter ERD](https://drive.google.com/uc?id=1NOZS8T_oRdxdbdJbBABF3Gcq_pHkJbVZ)
 
 ##### 테이블 설명
 ---
