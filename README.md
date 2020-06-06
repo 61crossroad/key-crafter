@@ -31,7 +31,7 @@ http://13.209.232.233:8080/
 
 ### 개발 환경
 ---
-1.Back-end
+#### 1.Back-end
 
 Java 8
 
@@ -42,7 +42,7 @@ Mybatis 3.4.6 (Mybatis-Spring 1.3.2)
 HikariCP 2.7.8
 
 
-2.Front-end
+#### 2.Front-end
 
 HTML5 + CSS3
 
