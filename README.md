@@ -13,11 +13,11 @@ http://13.209.232.233:8080/
 ## 목차
 [1.개발 환경](#개발-환경)
 
-[2.데이터베이스 ERD](#데이터베이스-ERD)
+[2.데이터베이스 erd](#데이터베이스-erd)
 
 [3.프로젝트의 기본 구조](#프로젝트의-기본-구조)
 
-[4.http/rest api 구현](#http/rest-api-구현)
+[4.http, rest api 구현](#http,-rest-api-구현)
 
 [5.스프링 시큐리티](#스프링-시큐리티)
 
@@ -25,11 +25,12 @@ http://13.209.232.233:8080/
 
 [7.카테고리와 댓글의 계층 알고리즘](#카테고리와-댓글의-계층-알고리즘)
 
-[8.aws/배포](#aws/배포)
+[8.aws, 배포](#aws,-배포)
 
-[9.차후 개선 사항](#9.차후-개선-사항)
+[9.차후 개선 사항](#차후-개선-사항)
 
 ### 개발 환경
+---
 1.Back-end
 Java 8
 Java Spring Framework 5.0.7
@@ -41,7 +42,8 @@ HTML5 + CSS3
 Bootstrap
 Javascript + JQuery(3.2.1)
 
-### 데이터베이스 ERD
+### 데이터베이스 erd
+---
 로컬에서는 Oracle 11g R2 버전에서 데이터베이스 구조와 쿼리를 만들었지만,
 AWS 프리티어에서는 MariaDB만 가능해서 배포를 준비하며 다시 MariaDB로 변환했습니다.
 
@@ -50,6 +52,7 @@ AWS 프리티어에서는 MariaDB만 가능해서 배포를 준비하며 다시 
 ![KeyCrafter ERD](https://drive.google.com/uc?id=1dhmfSEqjVt9jxAZGYYyifl3mI45hRyUd)
 
 ##### 테이블 설명
+---
 1. member : 회원 정보
 2. member_auth : 회원의 권한 (스프링 시큐리티)
 3. persistent_logins : 스프링 시큐리티의 principal, authorize, authentication 등 여러 기능을 이용하기 위한 테이블
@@ -62,10 +65,12 @@ AWS 프리티어에서는 MariaDB만 가능해서 배포를 준비하며 다시 
 10. order_status : 입금 대기, 배송 준비 중 등 주문 상태를 가지고 있는 테이블
 
 ### 프로젝트의 기본 구조
+---
 스프링 MVC 모델2 계층을 따라서 구성하였습니다.
 클라이언트(브라우저) - 뷰(JSP) - 컨트롤러 - 서비스 - 영속 - 데이터베이스
 
-### http/rest api 구현
+### http, rest api 구현
+---
 클라이언트와 서버의 통신은 전통적인 HTTP와 JQuery AJAX를 이용한 RESTful API를 상황에 따라 사용하였습니다.
 그 중심에 있는 컨트롤러는 다음과 같이 나눠져 있습니다.
 (REST도 HTTP프로토콜을 이용한 통신이지만 편의를 위해 HTTP/REST로 나눠서 표기합니다.)
@@ -79,6 +84,7 @@ AWS 프리티어에서는 MariaDB만 가능해서 배포를 준비하며 다시 
 7. UploadController : 파일 업로드 (REST)
 
 ### 스프링 시큐리티
+---
 User를 상속한 CustomUser 도메인과 UserDetailsService를 상속한 CustomUserDetailsService를 구현하였습니다.
 
 권한은 'ROLE_ADMIN', 'ROLE_MEMBER', 'ROLE_USER'입니다.
@@ -90,6 +96,7 @@ User를 상속한 CustomUser 도메인과 UserDetailsService를 상속한 Custom
 3.ROLE_USER : 일반 고객입니다.
 
 ### 파일 업로드
+---
 서블릿 3.0 이상에서 지원하는 자체 API와 JQuery AJAX를 이용해서 구현하였습니다.
 
 1. 파일명이 중복되는 것을 막기 위해 파일명에 UUID를 덧붙였습니다.
@@ -101,6 +108,7 @@ User를 상속한 CustomUser 도메인과 UserDetailsService를 상속한 Custom
 현재 AWS SDK for Java와 S3 서비스를 이용한 업로드 방식으로 바꿔보려고 합니다.
 
 ### 카테고리와 댓글의 계층 알고리즘
+---
 reference/parent와 sequence, depth 파라미터 등을 이용한 연결 리스트는 직관적으로 떠올려보기는 쉽습니다.
 하지만 여러 예외 처리를 위해 코드가 지저분해지고, 유연하게 변형하기가 어렵다고 생각했습니다.
 
@@ -129,13 +137,15 @@ PLASMA의 right 값인 8보다 right가 큰 노드들의 값을 모두 2씩 증�
 
 삭제는 반대로 타겟 노드를 삭제하고 그 노드의 넓이(right - left)만큼 기존 노드들의 left 또는 right 값을 줄여서 트리를 유지합니다.
 
-### aws/배포
+### aws, 배포
+---
 1년 동안 무료로 사용할 수 있는 aws 프리티어를 이용했습니다.
 EC2 - 아마존 리눅스 AMI
 RDS - MariaDB 10.3
 EC2에 Apache Tomcat 9.0을 설치해서 웹서버로 사용 중입니다.
 
-### 9.차후 개선 사항
+### 차후 개선 사항
+---
 웹 개발을 공부하며 처음으로 만든 프로젝트이지만, 기성 쇼핑몰 같은 디테일을 구현하고 싶은 목표가 있었습니다.
 하지만 현실적인 상황도 고려하지 않을 수 없어서 현재 완성도에서 잠시 멈추기로 결정했습니다.
 마지막으로 아쉬움이 남는 개선사항들을 남겨두고자 합니다.
