@@ -144,6 +144,7 @@ TUBE의 경계 3 ~ 4를 포함하는 노드는 TELEVISION(2 ~ 9)와 ELECTRONICS(
 1년 동안 무료로 사용할 수 있는 aws 프리티어를 이용했습니다.
 
 EC2 - 아마존 리눅스 AMI
+
 RDS - MariaDB 10.3
 
 EC2에 Apache Tomcat 9.0을 설치해서 웹서버로 사용 중입니다.
