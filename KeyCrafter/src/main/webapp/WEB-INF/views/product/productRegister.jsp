@@ -139,7 +139,7 @@ $(document).ready(function() {
 	// 첨부파일 확장자 확인, 이미지 파일만 가능
 	function checkExtension(fileName, fileSize) {
 		var regExp = new RegExp("(.*?)\.(jpg|jpeg|png|gif|bmp)$");
-		var maxSize = 20971520; // 5MB
+		var maxSize = 20971520; // 20MB
 		
 		if (maxSize < fileSize) {
 			alert("파일 용량 초과");
@@ -156,10 +156,6 @@ $(document).ready(function() {
 		return true;
 	}
 	
-	//
-	// TRY AJAX CALLBACK
-	//
-	
 	// file 필드에 파일이 선택되면 임시로 파일 업로드
 	$("input[type = 'file']").on("change", function(e) {
 		var formData = new FormData();
@@ -173,12 +169,13 @@ $(document).ready(function() {
 			
 			formData.append("uploadFile", files[i]);
 			// console.log(formData);
-			
-			tempUpload(formData, function(result) {
-				showUploadResult(result);
-				$(".uploadDiv").html(cloneObj.html());
-			});
 		}
+		
+		tempUpload(formData, function(result) {
+			showUploadResult(result);
+			$(".uploadDiv").html(cloneObj.html());
+			// $(".uploadDiv").replaceWith(cloneObj);
+		});
 	});
 	
 	function tempUpload(formData, callback) {
@@ -197,11 +194,6 @@ $(document).ready(function() {
 				if (callback) {
 					callback(result);
 				}
-				/*
-				showUploadResult(result);
-				$(".uploadDiv").html(cloneObj.html());
-				*/
-				// $(".uploadDiv").replaceWith(cloneObj);
 			}
 		});
 	}
@@ -217,15 +209,59 @@ $(document).ready(function() {
 		
 		$(result).each(function(i, obj) {
 			var fileCallPath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+			var filePath = encodeURIComponent(obj.uploadPath);
+			var fileName = encodeURIComponent("s_" + obj.uuid + "_" + obj.fileName);
+			
+			str += "<div class='col-1' data-uuid='" + obj.uuid + "' data-uploadpath='" + obj.uploadPath +
+			"' data-filename='" + obj.fileName + "'><img src='https://upload-kc.s3.ap-northeast-2.amazonaws.com/upload/" + fileCallPath +
+			"'><span data-filepath='" + filePath + "' data-filename='" + fileName + "'>" +
+			"<i class='fa fa-remove'></i></span></div>";
+			
+			/* LOCAL VER.
+			var fileCallPath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+			
 			str += "<div class='col-1' data-uuid='" + obj.uuid + "' data-uploadpath='" + obj.uploadPath +
 					"' data-filename='" + obj.fileName + "'><img src='/show?fileName=" + fileCallPath +
 					"'><span data-file='" + fileCallPath + "'><i class='fa fa-remove'></i></span></div>";
+			*/
 		});
 		
 		uploadResult.append(str);
 	}
 	
 	// 임시 업로드 파일 삭제
+	$(".uploadResult").on("click", "span", function() {
+		var filePath = $(this).data("filepath");
+		var fileName = $(this).data("filename");
+		var targetDiv = $(this).closest("div");
+		
+		// console.log("Delete file: " + fileName);
+		
+		deleteTempUpload(filePath, fileName, function(result) {
+			result = decodeURIComponent(result);
+			alert(result);
+			targetDiv.remove();
+		});
+	});
+	
+	function deleteTempUpload(filePath, fileName, callback) {
+		$.ajax({
+			url: '/deleteFile',
+			type: 'post',
+			data: {"filePath": filePath, "fileName": fileName},
+			dataType: 'text',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+			},
+			success: function(result) {
+				if (callback) {
+					callback(result);
+				}
+			}
+		});
+	}
+	
+	/* 임시 업로드 파일 삭제 LOCAL VER.
 	$(".uploadResult").on("click", "span", function() {
 		var fileName = $(this).data("file");
 		var targetDiv = $(this).closest("div");
@@ -237,8 +273,8 @@ $(document).ready(function() {
 			alert(result);
 			targetDiv.remove();
 		});
-		
 	});
+	
 	
 	function deleteTempUpload(fileName, callback) {
 		$.ajax({
@@ -256,6 +292,7 @@ $(document).ready(function() {
 			}
 		});
 	}
+	*/
 	
 	// 등록 form에 첨부파일과 카테고리 추가 후 submit
 	$("input[type = 'submit']").on("click", function(e) {

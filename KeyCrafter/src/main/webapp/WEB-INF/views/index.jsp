@@ -69,9 +69,23 @@
 						<div class="f_p_item">
 							<div class="f_p_img">
 								<a class="getProduct" href="/product/get?pid=${ product.pid }">
+								<!-- 
 									<img class="img-fluid"
 										src="/show?fileName=${ product.attachList[0].uploadPath }/m_${ product.attachList[0].uuid }_${ product.attachList[0].fileName }"
 										alt="${ product.pname }">
+								-->
+							<c:choose>
+								<c:when test="${ product.attachList[0].uploadPath eq 'default' }">
+									<img class="img-fluid"
+									src="https://upload-kc.s3.ap-northeast-2.amazonaws.com/upload/default/m_${ product.attachList[0].fileName }"
+									alt="${ product.pname }">
+								</c:when>
+								<c:otherwise>
+									<img class="img-fluid"
+									src="https://upload-kc.s3.ap-northeast-2.amazonaws.com/upload/${ product.attachList[0].uploadPath }/m_${ product.attachList[0].uuid }_${ product.attachList[0].fileName }"
+									alt="${ product.pname }">
+								</c:otherwise>
+							</c:choose>
 								</a>
 							</div>
 							<a class="getProduct" href="/product/get?pid=${ product.pid }">

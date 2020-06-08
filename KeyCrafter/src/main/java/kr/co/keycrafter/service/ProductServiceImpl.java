@@ -2,9 +2,12 @@ package kr.co.keycrafter.service;
 
 import java.util.List;
 import java.util.UUID;
+import java.io.File;
+/*
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+*/
 import java.util.ArrayList;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -123,17 +126,16 @@ public class ProductServiceImpl implements ProductService {
 	public int updateProduct(ProductVO product) {
 		log.info("Update product");
 		
-		int result;
 		int pid = product.getPid();
 		
 		// 모든 첨부파일을 DB에서  삭제
-		result = productAttachMapper.deleteAllAttach(pid);
+		productAttachMapper.deleteAllAttach(pid);
 		// log.info("Delete all attaches: " + result);
 		
-		result = productMapper.updateProduct(product);
+		productMapper.updateProduct(product);
 		// log.info("Product updated");
 		
-		// 첨부파일이 모두 삭제되었을때 기본 이미지 삽입
+		// 새로운 첨부파일이 없는 경우, 기본 이미지 삽입
 		if (product.getAttachList() == null || product.getAttachList().size() <= 0) {
 			// log.info("Default image added");
 			
@@ -152,12 +154,14 @@ public class ProductServiceImpl implements ProductService {
 		}
 		
 		// 상품 정보에 첨부파일이 있으면 DB의 product_attach 테이블에 파일 정보 insert
-		product.getAttachList().forEach(attach -> {
-			attach.setPid(pid);
-			// log.info("Attach list");
-			// log.info(attach);
-			productAttachMapper.insertAttach(attach);
-		});
+		else {
+			product.getAttachList().forEach(attach -> {
+				attach.setPid(pid);
+				// log.info("Attach list");
+				// log.info(attach);
+				productAttachMapper.insertAttach(attach);
+			});
+		}
 		
 		return productMapper.updateProduct(product);
 	}
@@ -196,12 +200,26 @@ public class ProductServiceImpl implements ProductService {
 		
 		attachList.forEach(attach -> {
 			try {
-				if (!attach.getUploadPath().equals(defaultPath)) {
+				if (!attach.getUploadPath().equals(DefaultPath)) {
+					String filePath, originFileName, mdFileName, smFileName;
+					
+					filePath = UploadRoot + File.pathSeparator + attach.getUploadPath();
+					originFileName = attach.getUuid() + "_" + attach.getFileName();
+					mdFileName = "m_" + originFileName;
+					smFileName = "s_" + originFileName;
+					
+					S3Storage s3Client = new S3Storage();
+					
+					s3Client.delete(filePath, originFileName);
+					s3Client.delete(filePath, mdFileName);
+					s3Client.delete(filePath, smFileName);
+					
+					/* LOCAL VER.
 					Path originalFile, mediumFile, smallFile; 
 					
-					originalFile = Paths.get(uploadRoot, attach.getUploadPath(), attach.getUuid() + "_" + attach.getFileName());
-					mediumFile = Paths.get(uploadRoot, attach.getUploadPath(), "m_" + attach.getUuid() + "_" + attach.getFileName());
-					smallFile = Paths.get(uploadRoot, attach.getUploadPath(), "s_" + attach.getUuid() + "_" + attach.getFileName());
+					originalFile = Paths.get(UploadRoot, attach.getUploadPath(), attach.getUuid() + "_" + attach.getFileName());
+					mediumFile = Paths.get(UploadRoot, attach.getUploadPath(), "m_" + attach.getUuid() + "_" + attach.getFileName());
+					smallFile = Paths.get(UploadRoot, attach.getUploadPath(), "s_" + attach.getUuid() + "_" + attach.getFileName());
 					
 					// log.info(originalFile);
 					// log.info(smallFile);
@@ -209,6 +227,7 @@ public class ProductServiceImpl implements ProductService {
 					Files.delete(originalFile);
 					Files.delete(mediumFile);
 					Files.delete(smallFile);
+					*/
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

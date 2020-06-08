@@ -25,16 +25,44 @@
 								<li data-target="#carouselExampleIndicators" data-slide-to="${ status.index }"
 								${ status.first ? ' class="active"' : '' }>
 								
+							<c:choose>
+								<c:when test="${ attach.uploadPath eq 'default' }">
+									<img class="img-fluid"
+									src="https://upload-kc.s3.ap-northeast-2.amazonaws.com/upload/default/s_${ attach.fileName }"
+									alt="${ product.pname }">
+								</c:when>
+								<c:otherwise>
+									<img class="img-fluid"
+									src="https://upload-kc.s3.ap-northeast-2.amazonaws.com/upload/${ attach.uploadPath }/s_${ attach.uuid }_${ attach.fileName }"
+									alt="${ product.pname }">
+								</c:otherwise>
+							</c:choose>
+								<!--
 									<img src="/show?fileName=${ attach.uploadPath }/s_${ attach.uuid }_${ attach.fileName }"
 									alt="${ product.pname }">
+								-->
 								</li>
 							</c:forEach>
 						</ol>
 						<div class="carousel-inner">
 							<c:forEach items="${ product.attachList }" var="attach" varStatus="status">
 								<div class="carousel-item${ status.first ? ' active' : '' }">
+								<c:choose>
+								<c:when test="${ attach.uploadPath eq 'default' }">
+									<img class="img-fluid"
+									src="https://upload-kc.s3.ap-northeast-2.amazonaws.com/upload/default/m_${ attach.fileName }"
+									alt="${ product.pname }">
+								</c:when>
+								<c:otherwise>
+									<img class="img-fluid"
+									src="https://upload-kc.s3.ap-northeast-2.amazonaws.com/upload/${ attach.uploadPath }/m_${ attach.uuid }_${ attach.fileName }"
+									alt="${ product.pname }">
+								</c:otherwise>
+							</c:choose>
+								<!-- 
 									<img class="d-block w-100" src="/show?fileName=${ attach.uploadPath }/m_${ attach.uuid }_${ attach.fileName }"
 									alt="Slide ${ status.index }">
+								-->
 								</div>
 							</c:forEach>
 						</div>
