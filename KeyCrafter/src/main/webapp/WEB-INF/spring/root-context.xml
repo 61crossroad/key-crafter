@@ -34,7 +34,7 @@
 		<property name="jdbcUrl" value="jdbc:log4jdbc:mariadb://spring-webservice-1st.ciwgo0g1c6kj.ap-northeast-2.rds.amazonaws.com:3306/key_crafter"></property>		
 		<property name="username" value="keycrafter"></property>
 		<property name="password" value="keycrafter"></property>
-	</bean>	
+	</bean>
 	
 	<!-- HikariCP configuration -->
 	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
