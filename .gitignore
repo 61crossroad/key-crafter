@@ -127,6 +127,5 @@ Temporary Items
 # Private configurations
 root-context.xml
 Const.java
-m2e-wtp/web-resources/META-INF/*
 
 # End of https://www.gitignore.io/api/osx,java,eclipse
