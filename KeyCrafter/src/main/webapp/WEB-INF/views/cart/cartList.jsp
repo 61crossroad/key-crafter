@@ -150,7 +150,7 @@ $(document).ready(function() {
 
 	function checkQuantity(pid, callback) {
 		$.ajax({
-			url: "/cart/quantity/" + pid,
+			url: "/product/quantity/" + pid,
 			method: "GET",
 			success: function(result) {
 				if (callback) {

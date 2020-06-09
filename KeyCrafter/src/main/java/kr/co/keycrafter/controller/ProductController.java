@@ -2,14 +2,21 @@ package kr.co.keycrafter.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import kr.co.keycrafter.domain.ProductVO;
 import kr.co.keycrafter.domain.Criteria;
@@ -17,9 +24,7 @@ import kr.co.keycrafter.domain.PageDTO;
 import kr.co.keycrafter.service.ProductService;
 import kr.co.keycrafter.service.CategoryService;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -163,5 +168,12 @@ public class ProductController {
 		cri.setCat(catNum);
 		
 		return "redirect:/product/list" + cri.getListLink();
+	}
+	
+	@GetMapping("/quantity/{pid}")
+	@ResponseBody
+	public ResponseEntity<String> getQuantity(@PathVariable("pid") int pid) {
+		String quantity = productService.getQuantity(pid);
+		return new ResponseEntity<String>(quantity, HttpStatus.OK);
 	}
 }

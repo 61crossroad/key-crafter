@@ -591,9 +591,31 @@ $(document).ready(function() {
 	});
 	
 	$("#qty-up").on("click", function() {
-		var num = qty.val();
-		qty.val(++num);
+		checkQuantity(pid, function(result) {
+			var num = qty.val();
+			var parseNum = parseInt(num);
+			var parseRes = parseInt(result);
+			
+			if (parseRes < parseNum + 1) {
+				alert("수량이 너무 많습니다. 관리자에게 문의해주세요.");
+				return;
+			}
+			
+			qty.val(++num);
+		});
 	});
+	
+	function checkQuantity(pid, callback) {
+		$.ajax({
+			url: "/product/quantity/" + pid,
+			method: "GET",
+			success: function(result) {
+				if (callback) {
+					callback(result);
+				}
+			}
+		});
+	}
 	
 	$("#qty-dn").on("click", function() {
 		var num = qty.val();
