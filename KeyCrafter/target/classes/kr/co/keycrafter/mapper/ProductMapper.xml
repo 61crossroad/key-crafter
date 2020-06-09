@@ -88,6 +88,12 @@
 		WHERE pid = #{pid}
 	</select>
 	
+	<select id="getQuantity" resultType="string">
+		SELECT quantity
+		FROM product
+		WHERE pid = #{pid}
+	</select>
+	
 	<select id="getProductListForOrder" resultMap="productMap">
 		SELECT p.pid, p.pname, p.company, p.price, op.quantity, a.uuid, a.uploadpath, a.filename
 		FROM product p

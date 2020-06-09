@@ -19,6 +19,8 @@ public interface ProductMapper {
 	
 	public ProductVO getProductSimple(int pid);
 	
+	public String getQuantity(int pid);
+	
 	public List<ProductVO> getProductListForOrder(int onum);
 	
 	public List<ProductVO> getProductListWithPaging(Criteria cri);

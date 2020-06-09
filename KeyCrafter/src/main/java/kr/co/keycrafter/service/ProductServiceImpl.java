@@ -98,6 +98,11 @@ public class ProductServiceImpl implements ProductService {
 	}
 	
 	@Override
+	public String getQuantity(int pid) {
+		return productMapper.getQuantity(pid);
+	}
+	
+	@Override
 	public int getTotalCount(Criteria cri) {
 		return productMapper.getTotalCount(cri);
 	}

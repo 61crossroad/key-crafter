@@ -20,6 +20,7 @@
 					</thead>
 					<tbody>
 					<c:set var="subTotal" value="0"/>
+					<!-- Session item cartList -->
 					<c:forEach items="${ cartList }" var="product">
 						<tr>
 							<td>
@@ -28,12 +29,12 @@
 										<c:choose>
 									<c:when test="${ product.attachList[0].uploadPath eq 'default' }">
 										<img class="img-fluid"
-										src="https://upload-kc.s3.ap-northeast-2.amazonaws.com/upload/default/m_${ product.attachList[0].fileName }"
+										src="https://upload-kc.s3.ap-northeast-2.amazonaws.com/upload/default/s_${ product.attachList[0].fileName }"
 										alt="${ product.pname }">
 									</c:when>
 									<c:otherwise>
 										<img class="img-fluid"
-										src="https://upload-kc.s3.ap-northeast-2.amazonaws.com/upload/${ product.attachList[0].uploadPath }/m_${ product.attachList[0].uuid }_${ product.attachList[0].fileName }"
+										src="https://upload-kc.s3.ap-northeast-2.amazonaws.com/upload/${ product.attachList[0].uploadPath }/s_${ product.attachList[0].uuid }_${ product.attachList[0].fileName }"
 										alt="${ product.pname }">
 									</c:otherwise>
 								</c:choose>
@@ -50,7 +51,7 @@
 							<td name="price" data-price="${ product.price }">
 								<h5><fmt:formatNumber value="${ product.price }" pattern="#,###" />원</h5>
 							</td>
-							<td data-pname="${ product.pname }" data-pid="${ product.pid }">
+							<td name="product" data-pid="${ product.pid }">
 								<div class="product_count">
 									<input type="text" name="qty" maxlength="12" value="${ product.quantity }" title="Quantity:" class="input-text qty">
 									<button name="qty-up" class="increase items-count"><i class="lnr lnr-chevron-up"></i></button>
@@ -124,17 +125,40 @@ $(document).ready(function() {
 	var csrfTokenValue = "${_csrf.token}";
 	
 	$("button[name='qty-up']").on("click", function() {
-		var qty = $(this).siblings("input");
-		var num = qty.val();
-		
-		qty.val(++num);
-		num = qty.val();
-		
-		updateCart($(this));
-		setSum($(this), num);
-		
-		setSubTotal($(this).closest("td").siblings("td[name='price']").data("price"));
+		var pid = $(this).closest("td[name='product']").data("pid");
+		var thisObj = $(this);
+
+		checkQuantity(pid, function(result) {
+			var qty = thisObj.siblings("input");
+			var num = qty.val();
+			var parseNum = parseInt(num);
+			var parseRes = parseInt(result);
+			
+			
+			if (parseRes < parseNum + 1) {
+				alert("수량이 너무 많습니다. 관리자에게 문의해주세요.");
+				return;
+			}
+			
+			qty.val(++num);
+			
+			updateCart(thisObj);
+			setSum(thisObj, num);
+			setSubTotal(thisObj.closest("td").siblings("td[name='price']").data("price"));
+		});
 	});
+
+	function checkQuantity(pid, callback) {
+		$.ajax({
+			url: "/cart/quantity/" + pid,
+			method: "GET",
+			success: function(result) {
+				if (callback) {
+					callback(result);
+				}
+			}
+		});
+	}
 	
 	$("button[name='qty-down']").on("click", function() {
 		var qty = $(this).siblings("input[name='qty']");

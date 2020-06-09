@@ -13,6 +13,8 @@ public interface ProductService {
 	
 	public ProductVO getProduct(int pid);
 	
+	public String getQuantity(int pid);
+	
 	public List<ProductAttachVO> getAttachForProduct(int pid);
 	
 	public int getTotalCount(Criteria cri);
