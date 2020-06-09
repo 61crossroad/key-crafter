@@ -67,7 +67,7 @@ http://13.209.232.233:8080/
 
 아래 그림은 MySQL Workbench로 작성한 ERD입니다.
 
-![KeyCrafter ERD](https://drive.google.com/uc?id=1NOZS8T_oRdxdbdJbBABF3Gcq_pHkJbVZ)
+![KeyCrafter ERD](https://upload-kc.s3.ap-northeast-2.amazonaws.com/KeyCrafter_ERD_fin.png)
 
 ##### 테이블 설명
 ---
@@ -152,7 +152,7 @@ TUBE의 경계 3 ~ 4를 포함하는 노드는 TELEVISION(2 ~ 9)와 ELECTRONICS(
 
 이 과정 이후에 2[TELEVISION]11과 7[PLASMA]8 사이에 9와 10이 비어있으므로, 9[OLED]10을 생성해서 넣을 수 있습니다.
 
-![Nested Set Model, Create](https://drive.google.com/uc?id=1wQYEpHHLgRJeONvPi4lY_4hxrWRjrwAM)
+![Nested Set Model, Create](https://upload-kc.s3.ap-northeast-2.amazonaws.com/nestedsetcrud.png)
 
 삭제는 반대로 타겟 노드를 삭제하고 그 노드의 넓이(right - left + 1)만큼 기존 노드들의 left 또는 right 값을 줄여서 트리를 유지합니다.
 
