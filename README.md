@@ -37,26 +37,26 @@ http://13.209.232.233:8080/
 ---
 #### 1.Back-end
 
-Java 8
+* Java 8
 
-Java Spring Framework 5.0.7
+* Java Spring Framework 5.0.7
 
-Mybatis 3.4.6 (Mybatis-Spring 1.3.2)
+* Mybatis 3.4.6 (Mybatis-Spring 1.3.2)
 
-HikariCP 2.7.8 (데이터베이스 커넥션 풀)
+* HikariCP 2.7.8 (데이터베이스 커넥션 풀)
 
-Oracle 11g R2
+* Oracle 11g R2
 
-Mariadb 10.4/10.3
+* Mariadb 10.4/10.3
 
 
 #### 2.Front-end
 
-HTML5 + CSS3
+* HTML5 + CSS3
 
-Bootstrap
+* Bootstrap
 
-Javascript + JQuery(3.2.1)
+* Javascript + JQuery(3.2.1)
 
 
 ### 데이터베이스 erd
@@ -160,11 +160,11 @@ TUBE의 경계 3 ~ 4를 포함하는 노드는 TELEVISION(2 ~ 9)와 ELECTRONICS(
 ---
 AWS 프리티어를 이용했습니다.
 
-EC2 - 아마존 리눅스 AMI
+* EC2 - 아마존 리눅스 AMI
 
-RDS - MariaDB 10.3
+* RDS - MariaDB 10.3
 
-S3 - 스토리지 서비스
+* S3 - 스토리지 서비스
 
 EC2에 Apache Tomcat 9.0을 설치해서 웹서버로 사용 중입니다.
 
