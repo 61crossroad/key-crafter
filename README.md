@@ -145,15 +145,21 @@ http://mikehillyer.com/articles/managing-hierarchical-data-in-mysql/
 TUBE의 경계 3 ~ 4를 포함하는 노드는 TELEVISION(2 ~ 9)와 ELECTRONICS(1 ~ 20) 두 개 이므로 TUBE의 깊이는 2가 됩니다.
 
 노드를 추가할 때는 추가될 노드의 부모와 더 오른쪽에 있는 노드들의 right 값을 +2만 해주면 됩니다.
+
 예를 들어 OLED를 TELEVISION 하위, PLASMA의 형제로 넣으려고 한다면 PLASMA의 right 값인 8보다 right가 큰 노드들의 값을 모두 2씩 증가시킵니다.
+
 (경우에 따라 left와 right를 모두 증가시키는 노드도 있습니다.)
+
 이 과정 이후에 2[TELEVISION]11과 7[PLASMA]8 사이에 9와 10이 비어있으므로, 9[OLED]10을 생성해서 넣을 수 있습니다.
 
 ![Nested Set Model, Create](https://drive.google.com/uc?id=1wQYEpHHLgRJeONvPi4lY_4hxrWRjrwAM)
 
 삭제는 반대로 타겟 노드를 삭제하고 그 노드의 넓이(right - left + 1)만큼 기존 노드들의 left 또는 right 값을 줄여서 트리를 유지합니다.
+
 예를 들어서 10[PORTABLE ELECTRONICS]19를 삭제한다면, left와 right가 10 ~ 19 사이에 있는 노드가 모두 PORTABLE ELECTRONICS의 자식이므로 간단한 쿼리와 빠른 속도를 서브트리를 삭제할 수 있습니다.
+
 다음으로 10 ~ 19가 모두 사라졌으므로 그 width인 (19 - 10 + 1 = 10)만큼 ELECTRONICS의 right값을 줄입니다.
+
 이런 과정을 통해 Nested Set을 계속 유지합니다.
 
 ### aws와 배포
