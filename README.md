@@ -109,7 +109,7 @@ http://13.209.232.233:8080/
 ---
 스프링 MVC 모델2 계층을 따라서 구성하였습니다.
 
-![structure](https://upload-kc.s3.ap-northeast-2.amazonaws.com/structure.png)
+![structure](https://upload-kc.s3.ap-northeast-2.amazonaws.com/structure-1.png)
 
 * 기본적으로 뷰 페이지는 JSP로 생성하지만 동적인 액션은 Javascript/JQuery로 구현했습니다.
 * 컨트롤러는 request에 관해 간단한 전처리나 response 데이터에 대한 판단, 뷰에 response를 전달합니다.
