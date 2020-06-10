@@ -137,6 +137,8 @@ http://13.209.232.233:8080/
 ---
 User를 상속한 CustomUser 도메인과 UserDetailsService를 상속한 CustomUserDetailsService를 구현하였습니다.
 
+각 계정 비밀번호는 BCryptPasswordEncoder로 암호화했습니다.
+
 권한은 'ROLE_ADMIN', 'ROLE_MEMBER', 'ROLE_USER'입니다.
 
 1.ROLE_ADMIN : 최고 관리자로서 서비스에 관한 모든 권한을 가집니다.
