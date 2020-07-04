@@ -5,60 +5,92 @@
 
 http://13.209.232.233:8080/
 
-테스트 아이디/비밀번호 : aaa/aaaa
+
+#### 테스트 계정
+* 아이디/비밀번호 : aaa/aaaa (일반 유저)
+
+* 아이디/비밀번호 : test/test (운영자)
 
 직접 계정을 만들어서 테스트도 가능합니다.
 
 
 ## 목차
-[1.개발 환경](#개발-환경)
+[1.기능 설명](#기능-설명)
 
-[2.데이터베이스 erd](#데이터베이스-erd)
+[2.개발 환경](#개발-환경)
 
-[3.프로젝트의 기본 구조](#프로젝트의-기본-구조)
+[3.데이터베이스 erd](#데이터베이스-erd)
 
-[4.http 및 rest api 구현](#http-및-rest-api-구현)
+[4.프로젝트의 기본 구조](#프로젝트의-기본-구조)
 
-[5.스프링 시큐리티](#스프링-시큐리티)
+[5.http 및 rest api 구현](#http-및-rest-api-구현)
 
-[6.파일 업로드](#파일-업로드)
+[6.스프링 시큐리티](#스프링-시큐리티)
 
-[7.카테고리와 댓글의 계층 알고리즘](#카테고리와-댓글의-계층-알고리즘)
+[7.파일 업로드](#파일-업로드)
 
-[8.aws와 배포](#aws와-배포)
+[8.카테고리와 댓글의 계층 알고리즘](#카테고리와-댓글의-계층-알고리즘)
 
-[9.차후 개선 사항](#차후-개선-사항)
+[9.aws와 배포](#aws와-배포)
+
+[10.차후 개선 사항](#차후-개선-사항)
+
+### 기능 설명
+---
+운영자는 일반 유저의 권한과 고유의 권한을 함께 가집니다.
+
+관리자는 일반 유저, 운영자의 권한과 고유의 권한을 다 가집니다.
+
+#### 1.일반 유저
+* 회원: 가입, 정보 수정
+* 상품: 검색, 조회, 장바구니에 추가, 주문 요청
+* 상품 댓글: 조회, 작성, 수정, 삭제
+* 장바구니: 상품 수량 변경, 삭제, 주문 요청
+* 주문: 주문 내역 조회, 주문 입력, 수정
+
+#### 2.운영자
+* 상품: 등록, 수정, 삭제
+* 카테고리: 등록, 수정, 삭제
+* 주문: 모든 회원의 주문 검색과 조회, 수정
+
+#### 3.관리자
+* 회원: 모든 회원 정보 조회, 수정, 권한 변경
 
 ### 개발 환경
 ---
 #### 1.Back-end
 
-Java 8
+* Java 8
 
-Java Spring Framework 5.0.7
+* Java Spring Framework 5.0.7
 
-Mybatis 3.4.6 (Mybatis-Spring 1.3.2)
+* Mybatis 3.4.6 (Mybatis-Spring 1.3.2)
 
-HikariCP 2.7.8
+* HikariCP 2.7.8 (데이터베이스 커넥션 풀)
+
+* Oracle 11g R2
+
+* Mariadb 10.4/10.3
 
 
 #### 2.Front-end
 
-HTML5 + CSS3
+* HTML5 + CSS3
 
-Bootstrap
+* Bootstrap
 
-Javascript + JQuery(3.2.1)
+* Javascript + JQuery(3.2.1)
+
 
 ### 데이터베이스 erd
 ---
-로컬에서는 Oracle 11g R2 버전에서 데이터베이스 구조와 쿼리를 만들었지만,
+로컬에서는 Oracle 11g R2 버전으로 데이터베이스 구조와 쿼리를 만들었지만,
 
-AWS 프리티어에서는 MariaDB만 가능해서 배포를 준비하며 다시 MariaDB로 변환했습니다.
+배포를 준비하는 과정에서 AWS 프리티어가 제공하는 MariaDB에 맞춰 변환했습니다.
 
 아래 그림은 MySQL Workbench로 작성한 ERD입니다.
 
-![KeyCrafter ERD](https://drive.google.com/uc?id=1NOZS8T_oRdxdbdJbBABF3Gcq_pHkJbVZ)
+![KeyCrafter ERD](https://upload-kc.s3.ap-northeast-2.amazonaws.com/KeyCrafter_ERD_fin.png)
 
 ##### 테이블 설명
 ---
@@ -77,7 +109,15 @@ AWS 프리티어에서는 MariaDB만 가능해서 배포를 준비하며 다시 
 ---
 스프링 MVC 모델2 계층을 따라서 구성하였습니다.
 
-클라이언트(브라우저) - 뷰(JSP) - 컨트롤러 - 서비스 - 영속 - 데이터베이스
+![structure](https://upload-kc.s3.ap-northeast-2.amazonaws.com/structure-1.png)
+
+* 기본적으로 뷰 페이지는 JSP로 생성하지만 동적인 액션은 Javascript/JQuery로 구현했습니다.
+* 컨트롤러는 request에 관해 간단한 전처리나 response 데이터에 대한 판단, 뷰에 response를 전달합니다.
+스프링 시큐리티의 @PreAuthorize 어노테이션으로 회원/비회원간, 일반유저/운영자의 액세스를 구분합니다.
+* 서비스 계층은 Interface와 이를 구현한 Class의 느슨한 결합으로 설계하였고, 요청에 대한 전반적인 작업을 담당합니다.
+요청을 처리하기 위해 여러 테이블에 액세스 하는 경우 @Transactional 어노테이션을 이용해서 트랜잭션을 적용했습니다.
+(상품을 등록 할 경우 product, product_attach, product_reply에 모두 데이터를 만듭니다.)
+* 쿼리는 테이블마다 xml로 작성하였고, 페이징과 검색 처리를 위해 Mybatis의 다양한 기능을 이용해 동적으로 쿼리를 생성합니다.
 
 ### http 및 rest api 구현
 ---
@@ -97,6 +137,8 @@ AWS 프리티어에서는 MariaDB만 가능해서 배포를 준비하며 다시 
 ---
 User를 상속한 CustomUser 도메인과 UserDetailsService를 상속한 CustomUserDetailsService를 구현하였습니다.
 
+각 계정 비밀번호는 BCryptPasswordEncoder로 암호화했습니다.
+
 권한은 'ROLE_ADMIN', 'ROLE_MEMBER', 'ROLE_USER'입니다.
 
 1.ROLE_ADMIN : 최고 관리자로서 서비스에 관한 모든 권한을 가집니다.
@@ -107,15 +149,12 @@ User를 상속한 CustomUser 도메인과 UserDetailsService를 상속한 Custom
 
 ### 파일 업로드
 ---
-서블릿 3.0 이상에서 지원하는 자체 API와 JQuery AJAX를 이용해서 구현하였습니다.
+AWS SDK for Java를 이용해서 AWS S3 스토리지 서비스에 업로드하도록 구현했습니다.
 
 1. 파일명이 중복되는 것을 막기 위해 파일명에 UUID를 덧붙였습니다.
 2. 파일 저장 위치는 년/월/일 계층의 폴더로 나눠서 한 폴더에 너무 많은 파일을 넣지 않도록 했습니다.
 3. 상품 사진은 원본, 중간 크기, 작은 크기가 필요했기 때문에 Thumbnailator 라이브러리를 이용해서 섬네일을 만들었습니다.
 
-로컬에서는 아무 이상없이 작동했으나 AWS에 배포한 뒤에는 파일을 업로드해도 기본 이미지로만 저장되는 문제가 발생했습니다.
-이 이슈를 해결한 뒤에 배포를 하고 싶었지만 너무 오랜 시간을 잡아먹고 있어서 우선 배포를 하기로 결정했습니다.
-현재 AWS SDK for Java와 S3 서비스를 이용한 업로드 방식으로 바꿔보려고 합니다.
 
 ### 카테고리와 댓글의 계층 알고리즘
 ---
@@ -139,30 +178,42 @@ http://mikehillyer.com/articles/managing-hierarchical-data-in-mysql/
 TUBE의 경계 3 ~ 4를 포함하는 노드는 TELEVISION(2 ~ 9)와 ELECTRONICS(1 ~ 20) 두 개 이므로 TUBE의 깊이는 2가 됩니다.
 
 노드를 추가할 때는 추가될 노드의 부모와 더 오른쪽에 있는 노드들의 right 값을 +2만 해주면 됩니다.
+
 예를 들어 OLED를 TELEVISION 하위, PLASMA의 형제로 넣으려고 한다면 PLASMA의 right 값인 8보다 right가 큰 노드들의 값을 모두 2씩 증가시킵니다.
+
 (경우에 따라 left와 right를 모두 증가시키는 노드도 있습니다.)
+
 이 과정 이후에 2[TELEVISION]11과 7[PLASMA]8 사이에 9와 10이 비어있으므로, 9[OLED]10을 생성해서 넣을 수 있습니다.
 
-![Nested Set Model, Create](https://drive.google.com/uc?id=1wQYEpHHLgRJeONvPi4lY_4hxrWRjrwAM)
+![Nested Set Model, Create](https://upload-kc.s3.ap-northeast-2.amazonaws.com/nestedsetcrud.png)
 
 삭제는 반대로 타겟 노드를 삭제하고 그 노드의 넓이(right - left + 1)만큼 기존 노드들의 left 또는 right 값을 줄여서 트리를 유지합니다.
 
+예를 들어서 10[PORTABLE ELECTRONICS]19를 삭제한다면, left와 right가 10 ~ 19 사이에 있는 노드가 모두 PORTABLE ELECTRONICS의 자식이므로 간단한 쿼리와 빠른 속도를 서브트리를 삭제할 수 있습니다.
+
+다음으로 10 ~ 19가 모두 사라졌으므로 그 width인 (19 - 10 + 1 = 10)만큼 ELECTRONICS의 right값을 줄입니다.
+
+이런 과정을 통해 Nested Set을 계속 유지합니다.
+
 ### aws와 배포
 ---
-1년 동안 무료로 사용할 수 있는 aws 프리티어를 이용했습니다.
+AWS 프리티어를 이용했습니다.
 
-EC2 - 아마존 리눅스 AMI
+* EC2 - 아마존 리눅스 AMI
 
-RDS - MariaDB 10.3
+* RDS - MariaDB 10.3
+
+* S3 - 스토리지 서비스
 
 EC2에 Apache Tomcat 9.0을 설치해서 웹서버로 사용 중입니다.
 
 ### 차후 개선 사항
 ---
-웹 개발을 공부하며 처음으로 만든 프로젝트이지만, 기성 쇼핑몰 같은 디테일을 구현하고 싶은 목표가 있었습니다.
+웹 개발을 시작하고 처음으로 만든 프로젝트이지만, 기성 쇼핑몰 같은 디테일을 구현하고 싶었습니다.
 하지만 현실적인 상황도 고려하지 않을 수 없어서 현재 완성도에서 잠시 멈추기로 결정했습니다.
 마지막으로 아쉬움이 남는 개선사항들을 남겨두고자 합니다.
 
-1. 상용 결제 PG API 연동
-2. OAuth 2.0을 이용한 소셜 로그인
-3. 회원에게 이벤트가 발생했을 때 자동으로 이메일이나 메시지를 보내는 기능
+1. SSH 인증서를 통한 https 적용
+2. 상용 결제 PG API 연동
+3. OAuth 2.0을 이용한 소셜 로그인
+4. 회원에게 이벤트가 발생했을 때 자동으로 이메일이나 메시지를 보내는 기능
