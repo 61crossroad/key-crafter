@@ -46,6 +46,9 @@
 						</div>
 						<input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }"/>
 					</form>
+					<a href="/member/register/naver" onclick="window.open(this.href, '_blank', 'width=500, height=600'); return false;">
+						<img src="/resources/img/oauth/naver_id_login.png" height="40">
+					</a>
 				</div>
 			</div>
 		</div>
