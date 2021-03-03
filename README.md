@@ -189,7 +189,7 @@ TUBE의 경계 3 ~ 4를 포함하는 노드는 TELEVISION(2 ~ 9)와 ELECTRONICS(
 
 삭제는 반대로 타겟 노드를 삭제하고 그 노드의 넓이(right - left + 1)만큼 기존 노드들의 left 또는 right 값을 줄여서 트리를 유지합니다.
 
-예를 들어서 10[PORTABLE ELECTRONICS]19를 삭제한다면, left와 right가 10 ~ 19 사이에 있는 노드가 모두 PORTABLE ELECTRONICS의 자식이므로 간단한 쿼리와 빠른 속도 서브트리를 삭제할 수 있습니다.
+예를 들어서 10[PORTABLE ELECTRONICS]19를 삭제한다면, left와 right가 10 ~ 19 사이에 있는 노드가 모두 PORTABLE ELECTRONICS의 자식이므로 간단한 쿼리와 빠른 속도로 서브트리를 삭제할 수 있습니다.
 
 다음으로 10 ~ 19가 모두 사라졌으므로 그 width인 (19 - 10 + 1 = 10)만큼 ELECTRONICS의 right값을 줄입니다.
 
