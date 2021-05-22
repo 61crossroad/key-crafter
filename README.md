@@ -90,7 +90,7 @@ http://13.209.232.233:8080/
 
 아래 그림은 MySQL Workbench로 작성한 ERD입니다.
 
-![KeyCrafter ERD](https://upload-kc.s3.ap-northeast-2.amazonaws.com/KeyCrafter_ERD_fin.png)
+![KeyCrafter ERD](https://user-images.githubusercontent.com/3108214/119227873-1d183880-bb4b-11eb-8fd5-89fa5688e42d.png)
 
 ##### 테이블 설명
 ---
@@ -109,7 +109,7 @@ http://13.209.232.233:8080/
 ---
 스프링 MVC 모델2 계층을 따라서 구성하였습니다.
 
-![structure](https://upload-kc.s3.ap-northeast-2.amazonaws.com/structure-1.png)
+![structure](https://user-images.githubusercontent.com/3108214/119227895-33be8f80-bb4b-11eb-9b5e-990aed592646.png)
 
 * 기본적으로 뷰 페이지는 JSP로 생성하지만 동적인 액션은 Javascript/JQuery로 구현했습니다.
 * 컨트롤러는 request에 관해 간단한 전처리나 response 데이터에 대한 판단, 뷰에 response를 전달합니다.
@@ -165,9 +165,9 @@ reference/parent와 sequence, depth 파라미터 등을 이용한 연결 리스�
 
 http://mikehillyer.com/articles/managing-hierarchical-data-in-mysql/
 
-![nested set diagram](http://mikehillyer.com/media//nested_numbered.png)
+![nested set diagram](https://user-images.githubusercontent.com/3108214/119227903-3ae59d80-bb4b-11eb-88f1-260860ba863f.png)
 
-![nested set tree](http://mikehillyer.com/media//numbered_tree.png)
+![nested set tree](https://user-images.githubusercontent.com/3108214/119227905-4042e800-bb4b-11eb-96d9-5774394b92e6.png)
 
 간단히 요약하자면, 하위 계층은 상위 계층의 부분 집합으로 표현할 수 있기 때문에 집합을 이용해서 트리를 구성할 수 있었습니다.
 이런 집합 관계는 각 노드가 갖고 있는 left, right 값으로 구분합니다.
@@ -185,7 +185,7 @@ TUBE의 경계 3 ~ 4를 포함하는 노드는 TELEVISION(2 ~ 9)와 ELECTRONICS(
 
 이 과정 이후에 2[TELEVISION]11과 7[PLASMA]8 사이에 9와 10이 비어있으므로, 9[OLED]10을 생성해서 넣을 수 있습니다.
 
-![Nested Set Model, Create](https://upload-kc.s3.ap-northeast-2.amazonaws.com/nestedsetcrud.png)
+![Nested Set Model, Create](https://user-images.githubusercontent.com/3108214/119227919-4933b980-bb4b-11eb-8499-1d383632e2be.png)
 
 삭제는 반대로 타겟 노드를 삭제하고 그 노드의 넓이(right - left + 1)만큼 기존 노드들의 left 또는 right 값을 줄여서 트리를 유지합니다.
 
