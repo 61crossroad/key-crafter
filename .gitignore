@@ -2,6 +2,10 @@
 # Created by https://www.gitignore.io/api/osx,java,eclipse
 # Edit at https://www.gitignore.io/?templates=osx,java,eclipse
 
+### IntelliJ ###
+.idea
+*.iml
+
 ### Eclipse ###
 .metadata
 bin/
