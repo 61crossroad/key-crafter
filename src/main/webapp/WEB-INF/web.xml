@@ -68,7 +68,8 @@
 		<!-- Local path
 			<location>/Users/shawnimac/upload/temp</location>
 		-->
-			<location>/home/ec2-user/upload</location>
+			<location>upload</location>
+			<!-- <location>/home/ec2-user/upload</location> -->
 			<max-file-size>20971520</max-file-size>
 			<max-request-size>41943040</max-request-size>
 			<file-size-threshold>20971520</file-size-threshold>
